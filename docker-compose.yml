@@ -1,0 +1,75 @@
+# For more information: https://laravel.com/docs/sail
+version: '3'
+services:
+
+  # PHP Service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: digitalocean.com/php
+    container_name: solawir_php_app
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+      PHP_IDE_CONFIG: "serverName=enableDebug"
+    working_dir: /var/www
+    command: sh -c 'php artisan migrate --seed; php-fpm'
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - ./:/var/www
+      - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+      - ./php/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    networks:
+      - solawir
+
+  # Nginx Service
+  webserver:
+    image: nginx:1.19-alpine
+    container_name: solawir_webserver
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./:/var/www
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - solawir
+
+  mysql:
+    image: 'mysql:8.0'
+    ports:
+      - '${FORWARD_DB_PORT:-3306}:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_DATABASE: '${DB_DATABASE}'
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    volumes:
+      - 'sailmysql:/var/lib/mysql'
+    networks:
+      - solawir
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}" ]
+      retries: 3
+      timeout: 5s
+
+  selenium:
+    image: 'selenium/standalone-chrome'
+    volumes:
+      - '/dev/shm:/dev/shm'
+    networks:
+      - solawir
+networks:
+  solawir:
+    driver: bridge
+volumes:
+  sailmysql:
+    driver: local
