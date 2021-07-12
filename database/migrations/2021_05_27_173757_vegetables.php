@@ -27,7 +27,7 @@ class Vegetables extends Migration
         });
 
         Schema::table(User::TABLE, function (Blueprint $table) {
-            $table->foreignId('fkPickUpGroup')->references('id')->on(PickUpGroup::TABLE);
+            $table->foreignId('fkPickUpGroup')->nullable()->references('id')->on(PickUpGroup::TABLE);
         });
 
         Schema::create(Vegetable::TABLE, function (Blueprint $table) {
@@ -40,7 +40,7 @@ class Vegetables extends Migration
         Schema::create(VegetableRating::TABLE, function (Blueprint $table) {
             $table->id();
             $table->integer('stars')->unsigned();
-            $table->foreignId('fkVegetable')->references('id')->on(Vegetable::TABLE);
+            $table->foreignId('fkVegetable')->nullable()->references('id')->on(Vegetable::TABLE);
             $table->timestamps();
         });
 
@@ -54,16 +54,16 @@ class Vegetables extends Migration
             $table->id();
             $table->boolean('pickedUp')->default(false);
             $table->integer('amount')->unsigned();
-            $table->foreignId('fkUser')->references('id')->on(User::TABLE);
-            $table->foreignId('fkPickUp')->references('id')->on(PickUp::TABLE);
+            $table->foreignId('fkUser')->nullable()->references('id')->on(User::TABLE);
+            $table->foreignId('fkPickUp')->nullable()->references('id')->on(PickUp::TABLE);
             $table->timestamps();
         });
 
         Schema::create('vegetablePickup', function (Blueprint $table) {
             $table->id();
             $table->float('amount');
-            $table->foreignId('fkVegetable')->references('id')->on(Vegetable::TABLE);
-            $table->foreignId('fkPickUp')->references('id')->on(PickUp::TABLE);
+            $table->foreignId('fkVegetable')->nullable()->references('id')->on(Vegetable::TABLE);
+            $table->foreignId('fkPickUp')->nullable()->references('id')->on(PickUp::TABLE);
             $table->timestamps();
         });
     }

@@ -169,6 +169,8 @@
       <path value="$PROJECT_DIR$/vendor/laminas/laminas-zendframework-bridge" />
       <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php81" />
       <path value="$PROJECT_DIR$/vendor/psr/http-factory" />
+      <path value="$PROJECT_DIR$/vendor/livewire/livewire" />
+      <path value="$PROJECT_DIR$/vendor/laravel/breeze" />
     </include_path>
   </component>
   <component name="PhpInterpreters">
@@ -258,6 +260,7 @@
   <component name="Psalm">
     <Psalm_settings>
       <psalm_fixer_by_interpreter interpreter_id="04551bc3-1b53-45d6-a31f-1887be0fe770" tool_path="/home/swalbrun/repositories/solawir/vendor/bin/psalm" timeout="60000" />
+      <PsalmConfiguration tool_path="$PROJECT_DIR$/vendor/bin/psalm" />
     </Psalm_settings>
   </component>
 </project>
