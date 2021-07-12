@@ -13,3 +13,11 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
+.php-cs-fixer.cache
+
+.idea/workspace.xml
+.idea/usage.statistics.xml
+.idea/shelf/
+.idea/*.iml
+.idea/modules.xml
+.idea/libraries

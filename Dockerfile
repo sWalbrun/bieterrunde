@@ -1,65 +1,63 @@
-FROM php:7.4-fpm
+FROM ubuntu:21.04
 
-# Copy composer.lock and composer.json
-COPY composer.lock composer.json /var/www/
+LABEL maintainer="Sebastian Walbrun"
 
-# Set working directory
-WORKDIR /var/www
+ARG WWWGROUP
+ARG XDEBUG
 
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpng-dev \
-    libjpeg62-turbo-dev \
-    libfreetype6-dev \
-    locales \
-    libzip-dev \
-    zip \
-    jpegoptim optipng pngquant gifsicle \
-    vim \
-    unzip \
-    git \
-    curl \
-    libc-client-dev \
-    libkrb5-dev \
-    libxml2-dev
+WORKDIR /var/www/html
 
-RUN pecl install xdebug \
-  && docker-php-ext-enable xdebug
+ENV DEBIAN_FRONTEND noninteractive
+ENV TZ=UTC
 
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# Install extensions
-RUN docker-php-ext-install pdo_mysql zip exif pcntl soap
-RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/
-RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl && \
-    docker-php-ext-install -j$(nproc) imap
-RUN docker-php-ext-install gd
+RUN apt-get update \
+    && apt-get install -y gnupg gosu curl ca-certificates zip unzip git supervisor sqlite3 libcap2-bin libpng-dev python2 \
+    && mkdir -p ~/.gnupg \
+    && chmod 600 ~/.gnupg \
+    && echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf \
+    && apt-key adv --homedir ~/.gnupg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E5267A6C \
+    && apt-key adv --homedir ~/.gnupg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C300EE8C \
+    && echo "deb http://ppa.launchpad.net/ondrej/php/ubuntu hirsute main" > /etc/apt/sources.list.d/ppa_ondrej_php.list \
+    && apt-get update \
+    && apt-get install -y php7.4-cli php7.4-dev \
+       php7.4-pgsql php7.4-sqlite3 php7.4-gd \
+       php7.4-curl php7.4-memcached \
+       php7.4-imap php7.4-mysql php7.4-mbstring \
+       php7.4-xml php7.4-zip php7.4-bcmath php7.4-soap \
+       php7.4-intl php7.4-readline php7.4-pcov \
+       php7.4-msgpack php7.4-igbinary php7.4-ldap \
+       php7.4-redis
 
-# Install composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# changing -env and using the command docker-compose up -d --build forces the rebuild from this stack on
+# -> makes sure the debug gets installed or deinstalled
+RUN if [ "$XDEBUG" ] ; then \
+    apt-get install -y php7.4-xdebug; \
+fi;
 
-# Add user for laravel application
-RUN groupadd -g 1000 www
-RUN useradd -u 1000 -ms /bin/bash -g www www
+RUN php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer \
+    && curl -sL https://deb.nodesource.com/setup_16.x | bash - \
+    && apt-get install -y nodejs \
+    && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+    && echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list \
+    && apt-get update \
+    && apt-get install -y yarn \
+    && apt-get install -y mysql-client \
+    && apt-get install -y postgresql-client \
+    && apt-get -y autoremove \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-COPY .env.example /var/www/.env
-RUN chown www:www /var/www/.env
+RUN setcap "cap_net_bind_service=+ep" /usr/bin/php7.4
 
-# Copy existing application directory contents
-COPY . /var/www
+RUN groupadd --force -g $WWWGROUP sail
+RUN useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u 1337 sail
+COPY php.ini /etc/php/7.4/cli/conf.d/99-sail.ini
+COPY start-container /usr/local/bin/start-container
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+RUN chmod +x /usr/local/bin/start-container
 
-# Copy existing application directory permissions
-COPY --chown=www:www . /var/www
+EXPOSE 8000
 
-# Change current user to www
-USER www
-
-# adjust the .env file
-RUN php artisan jwt:secret --force && php artisan key:generate --force
-
-
-# Expose port 9000 and start php-fpm server
-EXPOSE 9000
-CMD ["php-fpm"]
+ENTRYPOINT ["start-container"]
