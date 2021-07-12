@@ -53,6 +53,7 @@ class Vegetables extends Migration
         Schema::create('userPickUp', function (Blueprint $table) {
             $table->id();
             $table->boolean('pickedUp')->default(false);
+            $table->integer('amount')->unsigned();
             $table->foreignId('fkUser')->references('id')->on(User::TABLE);
             $table->foreignId('fkPickUp')->references('id')->on(PickUp::TABLE);
             $table->timestamps();
