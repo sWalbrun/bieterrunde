@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\OfferController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,5 +22,14 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 Route::get('/vegetable-overview', fn() => view('livewire.vegetable-overview'));
+
+Route::resource('/bidderRounds/{bidderRound}/offers', OfferController::class, [
+    'names' => [
+        'index' => 'offers',
+        'create' => 'offers.create',
+        'show' => 'offers.show',
+        'edit' => 'offers.edit'
+    ]
+])->except(['store', 'update']);
 
 require __DIR__ . '/auth.php';

@@ -39,6 +39,15 @@ class BidderRound extends Model
         self::COL_VALID_TO => 'date',
     ];
 
+    protected $fillable = [
+        'targetAmount',
+        'startOfSubmission',
+        'endOfSubmission',
+        'validFrom',
+        'validTo',
+        'monthlyAmount'
+    ];
+
     public function offers(): HasMany
     {
         return $this->hasMany(Offer::class, Offer::COL_FK_BIDDER_ROUND);
