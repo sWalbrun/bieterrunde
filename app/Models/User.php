@@ -32,6 +32,17 @@ class User extends Authenticatable
     public const TABLE = 'user';
     protected $table = self::TABLE;
 
+    public const COL_ID = 'id';
+    public const COL_NAME = 'name';
+    public const COL_EMAIL = 'email';
+    public const COL_PASSWORD = 'password';
+    public const COL_EMAIL_VERIFIED_AT = 'email_verified_at';
+    public const COL_REMEMBER_TOKEN = 'remember_token';
+    public const COL_TWO_FACTOR_SECRET = 'two_factor_secret';
+    public const COL_TWO_FACTOR_RECOVERY_CODES = 'two_factor_recovery_codes';
+    public const COL_CURRENT_TEAM_ID = 'current_team_id';
+    public const COL_PROFILE_PHOTO_PATH = 'profile_photo_path';
+
     /**
      * The attributes that are mass assignable.
      *

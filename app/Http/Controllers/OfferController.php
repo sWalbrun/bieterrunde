@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 
 class OfferController extends Controller
 {
-    private BidderRound $bidderRound;
 
     /**
      * Display a listing of the resource.
