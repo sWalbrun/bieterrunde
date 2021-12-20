@@ -13,12 +13,11 @@
         <!-- Styles -->
         <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 
-        <wireui:scripts />
-        <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js" defer></script>
         @livewireStyles
 
-        <!-- Scripts -->
-        <script src="{{ mix('js/app.js') }}" defer></script>
+        <wireui:scripts />
+        <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js" defer></script>
+
     </head>
 
     <body>
@@ -33,6 +32,8 @@
                 </main>
             </div>
         </div>
+
+        @livewireScripts
 
     </body>
 </html>
