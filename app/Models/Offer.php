@@ -21,10 +21,17 @@ class Offer extends Model
     public const TABLE = 'offer';
     protected $table = self::TABLE;
 
+    public const COL_ID = 'id';
     public const COL_AMOUNT = 'amount';
     public const COL_ROUND = 'round';
     public const COL_FK_BIDDER_ROUND = 'fkBidderRound';
     public const COL_FK_USER = 'fkUser';
+
+    protected $fillable = [
+        self::COL_ID,
+        self::COL_AMOUNT,
+        self::COL_ROUND,
+    ];
 
     public function user(): BelongsTo
     {

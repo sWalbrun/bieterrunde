@@ -5,8 +5,10 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 
@@ -21,6 +23,8 @@ use Laravel\Jetstream\HasProfilePhoto;
  * @property string two_factor_recovery_codes
  * @property int current_team_id
  * @property string profile_photo_path
+ *
+ * @property Collection<Offer> offers
  */
 class User extends Authenticatable
 {
@@ -83,6 +87,18 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    public function offers(): HasMany
+    {
+        return $this
+            ->hasMany(Offer::class, Offer::COL_FK_USER)
+            ->orderBy(Offer::COL_ROUND, 'ASC');
+    }
+
+    public function offersForRound(BidderRound $round): HasMany
+    {
+        return $this->offers()->where(Offer::COL_FK_BIDDER_ROUND, '=', $round->id);
+    }
 
     public function pickUpGroup(): BelongsTo
     {
