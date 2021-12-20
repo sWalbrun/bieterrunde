@@ -13,6 +13,10 @@ class OfferForm extends Component
     public array $offers = [];
     public User $user;
 
+    protected $rules = [
+        'offers.*.amount' => 'required|numeric|between:50,100'
+    ];
+
     public function mount()
     {
         $this->bidderRound = BidderRound::first();
@@ -35,6 +39,7 @@ class OfferForm extends Component
     public function save()
     {
         collect($this->offers)->each(function (array $offerAsArray) {
+            $this->validate();
             $offer = isset($offerAsArray['id'])
                 ? Offer::query()->find($offerAsArray['id'])
                 : new Offer();

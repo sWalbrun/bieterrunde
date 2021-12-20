@@ -23,6 +23,8 @@ use Laravel\Jetstream\HasProfilePhoto;
  * @property string two_factor_recovery_codes
  * @property int current_team_id
  * @property string profile_photo_path
+ * @property bool isNewMember
+ * @property Carbon created_at
  *
  * @property Collection<Offer> offers
  */
@@ -46,6 +48,7 @@ class User extends Authenticatable
     public const COL_TWO_FACTOR_RECOVERY_CODES = 'two_factor_recovery_codes';
     public const COL_CURRENT_TEAM_ID = 'current_team_id';
     public const COL_PROFILE_PHOTO_PATH = 'profile_photo_path';
+    public const DYN_IS_NEW_MEMBER = 'isNewMember';
 
     /**
      * The attributes that are mass assignable.
@@ -87,6 +90,12 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    public function getIsNewMemberAttribute(): bool
+    {
+        // TODO introduce start of membership boolean
+        return $this->created_at->isCurrentYear();
+    }
 
     public function offers(): HasMany
     {
