@@ -20,6 +20,7 @@ class BidderRoundCreateForm extends Component
         'validTo' => 'required|date|after:validFrom',
         'startOfSubmission' => 'required|date',
         'endOfSubmission' => 'required|date|after:startOfSubmission',
+        'bidderRound.targetAmount' => 'numeric|required'
     ];
 
     public function mount()
