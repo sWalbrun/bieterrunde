@@ -25,11 +25,9 @@
             <!-- Off-canvas menu for mobile, show/hide based on off-canvas menu state. -->
             <div x-show="sidebarIsOpened" class="fixed inset-0 flex z-40 lg:hidden" role="dialog" aria-modal="true">
                 @livewire('navigation-menu')
-                <main class="flex-1 pb-8">
-                    <div class="container max-w-7xl">
-                        <livewire:offer-form/>
-                    </div>
-                </main>
+                <div class="content-wrapper">
+                    {{ $slot }}
+                </div>
             </div>
         </div>
 
