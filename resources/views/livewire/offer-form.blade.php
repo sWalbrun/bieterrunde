@@ -11,7 +11,7 @@ use App\Models\User;
 use Ramsey\Collection\Collection;
 
 ?>
-<div>
+<div class="box-border w-3/4 p-4 border-4">
     <x-card title="{{__('Tosh a coin to your witcher')}}">
         @foreach ($offers as $index => $offer)
             <x-input
@@ -22,8 +22,10 @@ use Ramsey\Collection\Collection;
                 suffix="€"
             />
         @endforeach
-        <x-button squared positive label="{{__('Speichern')}}" wire:click="save()"/>
+        <div class="py-3">
+            <x-button squared positive label="{{__('Speichern')}}" wire:click="save()"/>
+        </div>
     </x-card>
 
-    <x-errors />
+    <x-errors/>
 </div>
