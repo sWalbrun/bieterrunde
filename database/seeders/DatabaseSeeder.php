@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -27,6 +28,7 @@ class DatabaseSeeder extends Seeder
         $user->email = $email;
         $user->password = Hash::make('LetMeIn');
         $user->name = 'Sebastian';
+        $user->assignRole(Role::findOrCreate('admin'));
         $user->save();
     }
 }
