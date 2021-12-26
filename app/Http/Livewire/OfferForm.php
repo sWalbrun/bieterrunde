@@ -17,9 +17,9 @@ class OfferForm extends Component
         'offers.*.amount' => 'required|numeric|between:50,100'
     ];
 
-    public function mount()
+    public function mount(BidderRound $bidderRound)
     {
-        $this->bidderRound = BidderRound::first();
+        $this->bidderRound = $bidderRound;
         $this->user = auth()->user();
         $this->offers = $this->user
             ->offersForRound($this->bidderRound)

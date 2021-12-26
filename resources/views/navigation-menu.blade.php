@@ -1,4 +1,11 @@
+<?php
+/**
+ * @var BidderRound $round
+ */
 
+use App\Models\BidderRound;
+
+?>
 <div x-show="sidebarIsOpened" class="fixed inset-0 bg-gray-600 bg-opacity-75" aria-hidden="true"></div>
 
 <div x-show="sidebarIsOpened" class="relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 bg-green-400">
@@ -111,13 +118,21 @@
         </div>
         <nav class="mt-5 flex-1 flex flex-col divide-y divide-cyan-800 overflow-y-auto" aria-label="Sidebar">
             <div class="px-2 space-y-1">
-                <!-- Current: "bg-cyan-800 text-white", Default: "text-cyan-100 hover:text-white hover:bg-cyan-600" -->
-                <a href="/bidderRounds/1/offers" class="bg-cyan-800 text-white group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md" aria-current="page">
+                @foreach(BidderRound::orderedRounds() as $round)
+                <a href="/bidderRounds/{{$round->id}}/offers" class="bg-cyan-800 text-white group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md" aria-current="page">
                     <!-- Heroicon name: outline/home -->
                     <svg class="mr-4 flex-shrink-0 h-6 w-6 text-cyan-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
-                    {{ trans('Neue Bieterrunde') }}
+                    {{ trans('Bieterrunde von ') . ($round->validFrom ? $round->validFrom->format('m.d.Y') : '') . trans(' bis ') . ($round->validTo ? $round->validTo->format('d.m.Y') : '')}}
+                @endforeach
+                </a>
+                <a href="/bidderRounds/create" class="bg-cyan-800 text-white group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md" aria-current="page">
+                    <!-- Heroicon name: outline/home -->
+                    <svg class="mr-4 flex-shrink-0 h-6 w-6 text-cyan-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    {{ trans('Neue Bieterrunde anlegen') }}
                 </a>
                 <a href="#" class="text-cyan-100 hover:text-white hover:bg-cyan-600 group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md">
                     <!-- Heroicon name: outline/clock -->

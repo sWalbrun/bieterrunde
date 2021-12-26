@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 
 /**
  * @property int id
@@ -53,4 +54,11 @@ class BidderRound extends Model
         return $this->hasMany(Offer::class, Offer::COL_FK_BIDDER_ROUND);
     }
 
+    public static function orderedRounds(): Collection
+    {
+        return self::query()
+            ->orderBy(self::COL_VALID_FROM, 'DESC')
+            ->orderBy(self::COL_VALID_TO, 'DESC')
+            ->get();
+    }
 }
