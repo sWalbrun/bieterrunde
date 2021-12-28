@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int id
  * @property float amount
  * @property int round
- *
  * @property User user
  * @property BidderRound bidderRound
  */

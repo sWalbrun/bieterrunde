@@ -12,5 +12,4 @@ final class VegetableType extends Enum
 {
     public const RETTICH = 'RETTICH';
     public const SALAT = 'SALAT';
-
 }

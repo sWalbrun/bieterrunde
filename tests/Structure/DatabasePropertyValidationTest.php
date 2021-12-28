@@ -28,10 +28,10 @@ class DatabasePropertyValidationTest extends TestCase
     {
         $finder = new Finder();
         $finder->depth('== 0');
-        $finder->files()->in(app_path() . DIRECTORY_SEPARATOR . 'Models');
+        $finder->files()->in(app_path().DIRECTORY_SEPARATOR.'Models');
 
         foreach ($finder as $reflection) {
-            $class = app()->getNamespace() . 'Models\\' . $reflection->getBasename('.php');
+            $class = app()->getNamespace().'Models\\'.$reflection->getBasename('.php');
             $reflectionClass = new ReflectionClass($class);
 
             if ($reflectionClass->isInterface() || $reflectionClass->isAbstract()) {
@@ -49,13 +49,13 @@ class DatabasePropertyValidationTest extends TestCase
             $propertyAnnotations = $this->readPropertiesFromClassAnnotation($reflectionClass);
             $errors = [];
             if (!$reflectionClass->hasProperty('table')) {
-                $errors[] = ' - missing property $table (' . $class . ')' . PHP_EOL;
+                $errors[] = ' - missing property $table ('.$class.')'.PHP_EOL;
             } else {
                 $tableReflection = $reflectionClass->getProperty('table');
                 $tableReflection->setAccessible(true);
                 $tableName = $tableReflection->getValue($object);
                 if (!Str::startsWith(strtolower($reflection->getBasename('.php')), strtolower($tableName))) {
-                    $errors[] = ' - the tablename and the classname are not matching' . PHP_EOL;
+                    $errors[] = ' - the tablename and the classname are not matching'.PHP_EOL;
                 }
             }
 
@@ -67,12 +67,12 @@ class DatabasePropertyValidationTest extends TestCase
                 } elseif ($propertyAnnotations->has($dbColumn)) {
                     unset($propertyAnnotations[$dbColumn]);
                 } else {
-                    $errors[] = ' - missing annotation @property datatype ' . $dbColumn . PHP_EOL;
+                    $errors[] = ' - missing annotation @property datatype '.$dbColumn.PHP_EOL;
                 }
             }
 
             if (!empty($errors)) {
-                $this->fail('Problems in Class ' . $reflection->getFileName() . " :\r\n" . implode($errors));
+                $this->fail('Problems in Class '.$reflection->getFileName()." :\r\n".implode($errors));
             }
         }
         $this->assertTrue(true);
@@ -110,20 +110,20 @@ class DatabasePropertyValidationTest extends TestCase
      * @return array
      * @throws ReflectionException
      */
-    public function providerDbObjects() : array
+    public function providerDbObjects(): array
     {
         if (!is_null(self::$providerDbObjectsList)) {
             return self::$providerDbObjectsList;
         }
         $result = [];
         $baseModelReflection = new ReflectionClass(User::class);
-        $namespace = $baseModelReflection->getNamespaceName() . '\\';
-        $path = dirname($baseModelReflection->getFileName()) . DIRECTORY_SEPARATOR;
+        $namespace = $baseModelReflection->getNamespaceName().'\\';
+        $path = dirname($baseModelReflection->getFileName()).DIRECTORY_SEPARATOR;
         $fileNames = scandir($path);
         foreach ($fileNames as $fileName) {
             if (substr($fileName, -4) === '.php' && !in_array($fileName, self::IGNORE_FILE_NAMES)) {
                 $class = substr($fileName, 0, strlen($fileName) - 4);
-                $classNs = $namespace . $class;
+                $classNs = $namespace.$class;
                 $reflection = new ReflectionClass($classNs);
                 if (!$reflection->isAbstract()
                     && !$reflection->isInterface()

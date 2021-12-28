@@ -19,7 +19,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string email
  * @property string password
  * @property Carbon email_verified_at
- * @property boolean remember_token
+ * @property bool remember_token
  * @property string two_factor_secret
  * @property string two_factor_recovery_codes
  * @property int current_team_id

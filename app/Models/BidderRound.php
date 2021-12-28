@@ -49,7 +49,7 @@ class BidderRound extends Model
         self::COL_VALID_FROM,
         self::COL_VALID_TO,
         self::COL_MONTHLY_AMOUNT,
-        self::COL_COUNT_OFFERS
+        self::COL_COUNT_OFFERS,
     ];
 
     public function offers(): HasMany
@@ -58,15 +58,15 @@ class BidderRound extends Model
     }
 
     /**
-     * Returns the builder for all offers which has a given user made for this round
+     * Returns the builder for all offers which has a given user made for this round.
      */
     public function offerFor(User $user): HasMany
     {
-        return $this->offers()->whereBelongsTo($user,'user');
+        return $this->offers()->whereBelongsTo($user, 'user');
     }
 
     /**
-     * Returns true in case a given user has made all offers needed for this round
+     * Returns true in case a given user has made all offers needed for this round.
      */
     public function allOffersGivenFor(User $user): bool
     {
@@ -86,6 +86,6 @@ class BidderRound extends Model
 
     public function __toString()
     {
-        return trans('Bieterrunde ') . ($this->validTo ? $this->validTo->format('Y') : '');
+        return trans('Bieterrunde ').($this->validTo ? $this->validTo->format('Y') : '');
     }
 }

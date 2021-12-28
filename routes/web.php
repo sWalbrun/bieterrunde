@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\OfferController;
 use App\Http\Livewire\BidderRoundForm;
 use App\Http\Livewire\OfferForm;
 use Illuminate\Support\Facades\Route;
@@ -16,18 +15,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function() {
-   return redirect('/dashboard');
+Route::get('/', function () {
+    return redirect('/dashboard');
 });
 
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
-Route::get('/vegetable-overview', fn() => view('livewire.vegetable-overview'));
+Route::get('/vegetable-overview', fn () => view('livewire.vegetable-overview'));
 
 Route::get('/bidderRounds/{bidderRound}/offers', OfferForm::class);
 
 Route::get('/bidderRounds/create', BidderRoundForm::class);
 Route::get('/bidderRounds/{bidderRound}', BidderRoundForm::class);
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

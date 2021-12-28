@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        if(App::environment() !== 'local') {
+        if (App::environment() !== 'local') {
             return;
         }
 

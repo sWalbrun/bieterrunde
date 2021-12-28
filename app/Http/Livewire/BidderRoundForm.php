@@ -21,7 +21,7 @@ class BidderRoundForm extends Component
         'startOfSubmission' => 'required|date',
         'endOfSubmission' => 'required|date|after:startOfSubmission',
         'bidderRound.targetAmount' => 'numeric|required',
-        'bidderRound.countOffers' => 'numeric|required'
+        'bidderRound.countOffers' => 'numeric|required',
     ];
 
     public function mount(?BidderRound $bidderRound): void

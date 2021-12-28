@@ -17,7 +17,7 @@ class Vegetable extends Component
         $validatedData = $this->validate(
             [
                 'name' => 'required|string',
-                'unit' => ['required', Rule::in(VegetableType::asArray())]
+                'unit' => ['required', Rule::in(VegetableType::asArray())],
             ]
         );
 

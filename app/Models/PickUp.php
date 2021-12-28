@@ -19,10 +19,10 @@ class PickUp extends Model
     protected $table = self::TABLE;
 
     protected $casts = [
-        'date' => 'date'
+        'date' => 'date',
     ];
 
-    public function users():BelongsToMany
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(
             User::class,

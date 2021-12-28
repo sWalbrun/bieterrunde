@@ -14,7 +14,7 @@ class OfferForm extends Component
     public User $user;
 
     protected $rules = [
-        'offers.*.amount' => 'required|numeric|between:50,100'
+        'offers.*.amount' => 'required|numeric|between:50,100',
     ];
 
     public function mount(BidderRound $bidderRound)
@@ -62,7 +62,7 @@ class OfferForm extends Component
 
     /**
      * This method fills up the {@link OfferForm::offers} with empty values in case not all
-     * offers are existing yet
+     * offers are existing yet.
      */
     private function createOfferTemplates(): void
     {
