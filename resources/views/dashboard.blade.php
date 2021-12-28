@@ -5,11 +5,17 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                <x-jet-welcome />
-            </div>
-        </div>
+    <x-card title="{{trans('Unsere SoLaWiR')}}">
+
+        <h1>Entstehung</h1>
+        <p>Rückblickend kann festgehalten werden: Es kamen immer die richtigen Menschen zur richtigen Zeit! So konnte aus einer im Dezember
+            2018 noch utopisch erscheinenden Idee innerhalb weniger Monate ein tolles Projekt werden, das wuchs und gedieh. Bis zum März
+            2019 schlossen sich dann immer mehr optimistische Menschen voller Tatendrang dem Projekt an. Es fand sich eine Fläche die per
+            Rad nur eine viertel Stunde vom Stadtzentrum entfernt war und den Ansprüchen genügte. Nach einigen Informationsveranstaltungen
+            und einem Netzwerk-Treffen veranstalteten wir im April eine „Anackern“ Aktion und eine Bieterrunde. Auch der SoLaWiR e.V. wurde
+            gegründet. Seit dem wird in Arbeitsgruppen geplant, verbessert und organisiert. Unsere Gärtner pflanzten und pflegten fleißig
+            und mit ehrenamtlicher Unterstützung der Mitglieder, sodass im Juni die erste Ernte stattfinden konnte.</p>
+
+    </x-card>
 
 </x-app-layout>
