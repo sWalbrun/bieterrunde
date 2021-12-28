@@ -13,23 +13,20 @@ class AuthServiceProvider extends ServiceProvider
      *
      * @var array
      */
-    protected $policies = [
-        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
-    ];
+    protected $policies = [];
 
     /**
      * Register any authentication / authorization services.
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         $this->registerPolicies();
 
         Gate::define('createBidderRound', function () {
-            /**
-             * @var User $user
-             */
+            // phpcs:ignore
+            /** @var User $user */
             $user = auth()->user();
 
             return $user->hasRole('admin');

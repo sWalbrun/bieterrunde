@@ -26,7 +26,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property int current_team_id
  * @property string profile_photo_path
  * @property bool isNewMember
- * @property Carbon created_at
+ * @property Carbon $createdAt
  * @property Collection<Offer> offers
  */
 class User extends Authenticatable
@@ -52,6 +52,10 @@ class User extends Authenticatable
     public const COL_TWO_FACTOR_RECOVERY_CODES = 'two_factor_recovery_codes';
     public const COL_CURRENT_TEAM_ID = 'current_team_id';
     public const COL_PROFILE_PHOTO_PATH = 'profile_photo_path';
+    public const COL_CREATED_AT = 'createdAt';
+    public const CREATED_AT = self::COL_CREATED_AT;
+    public const COL_UPDATED_AT = 'updatedAt';
+    public const UPDATED_AT = self::COL_UPDATED_AT;
     public const DYN_IS_NEW_MEMBER = 'isNewMember';
 
     /**
@@ -98,7 +102,7 @@ class User extends Authenticatable
     public function getIsNewMemberAttribute(): bool
     {
         // TODO introduce start of membership boolean
-        return $this->created_at->isCurrentYear();
+        return $this->createdAt->isCurrentYear();
     }
 
     public function offers(): HasMany

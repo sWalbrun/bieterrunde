@@ -21,7 +21,8 @@ class Vegetables extends Migration
     {
         Schema::create(PickUpGroup::TABLE, function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->timestamp(User::COL_CREATED_AT)->nullable();
+            $table->timestamp(User::COL_UPDATED_AT)->nullable();
         });
 
         Schema::table(User::TABLE, function (Blueprint $table) {
@@ -32,20 +33,23 @@ class Vegetables extends Migration
             $table->id();
             $table->string('name');
             $table->enum('unit', Unit::getValues());
-            $table->timestamps();
+            $table->timestamp(User::COL_CREATED_AT)->nullable();
+            $table->timestamp(User::COL_UPDATED_AT)->nullable();
         });
 
         Schema::create(VegetableRating::TABLE, function (Blueprint $table) {
             $table->id();
             $table->integer('stars')->unsigned();
             $table->foreignId('fkVegetable')->nullable()->references('id')->on(Vegetable::TABLE);
-            $table->timestamps();
+            $table->timestamp(User::COL_CREATED_AT)->nullable();
+            $table->timestamp(User::COL_UPDATED_AT)->nullable();
         });
 
         Schema::create(PickUp::TABLE, function (Blueprint $table) {
             $table->id();
             $table->date('date');
-            $table->timestamps();
+            $table->timestamp(User::COL_CREATED_AT)->nullable();
+            $table->timestamp(User::COL_UPDATED_AT)->nullable();
         });
 
         Schema::create('userPickUp', function (Blueprint $table) {
@@ -54,7 +58,8 @@ class Vegetables extends Migration
             $table->integer('amount')->unsigned();
             $table->foreignId('fkUser')->nullable()->references('id')->on(User::TABLE);
             $table->foreignId('fkPickUp')->nullable()->references('id')->on(PickUp::TABLE);
-            $table->timestamps();
+            $table->timestamp(User::COL_CREATED_AT)->nullable();
+            $table->timestamp(User::COL_UPDATED_AT)->nullable();
         });
 
         Schema::create('vegetablePickup', function (Blueprint $table) {
@@ -62,7 +67,8 @@ class Vegetables extends Migration
             $table->float('amount');
             $table->foreignId('fkVegetable')->nullable()->references('id')->on(Vegetable::TABLE);
             $table->foreignId('fkPickUp')->nullable()->references('id')->on(PickUp::TABLE);
-            $table->timestamps();
+            $table->timestamp(User::COL_CREATED_AT)->nullable();
+            $table->timestamp(User::COL_UPDATED_AT)->nullable();
         });
     }
 

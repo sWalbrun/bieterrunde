@@ -60,6 +60,10 @@ class BidderRound extends Model
 
     /**
      * Returns the builder for all offers which has a given user made for this round.
+     *
+     * @param User $user
+     *
+     * @return HasMany
      */
     public function offerFor(User $user): HasMany
     {
@@ -68,6 +72,10 @@ class BidderRound extends Model
 
     /**
      * Returns true in case a given user has made all offers needed for this round.
+     *
+     * @param User $user
+     *
+     * @return bool
      */
     public function allOffersGivenFor(User $user): bool
     {

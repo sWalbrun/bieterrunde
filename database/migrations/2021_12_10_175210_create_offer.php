@@ -18,7 +18,8 @@ class CreateOffer extends Migration
     {
         Schema::create(Offer::TABLE, function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->timestamp(User::COL_CREATED_AT)->nullable();
+            $table->timestamp(User::COL_UPDATED_AT)->nullable();
             $table->float(Offer::COL_AMOUNT)->nullable();
             $table->integer(Offer::COL_ROUND)->nullable();
 

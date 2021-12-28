@@ -38,16 +38,6 @@ class OfferForm extends Component
         return view('livewire.offer-form');
     }
 
-    // TODO make this logic runnable
-// public function validate($rules = null, $messages = [], $attributes = [])
-// {
-// $this->rules = [];
-// for ($i = 1; $i < count($this->offers); $i++) {
-// $this->rules[] = ['offers.' . ($i - 1) . '.amount' => "required|numeric|between:50,100|before:offers.$i.amount"];
-// }
-// parent::validate($rules, $messages, $attributes);
-// }
-
     public function save()
     {
         $this->validate();
@@ -65,6 +55,8 @@ class OfferForm extends Component
     /**
      * This method fills up the {@link OfferForm::offers} with empty values in case not all
      * offers are existing yet.
+     *
+     * @return void
      */
     private function createOfferTemplates(): void
     {

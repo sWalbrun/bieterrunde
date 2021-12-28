@@ -18,7 +18,7 @@ class BidderRoundForm extends Component
 
     public ?string $endOfSubmission = '';
 
-    protected $rules = [
+    protected array $rules = [
         'validFrom' => 'required|date',
         'validTo' => 'required|date|after:validFrom',
         'startOfSubmission' => 'required|date',
@@ -30,7 +30,7 @@ class BidderRoundForm extends Component
     public function mount(?BidderRound $bidderRound): void
     {
         if (isset($bidderRound) && $bidderRound->exists) {
-            // seems like we are actually editing an existing round
+            // Seems like we are actually editing an existing round
             $this->bidderRound = $bidderRound;
             $this->validFrom = $bidderRound->validFrom->format('Y-m-d\Th:i:sP');
             $this->validTo = $bidderRound->validTo->format('Y-m-d\Th:i:sP');

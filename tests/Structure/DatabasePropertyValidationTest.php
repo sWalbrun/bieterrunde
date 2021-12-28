@@ -17,7 +17,7 @@ class DatabasePropertyValidationTest extends TestCase
 
     private static $providerDbObjectsList = null;
 
-    const IGNORE_COLUMNS_ALL = ['created_at', 'updated_at'];
+    const IGNORE_COLUMNS_ALL = [User::COL_CREATED_AT, User::COL_UPDATED_AT];
     const IGNORE_COLUMNS_VAL = ['id'];
     const IGNORE_FILE_NAMES = ['User.php', 'Role.php', 'Permission.php'];
 
