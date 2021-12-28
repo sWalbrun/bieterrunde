@@ -154,7 +154,7 @@ use App\Models\BidderRound;
                 {{trans('Bieterrunden')}}
                 <div class="px-2 space-y-1">
                     @foreach(App\Models\BidderRound::orderedRounds() as $round)
-                        <a href="/bidderRounds/{{$round->id}}/offers"
+                        <a href="/bidderRounds/{{$round->id}}"
                            class="bg-cyan-800 text-white group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md"
                            aria-current="page">
                             <!-- Heroicon name: outline/home -->
@@ -162,7 +162,7 @@ use App\Models\BidderRound;
                                  viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 15.536c-1.171 1.952-3.07 1.952-4.242 0-1.172-1.953-1.172-5.119 0-7.072 1.171-1.952 3.07-1.952 4.242 0M8 10.5h4m-4 3h4m9-1.5a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            {{ trans('Bieterrunde von ') . ($round->validFrom ? $round->validFrom->format('m.d.Y') : '') . trans(' bis ') . ($round->validTo ? $round->validTo->format('d.m.Y') : '')}}
+                            {{ $round->__toString()}}
                             @endforeach
                         </a>
 
@@ -177,6 +177,23 @@ use App\Models\BidderRound;
                                 {{ trans('Neue Bieterrunde anlegen') }}
                             </a>
                         @endcan
+                </div>
+            </div>
+            <div class="px-2 space-y-1">
+                {{trans('Deine Gebote')}}
+                <div class="px-2 space-y-1">
+                    @foreach(App\Models\BidderRound::orderedRounds() as $round)
+                        <a href="/bidderRounds/{{$round->id}}/offers"
+                           class="bg-cyan-800 text-white group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md"
+                           aria-current="page">
+                            <!-- Heroicon name: outline/home -->
+                            <svg class="mr-4 flex-shrink-0 h-6 w-6 text-cyan-200" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                 viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 15.536c-1.171 1.952-3.07 1.952-4.242 0-1.172-1.953-1.172-5.119 0-7.072 1.171-1.952 3.07-1.952 4.242 0M8 10.5h4m-4 3h4m9-1.5a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            {{$round->__toString() . ($round->allOffersGivenFor(auth()->user()) ? '' : trans(' (Ausstehend)'))}}
+                            @endforeach
+                        </a>
                 </div>
             </div>
             <div class="mt-6 pt-6">

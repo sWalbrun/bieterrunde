@@ -1,28 +1,24 @@
 <?php
 
 /**
- * @var Offer $offer
- * @var Collection<Offer> $offers
- * @var User $user
+ * @var BidderRound $bidderRound
  */
 
-use App\Models\Offer;
-use App\Models\User;
-use Ramsey\Collection\Collection;
+use App\Models\BidderRound;
 
 ?>
 
 <div class="box-border w-3/4 p-4 border-4">
-    {{ trans('Neue Bieterrunde anlegen') }}
+    {{ $bidderRound->exists ? $bidderRound->__toString() : trans('Neue Bieterrunde anlegen') }}
 
     <x-datetime-picker
-        label="{{trans('Begin der Bieterrunde')}}"
+        label="{{trans('Begin des Jahres')}}"
         placeholder="{{\Carbon\Carbon::now()->startOfYear()->format('d.m.Y')}}"
         wire:model="validFrom"
         without-time="true"
     />
     <x-datetime-picker
-        label="{{trans('Ende der Bieterrunde')}}"
+        label="{{trans('Ende des Jahres')}}"
         placeholder="{{\Carbon\Carbon::now()->endOfYear()->format('d.m.Y')}}"
         wire:model="validTo"
         without-time="true"
@@ -46,6 +42,12 @@ use Ramsey\Collection\Collection;
         placeholder="{{__('Betrag')}}"
         wire:model="bidderRound.targetAmount"
         suffix="€"
+    />
+
+    <x-input
+        label="{{trans('Anzahl der Runden')}}"
+        placeholder="{{__('Betrag')}}"
+        wire:model="bidderRound.countOffers"
     />
 
     <div class="py-3">

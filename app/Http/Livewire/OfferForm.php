@@ -26,7 +26,7 @@ class OfferForm extends Component
             ->get()
             ->toArray();
 
-        if (count($this->offers) <= 0) {
+        if (count($this->offers) <= $bidderRound->countOffers) {
             $this->createOfferTemplates();
         }
     }
@@ -36,10 +36,20 @@ class OfferForm extends Component
         return view('livewire.offer-form');
     }
 
+    // TODO make this logic runnable
+//    public function validate($rules = null, $messages = [], $attributes = [])
+//    {
+//        $this->rules = [];
+//        for ($i = 1; $i < count($this->offers); $i++) {
+//            $this->rules[] = ['offers.' . ($i - 1) . '.amount' => "required|numeric|between:50,100|before:offers.$i.amount"];
+//        }
+//        parent::validate($rules, $messages, $attributes);
+//    }
+
     public function save()
     {
+        $this->validate();
         collect($this->offers)->each(function (array $offerAsArray) {
-            $this->validate();
             $offer = isset($offerAsArray['id'])
                 ? Offer::query()->find($offerAsArray['id'])
                 : new Offer();
@@ -50,12 +60,16 @@ class OfferForm extends Component
         });
     }
 
+    /**
+     * This method fills up the {@link OfferForm::offers} with empty values in case not all
+     * offers are existing yet
+     */
     private function createOfferTemplates(): void
     {
-        collect([1, 2, 3])->map(function (int $index) {
+        for ($index = count($this->offers) + 1; $index <= $this->bidderRound->countOffers; $index++) {
             $offer = new Offer();
             $offer->round = $index;
             $this->offers[] = $offer;
-        });
+        }
     }
 }

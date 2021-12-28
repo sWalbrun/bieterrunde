@@ -23,6 +23,7 @@ class CreateBidderRound extends Migration
             $table->dateTime(BidderRound::COL_VALID_FROM)->nullable();
             $table->dateTime(BidderRound::COL_VALID_TO)->nullable();
             $table->float(BidderRound::COL_MONTHLY_AMOUNT)->nullable();
+            $table->integer(BidderRound::COL_COUNT_OFFERS)->nullable();
             $table->text(BidderRound::COL_NOTE)->nullable();
         });
     }
