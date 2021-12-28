@@ -16,6 +16,7 @@ class PickUp extends Model
     use HasFactory;
 
     public const TABLE = 'pickUp';
+
     protected $table = self::TABLE;
 
     protected $casts = [

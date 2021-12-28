@@ -18,6 +18,7 @@ class Vegetable extends Model
     use HasFactory;
 
     public const TABLE = 'vegetable';
+
     protected $table = self::TABLE;
 
     public function pickUps(): BelongsToMany

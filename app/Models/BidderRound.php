@@ -24,6 +24,7 @@ class BidderRound extends Model
     use HasFactory;
 
     public const TABLE = 'bidderRound';
+
     protected $table = self::TABLE;
 
     public const COL_TARGET_AMOUNT = 'targetAmount';
@@ -86,6 +87,6 @@ class BidderRound extends Model
 
     public function __toString()
     {
-        return trans('Bieterrunde ').($this->validTo ? $this->validTo->format('Y') : '');
+        return trans('Bieterrunde ') . ($this->validTo ? $this->validTo->format('Y') : '');
     }
 }

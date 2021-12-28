@@ -39,6 +39,7 @@ class User extends Authenticatable
     use HasRoles;
 
     public const TABLE = 'user';
+
     protected $table = self::TABLE;
 
     public const COL_ID = 'id';

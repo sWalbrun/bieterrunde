@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\User;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -25,9 +26,10 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        \Illuminate\Support\Facades\Gate::define('createBidderRound', function () {
-
-            /** @var User $user */
+        Gate::define('createBidderRound', function () {
+            /**
+             * @var User $user
+             */
             $user = auth()->user();
 
             return $user->hasRole('admin');

@@ -13,7 +13,6 @@ class SolarWirServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
     }
 
     /**
@@ -23,6 +22,5 @@ class SolarWirServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
     }
 }

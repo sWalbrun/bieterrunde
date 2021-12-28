@@ -1,0 +1,183 @@
+<?xml version="1.0"?>
+<ruleset name="Sebastiaan Luca coding standard" namespace="sebastiaanluca/php-codesniffer-ruleset">
+    <config name="installed_paths" value="vendor/slevomat/coding-standard"/>
+
+    <!--Arguments-->
+
+    <arg name="parallel" value="75"/>
+    <arg value="wp"/>
+    <arg name="colors"/>
+    <arg name="report" value="full"/>
+
+    <!--Rulesets-->
+
+    <rule ref="PEAR">
+        <exclude name="Generic.Commenting.DocComment.MissingShort"/>
+        <exclude name="Generic.Formatting.MultipleStatementAlignment.NotSame"/>
+        <exclude name="Generic.Formatting.SpaceAfterCast"/>
+        <exclude name="PEAR.Commenting.ClassComment.Missing"/>
+        <exclude name="PEAR.Commenting.ClassComment.MissingAuthorTag"/>
+        <exclude name="PEAR.Commenting.ClassComment.MissingCategoryTag"/>
+        <exclude name="PEAR.Commenting.ClassComment.MissingLicenseTag"/>
+        <exclude name="PEAR.Commenting.ClassComment.MissingLinkTag"/>
+        <exclude name="PEAR.Commenting.ClassComment.MissingPackageTag"/>
+        <exclude name="PEAR.Commenting.FileComment.Missing"/>
+        <exclude name="PEAR.Commenting.FunctionComment.Missing"/>
+        <exclude name="PEAR.Commenting.FunctionComment.MissingParamComment"/>
+        <exclude name="PEAR.Commenting.FunctionComment.MissingParamTag"/>
+        <exclude name="PEAR.Commenting.FunctionComment.MissingReturn"/>
+        <exclude name="PEAR.Commenting.FunctionComment.SpacingAfterParamName"/>
+        <exclude name="PEAR.Commenting.FunctionComment.SpacingAfterParamType"/>
+        <exclude name="PEAR.ControlStructures.ControlSignature.Found"/>
+        <exclude name="PEAR.Functions.FunctionCallSignature.CloseBracketLine"/>
+        <exclude name="PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket"/>
+        <exclude name="PEAR.Functions.FunctionCallSignature.MultipleArguments"/>
+        <exclude name="PEAR.NamingConventions.ValidFunctionName.FunctionNameInvalid"/>
+        <exclude name="PEAR.NamingConventions.ValidFunctionName.FunctionNoCapital"/>
+        <exclude name="PEAR.NamingConventions.ValidFunctionName.PrivateNoUnderscore"/>
+        <exclude name="PEAR.NamingConventions.ValidFunctionName.ScopeNotCamelCaps"/>
+        <exclude name="PEAR.NamingConventions.ValidVariableName.PrivateNoUnderscore"/>
+        <exclude name="PEAR.WhiteSpace.ScopeIndent.Incorrect"/>
+        <exclude name="PEAR.WhiteSpace.ScopeIndent.IncorrectExact"/>
+    </rule>
+    <rule ref="PSR1">
+        <exclude name="PSR1.Classes.ClassDeclaration.MissingNamespace">
+            <exclude-pattern>*/database/migrations/*</exclude-pattern>
+        </exclude>
+        <exclude name="PSR1.Methods.CamelCapsMethodName"/>
+    </rule>
+    <rule ref="PSR2"/>
+    <rule ref="Squiz">
+        <exclude name="Squiz.Arrays.ArrayDeclaration.DoubleArrowNotAligned"/>
+        <exclude name="Squiz.Classes.ClassFileName.NoMatch">
+            <exclude-pattern>*/database/migrations/*</exclude-pattern>
+        </exclude>
+        <exclude name="Squiz.Arrays.ArrayDeclaration.MultiLineNotAllowed"/>
+        <exclude name="Squiz.Arrays.ArrayDeclaration.SingleLineNotAllowed"/>
+        <exclude name="Squiz.Commenting.ClassComment.Missing"/>
+        <exclude name="Squiz.Commenting.ClassComment.TagNotAllowed"/>
+        <exclude name="Squiz.Commenting.ClosingDeclarationComment.Missing"/>
+        <exclude name="Squiz.Commenting.FileComment.Missing"/>
+        <exclude name="Squiz.Commenting.FunctionComment.EmptyThrows"/>
+        <exclude name="Squiz.Commenting.FunctionComment.IncorrectParamVarName"/>
+        <exclude name="Squiz.Commenting.FunctionComment.InvalidReturn"/>
+        <exclude name="Squiz.Commenting.FunctionCommentThrowTag.Missing"/>
+        <exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
+        <exclude name="Squiz.Commenting.InlineComment.SpacingAfter"/>
+        <exclude name="Squiz.Commenting.LongConditionClosingComment.Missing"/>
+        <exclude name="Squiz.Commenting.VariableComment.IncorrectVarType"/>
+        <exclude name="Squiz.ControlStructures.InlineIfDeclaration.NoBrackets"/>
+        <exclude name="Squiz.ControlStructures.InlineIfDeclaration.NotSingleLine"/>
+        <exclude name="Squiz.ControlStructures.SwitchDeclaration.BreakIndent"/>
+        <exclude name="Squiz.Files.FileExtension.ClassFound"/>
+        <exclude name="Squiz.Formatting.OperatorBracket.MissingBrackets"/>
+        <exclude name="Squiz.NamingConventions.ValidFunctionName.NotCamelCaps"/>
+        <exclude name="Squiz.NamingConventions.ValidFunctionName.PrivateNoUnderscore"/>
+        <exclude name="Squiz.NamingConventions.ValidFunctionName.ScopeNotCamelCaps"/>
+        <exclude name="Squiz.NamingConventions.ValidVariableName.NotCamelCaps"/>
+        <exclude name="Squiz.NamingConventions.ValidVariableName.PrivateNoUnderscore"/>
+        <exclude name="Squiz.Objects.ObjectInstantiation.NotAssigned"/>
+        <exclude name="Squiz.Operators.ComparisonOperatorUsage.ImplicitTrue"/>
+        <exclude name="Squiz.Operators.ComparisonOperatorUsage.NotAllowed"/>
+        <exclude name="Squiz.PHP.DisallowBooleanStatement.Found"/>
+        <exclude name="Squiz.PHP.DisallowComparisonAssignment.AssignedComparison"/>
+        <exclude name="Squiz.PHP.DisallowInlineIf"/>
+        <exclude name="Squiz.PHP.DisallowMultipleAssignments"/>
+        <exclude name="Squiz.PHP.DisallowSizeFunctionsInLoops"/>
+        <exclude name="Squiz.WhiteSpace.FunctionClosingBraceSpace.SpacingBeforeClose"/>
+        <exclude name="Squiz.WhiteSpace.FunctionSpacing.After"/>
+        <exclude name="Squiz.WhiteSpace.FunctionSpacing.Before"/>
+        <exclude name="Squiz.WhiteSpace.ObjectOperatorSpacing.Before"/>
+    </rule>
+
+    <!--Rule configuration-->
+
+    <!--The testing bootstrap file uses string concatenations to stop IDEs seeing the class aliases-->
+    <rule ref="Generic.Strings.UnnecessaryStringConcat">
+        <exclude-pattern>tests/bootstrap.php</exclude-pattern>
+    </rule>
+
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="300"/>
+            <property name="absoluteLineLimit" value="300"/>
+        </properties>
+    </rule>
+
+    <rule ref="PEAR.Commenting.FunctionComment.SpacingAfterParamType">
+        <properties>
+            <property name="spacing" value="1"/>
+        </properties>
+    </rule>
+
+
+    <!-- PEAR uses warnings for inline control structures, so switch back to errors -->
+    <rule ref="Generic.ControlStructures.InlineControlStructure">
+        <properties>
+            <property name="error" value="true"/>
+        </properties>
+    </rule>
+
+    <!--Don't hide tokenizer exceptions-->
+    <rule ref="Internal.Tokenizer.Exception">
+        <type>error</type>
+    </rule>
+
+    <rule ref="PEAR.Functions.FunctionCallSignature">
+        <properties>
+            <property name="allowMultipleArguments" value="false"/>
+        </properties>
+    </rule>
+
+    <rule ref="Squiz.Commenting.FunctionComment">
+        <exclude name="Squiz.Commenting.FunctionComment.Missing"/>
+        <exclude name="Squiz.Commenting.FunctionComment.MissingParamComment"/>
+        <exclude name="Squiz.Commenting.FunctionComment.ScalarTypeHintMissing"/>
+        <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamName"/>
+        <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamType"/>
+        <exclude name="Squiz.Commenting.FunctionComment.TypeHintMissing"/>
+    </rule>
+
+    <rule ref="Squiz.Commenting.FunctionComment.MissingParamTag">
+        <exclude-pattern>*/**/tests</exclude-pattern>
+    </rule>
+
+    <rule ref="Squiz.Commenting.FunctionComment.MissingReturn">
+        <exclude-pattern>*/**/tests</exclude-pattern>
+    </rule>
+
+    <rule ref="Squiz.Strings.ConcatenationSpacing">
+        <properties>
+            <property name="spacing" value="1"/>
+            <property name="ignoreNewlines" value="true"/>
+        </properties>
+    </rule>
+
+    <rule ref="Squiz.WhiteSpace.FunctionSpacing">
+        <properties>
+            <property name="spacingBeforeFirst" value="0"/>
+            <property name="spacingAfterLast" value="0"/>
+        </properties>
+    </rule>
+
+    <rule ref="Squiz.WhiteSpace.MemberVarSpacing">
+        <properties>
+            <property name="spacing" value="1"/>
+            <property name="spacingBeforeFirst" value="0"/>
+        </properties>
+    </rule>
+
+    <rule ref="Squiz.WhiteSpace.OperatorSpacing">
+        <properties>
+            <property name="ignoreNewlines" value="true"/>
+        </properties>
+    </rule>
+
+    <rule ref="Zend.NamingConventions.ValidVariableName">
+        <exclude name="Zend.NamingConventions.ValidVariableName.NotCamelCaps"/>
+        <exclude name="Zend.NamingConventions.ValidVariableName.MemberVarContainsNumbers"/>
+        <exclude name="Zend.NamingConventions.ValidVariableName.ContainsNumbers"/>
+        <exclude name="Zend.NamingConventions.ValidVariableName.StringVarContainsNumbers"/>
+        <exclude name="Zend.NamingConventions.ValidVariableName.PrivateNoUnderscore"/>
+    </rule>
+</ruleset>

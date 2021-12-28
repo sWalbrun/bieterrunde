@@ -15,6 +15,7 @@ class VegetableRating extends Model
     use HasFactory;
 
     public const TABLE = 'vegetableRating';
+
     protected $table = self::TABLE;
 
     public function vegetable(): BelongsTo

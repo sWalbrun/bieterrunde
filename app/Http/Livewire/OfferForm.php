@@ -10,7 +10,9 @@ use Livewire\Component;
 class OfferForm extends Component
 {
     public BidderRound $bidderRound;
+
     public array $offers = [];
+
     public User $user;
 
     protected $rules = [
@@ -37,14 +39,14 @@ class OfferForm extends Component
     }
 
     // TODO make this logic runnable
-//    public function validate($rules = null, $messages = [], $attributes = [])
-//    {
-//        $this->rules = [];
-//        for ($i = 1; $i < count($this->offers); $i++) {
-//            $this->rules[] = ['offers.' . ($i - 1) . '.amount' => "required|numeric|between:50,100|before:offers.$i.amount"];
-//        }
-//        parent::validate($rules, $messages, $attributes);
-//    }
+// public function validate($rules = null, $messages = [], $attributes = [])
+// {
+// $this->rules = [];
+// for ($i = 1; $i < count($this->offers); $i++) {
+// $this->rules[] = ['offers.' . ($i - 1) . '.amount' => "required|numeric|between:50,100|before:offers.$i.amount"];
+// }
+// parent::validate($rules, $messages, $attributes);
+// }
 
     public function save()
     {

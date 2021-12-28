@@ -18,6 +18,7 @@ class Offer extends Model
     use HasFactory;
 
     public const TABLE = 'offer';
+
     protected $table = self::TABLE;
 
     public const COL_ID = 'id';

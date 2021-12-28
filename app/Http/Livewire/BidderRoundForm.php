@@ -11,8 +11,11 @@ class BidderRoundForm extends Component
     public BidderRound $bidderRound;
 
     public ?string $validFrom = '';
+
     public ?string $validTo = '';
+
     public ?string $startOfSubmission = '';
+
     public ?string $endOfSubmission = '';
 
     protected $rules = [

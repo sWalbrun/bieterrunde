@@ -14,6 +14,7 @@ class PickUpGroup extends Model
     use HasFactory;
 
     public const TABLE = 'pickUpGroup';
+
     protected $table = self::TABLE;
 
     public function users(): HasMany
