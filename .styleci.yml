@@ -1,6 +1,6 @@
 php:
   preset: laravel
-  disabled:
+  version: 8
   finder:
     not-name:
       - index.php
