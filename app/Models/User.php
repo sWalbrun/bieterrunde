@@ -26,7 +26,6 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string profile_photo_path
  * @property bool isNewMember
  * @property Carbon created_at
- *
  * @property Collection<Offer> offers
  */
 class User extends Authenticatable

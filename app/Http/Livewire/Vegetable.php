@@ -8,7 +8,6 @@ use Livewire\Component;
 
 class Vegetable extends Component
 {
-
     public string $name;
     public VegetableType $unit;
 
