@@ -189,6 +189,7 @@
       <path value="$PROJECT_DIR$/vendor/laravel/serializable-closure" />
       <path value="$PROJECT_DIR$/vendor/spatie/laravel-permission" />
       <path value="$PROJECT_DIR$/vendor/squizlabs/php_codesniffer" />
+      <path value="$PROJECT_DIR$/vendor/laravel/sanctum" />
     </include_path>
   </component>
   <component name="PhpInterpreters">
@@ -271,7 +272,7 @@
         </phpinfo>
       </interpreter>
       <interpreter name="Ubuntu-20.04">
-        <phpinfo binary_type="PHP" php_cli="/usr/bin/php7.4" path_separator=":" remote_host="172.20.64.1" version="7.4.3">
+        <phpinfo binary_type="PHP" php_cli="/usr/bin/php7.4" path_separator=":" remote_host="172.29.112.1" version="7.4.3">
           <additional_php_ini>/etc/php/7.4/cli/conf.d/10-mysqlnd.ini, /etc/php/7.4/cli/conf.d/10-opcache.ini, /etc/php/7.4/cli/conf.d/10-pdo.ini, /etc/php/7.4/cli/conf.d/15-xml.ini, /etc/php/7.4/cli/conf.d/20-bcmath.ini, /etc/php/7.4/cli/conf.d/20-calendar.ini, /etc/php/7.4/cli/conf.d/20-ctype.ini, /etc/php/7.4/cli/conf.d/20-curl.ini, /etc/php/7.4/cli/conf.d/20-dom.ini, /etc/php/7.4/cli/conf.d/20-exif.ini, /etc/php/7.4/cli/conf.d/20-ffi.ini, /etc/php/7.4/cli/conf.d/20-fileinfo.ini, /etc/php/7.4/cli/conf.d/20-ftp.ini, /etc/php/7.4/cli/conf.d/20-gd.ini, /etc/php/7.4/cli/conf.d/20-gettext.ini, /etc/php/7.4/cli/conf.d/20-iconv.ini, /etc/php/7.4/cli/conf.d/20-imap.ini, /etc/php/7.4/cli/conf.d/20-json.ini, /etc/php/7.4/cli/conf.d/20-mbstring.ini, /etc/php/7.4/cli/conf.d/20-mysqli.ini, /etc/php/7.4/cli/conf.d/20-pdo_mysql.ini, /etc/php/7.4/cli/conf.d/20-phar.ini, /etc/php/7.4/cli/conf.d/20-posix.ini, /etc/php/7.4/cli/conf.d/20-readline.ini, /etc/php/7.4/cli/conf.d/20-shmop.ini, /etc/php/7.4/cli/conf.d/20-simplexml.ini, /etc/php/7.4/cli/conf.d/20-soap.ini, /etc/php/7.4/cli/conf.d/20-sockets.ini, /etc/php/7.4/cli/conf.d/20-sysvmsg.ini, /etc/php/7.4/cli/conf.d/20-sysvsem.ini, /etc/php/7.4/cli/conf.d/20-sysvshm.ini, /etc/php/7.4/cli/conf.d/20-tokenizer.ini, /etc/php/7.4/cli/conf.d/20-xdebug.ini, /etc/php/7.4/cli/conf.d/20-xmlreader.ini, /etc/php/7.4/cli/conf.d/20-xmlwriter.ini, /etc/php/7.4/cli/conf.d/20-xsl.ini, /etc/php/7.4/cli/conf.d/20-zip.ini</additional_php_ini>
           <configuration_file>/etc/php/7.4/cli/php.ini</configuration_file>
           <configuration_options>
@@ -342,8 +343,7 @@
   <component name="PhpProjectSharedConfiguration" php_language_level="7.4" />
   <component name="PhpUnit">
     <phpunit_settings>
-      <phpunit_by_interpreter interpreter_id="04551bc3-1b53-45d6-a31f-1887be0fe770" configuration_file_path="/home/swalbrun/repositories/solawir/phpunit.xml" custom_loader_path="/home/swalbrun/repositories/solawir/vendor/autoload.php" phpunit_phar_path="" use_configuration_file="true" />
-      <PhpUnitSettings configuration_file_path="$PROJECT_DIR$/phpunit.xml" custom_loader_path="$PROJECT_DIR$/vendor/autoload.php" phpunit_phar_path="" use_configuration_file="true" />
+      <phpunit_by_interpreter interpreter_id="c16c489c-d480-4a4b-83df-2146cb67cf43" configuration_file_path="/home/swalbrun/repositories/solawir/phpunit.xml" custom_loader_path="/home/swalbrun/repositories/solawir/vendor/autoload.php" use_configuration_file="true" />
     </phpunit_settings>
   </component>
   <component name="Psalm">
