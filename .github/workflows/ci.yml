@@ -1,4 +1,4 @@
-name: "Unit Tests"
+name: "CI"
 
 on:
   push:
@@ -43,7 +43,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.3'
+          php-version: '7.4'
           coverage: none
           tools: composer, cs2pr
 
