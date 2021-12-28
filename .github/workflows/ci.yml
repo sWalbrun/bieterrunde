@@ -1,4 +1,4 @@
-name: SolaWi
+name: "Unit Tests"
 
 on:
   push:
