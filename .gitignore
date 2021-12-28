@@ -14,3 +14,9 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 .php-cs-fixer.cache
+
+/vendor/
+node_modules/
+
+storage/*.key
+/.vagrant
