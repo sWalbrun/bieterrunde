@@ -20,7 +20,6 @@
         <exclude name="PEAR.Commenting.ClassComment.MissingCategoryTag"/>
         <exclude name="PEAR.Commenting.ClassComment.MissingLicenseTag"/>
         <exclude name="PEAR.Commenting.ClassComment.MissingLinkTag"/>
-        <exclude name="PEAR.Commenting.ClassComment.MissingPackageTag"/>
         <exclude name="PEAR.Commenting.FileComment.Missing"/>
         <exclude name="PEAR.Commenting.FunctionComment.Missing"/>
         <exclude name="PEAR.Commenting.FunctionComment.MissingParamComment"/>
