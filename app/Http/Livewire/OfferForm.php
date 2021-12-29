@@ -48,7 +48,8 @@ class OfferForm extends Component
                 : new Offer();
             $offer->fill($offerAsArray);
             if (!isset($offerAsArray[Offer::COL_AMOUNT])
-                || Str::length($offerAsArray[Offer::COL_AMOUNT]) === 0) {
+                || Str::length($offerAsArray[Offer::COL_AMOUNT]) === 0
+            ) {
                 $offer->amount = null;
             }
             $offer->bidderRound()->associate($this->bidderRound);
@@ -72,5 +73,16 @@ class OfferForm extends Component
             $offer->round = $index;
             $this->offers[] = $offer;
         }
+    }
+
+    /**
+     * This method should be actually not necessary but it is since {@link OfferForm::$offers} is holding a array of arrays instead
+     * of models
+     *
+     * @return bool
+     */
+    public function isInputStillPossible(): bool
+    {
+        return $this->bidderRound->isOfferStillPossible();
     }
 }

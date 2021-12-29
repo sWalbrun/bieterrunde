@@ -11,11 +11,11 @@ use Illuminate\Support\Collection;
 /**
  * @property int id
  * @property float targetAmount
+ * @property bool targetAmountReached
  * @property Carbon startOfSubmission
  * @property Carbon endOfSubmission
  * @property Carbon validFrom
  * @property Carbon validTo
- * @property float monthlyAmount
  * @property int countOffers
  * @property string note
  */
@@ -32,7 +32,7 @@ class BidderRound extends BaseModel
     public const COL_END_OF_SUBMISSION = 'endOfSubmission';
     public const COL_VALID_FROM = 'validFrom';
     public const COL_VALID_TO = 'validTo';
-    public const COL_MONTHLY_AMOUNT = 'monthlyAmount';
+    public const COL_TARGET_AMOUNT_REACHED = 'targetAmountReached';
     public const COL_COUNT_OFFERS = 'countOffers';
     public const COL_NOTE = 'note';
 
@@ -41,6 +41,7 @@ class BidderRound extends BaseModel
         self::COL_END_OF_SUBMISSION => 'date',
         self::COL_VALID_FROM => 'date',
         self::COL_VALID_TO => 'date',
+        self::COL_TARGET_AMOUNT_REACHED => 'bool',
     ];
 
     protected $fillable = [
@@ -49,7 +50,7 @@ class BidderRound extends BaseModel
         self::COL_END_OF_SUBMISSION,
         self::COL_VALID_FROM,
         self::COL_VALID_TO,
-        self::COL_MONTHLY_AMOUNT,
+        self::COL_TARGET_AMOUNT_REACHED,
         self::COL_COUNT_OFFERS,
     ];
 
@@ -71,6 +72,17 @@ class BidderRound extends BaseModel
     }
 
     /**
+     * Returns true in case the user still has the possibility to change/create her/his offer.
+     *
+     * @return bool
+     */
+    public function isOfferStillPossible(): bool
+    {
+        return $this->targetAmountReached !== true
+            && Carbon::now()->isBetween($this->startOfSubmission, $this->endOfSubmission);
+    }
+
+    /**
      * Returns true in case a given user has made all offers needed for this round.
      *
      * @param User $user
@@ -80,9 +92,9 @@ class BidderRound extends BaseModel
     public function allOffersGivenFor(User $user): bool
     {
         return $this
-                ->offerFor(auth()->user())
-                ->whereNotNull(Offer::COL_AMOUNT)
-                ->count() === $this->countOffers;
+            ->offerFor($user)
+            ->whereNotNull(Offer::COL_AMOUNT)
+            ->count() === $this->countOffers;
     }
 
     /**

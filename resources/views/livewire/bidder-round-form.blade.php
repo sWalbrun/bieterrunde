@@ -38,7 +38,7 @@ use App\Models\BidderRound;
     />
 
     <x-inputs.maskable
-        mask="##.###,##"
+        mask="##.###"
         label="{{trans('Zu erreichender Betrag')}}"
         placeholder="{{__('Betrag')}}"
         wire:model.defer="bidderRound.targetAmount"
@@ -50,6 +50,10 @@ use App\Models\BidderRound;
         placeholder="{{__('Betrag')}}"
         wire:model="bidderRound.countOffers"
     />
+
+    <x-toggle lg
+              left-label="{{trans('Zielbetrag erreicht')}}"
+              wire:model.defer="bidderRound.targetAmountReached" />
 
     <div class="py-3">
         <x-button squared positive label="{{__('Speichern')}}" wire:click="save()"/>

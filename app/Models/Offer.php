@@ -41,4 +41,14 @@ class Offer extends BaseModel
     {
         return $this->belongsTo(BidderRound::class, self::COL_FK_BIDDER_ROUND);
     }
+
+    public function isInputStillPossible(): bool
+    {
+        if (!$this->bidderRound) {
+            // Should never happen
+            return false;
+        }
+
+        return $this->bidderRound->isOfferStillPossible();
+    }
 }
