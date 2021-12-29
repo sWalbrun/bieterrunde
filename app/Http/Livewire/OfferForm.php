@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use App\Models\BidderRound;
 use App\Models\Offer;
 use App\Models\User;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class OfferForm extends Component
@@ -16,7 +17,7 @@ class OfferForm extends Component
     public User $user;
 
     protected $rules = [
-        'offers.*.amount' => 'required|numeric|between:50,100',
+        'offers.*.amount' => 'numeric|between:50,100',
     ];
 
     public function mount(BidderRound $bidderRound)
@@ -41,15 +42,21 @@ class OfferForm extends Component
     public function save()
     {
         $this->validate();
-        collect($this->offers)->each(function (array $offerAsArray) {
+        $this->offers = collect($this->offers)->map(function (array $offerAsArray, $index) {
             $offer = isset($offerAsArray['id'])
                 ? Offer::query()->find($offerAsArray['id'])
                 : new Offer();
             $offer->fill($offerAsArray);
+            if (!isset($offerAsArray[Offer::COL_AMOUNT])
+                || Str::length($offerAsArray[Offer::COL_AMOUNT]) === 0) {
+                $offer->amount = null;
+            }
             $offer->bidderRound()->associate($this->bidderRound);
             $offer->user()->associate($this->user);
             $offer->save();
-        });
+
+            return $offer;
+        })->toArray();
     }
 
     /**

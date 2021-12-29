@@ -37,10 +37,11 @@ use App\Models\BidderRound;
         without-time="true"
     />
 
-    <x-input
+    <x-inputs.maskable
+        mask="##.###,##"
         label="{{trans('Zu erreichender Betrag')}}"
         placeholder="{{__('Betrag')}}"
-        wire:model="bidderRound.targetAmount"
+        wire:model.defer="bidderRound.targetAmount"
         suffix="€"
     />
 

@@ -18,7 +18,7 @@ use Ramsey\Collection\Collection;
                 label="{{__('Runde Nr :index', ['index' => $offer['round']])}}"
                 placeholder="{{__('Betrag')}}"
                 hint="{{$user->isNewMember && $index == 0 ? __('Da du ein Neumitglied bist, wäre ein Obulus extra ziemlich knorke') : ''}}"
-                wire:model="offers.{{ $index }}.amount"
+                wire:model.defer="offers.{{ $index }}.amount"
                 suffix="€"
             />
         @endforeach

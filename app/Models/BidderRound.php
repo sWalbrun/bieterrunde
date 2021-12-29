@@ -79,7 +79,10 @@ class BidderRound extends BaseModel
      */
     public function allOffersGivenFor(User $user): bool
     {
-        return $this->offerFor(auth()->user())->count() === $this->countOffers;
+        return $this
+                ->offerFor(auth()->user())
+                ->whereNotNull(Offer::COL_AMOUNT)
+                ->count() === $this->countOffers;
     }
 
     /**
