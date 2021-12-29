@@ -122,7 +122,7 @@ class DatabasePropertyValidationTest extends TestCase
         $path = dirname($baseModelReflection->getFileName()).DIRECTORY_SEPARATOR;
         $fileNames = scandir($path);
         foreach ($fileNames as $fileName) {
-            if (substr($fileName, -4) === '.php' && ! in_array($fileName, self::IGNORE_FILE_NAMES)) {
+            if (substr($fileName, -4) === '.php' && !in_array($fileName, self::IGNORE_FILE_NAMES)) {
                 $class = substr($fileName, 0, strlen($fileName) - 4);
                 $classNs = $namespace.$class;
                 $reflection = new ReflectionClass($classNs);
