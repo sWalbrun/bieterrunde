@@ -11,13 +11,14 @@ use Illuminate\Support\Collection;
 /**
  * @property int id
  * @property float targetAmount
- * @property bool targetAmountReached
+ * @property int $roundWon
  * @property Carbon startOfSubmission
  * @property Carbon endOfSubmission
  * @property Carbon validFrom
  * @property Carbon validTo
  * @property int countOffers
  * @property string note
+ * @property Collection<Offer> offers
  */
 class BidderRound extends BaseModel
 {
@@ -32,7 +33,7 @@ class BidderRound extends BaseModel
     public const COL_END_OF_SUBMISSION = 'endOfSubmission';
     public const COL_VALID_FROM = 'validFrom';
     public const COL_VALID_TO = 'validTo';
-    public const COL_TARGET_AMOUNT_REACHED = 'targetAmountReached';
+    public const COL_ROUND_WON = 'roundWon';
     public const COL_COUNT_OFFERS = 'countOffers';
     public const COL_NOTE = 'note';
 
@@ -41,7 +42,6 @@ class BidderRound extends BaseModel
         self::COL_END_OF_SUBMISSION => 'date',
         self::COL_VALID_FROM => 'date',
         self::COL_VALID_TO => 'date',
-        self::COL_TARGET_AMOUNT_REACHED => 'bool',
     ];
 
     protected $fillable = [
@@ -50,7 +50,7 @@ class BidderRound extends BaseModel
         self::COL_END_OF_SUBMISSION,
         self::COL_VALID_FROM,
         self::COL_VALID_TO,
-        self::COL_TARGET_AMOUNT_REACHED,
+        self::COL_ROUND_WON,
         self::COL_COUNT_OFFERS,
     ];
 
@@ -78,8 +78,8 @@ class BidderRound extends BaseModel
      */
     public function isOfferStillPossible(): bool
     {
-        return $this->targetAmountReached !== true
-            && Carbon::now()->isBetween($this->startOfSubmission, $this->endOfSubmission);
+        return !isset($this->roundWon)
+            && $this->bidderRoundBetweenNow();
     }
 
     /**
@@ -111,5 +111,10 @@ class BidderRound extends BaseModel
     public function __toString()
     {
         return trans('Bieterrunde ') . ($this->validTo ? $this->validTo->format('Y') : '');
+    }
+
+    public function bidderRoundBetweenNow(): bool
+    {
+        return Carbon::now()->isBetween($this->startOfSubmission, $this->endOfSubmission);
     }
 }

@@ -24,7 +24,7 @@ class CreateBidderRound extends Migration
             $table->dateTime(BidderRound::COL_END_OF_SUBMISSION)->nullable();
             $table->dateTime(BidderRound::COL_VALID_FROM)->nullable();
             $table->dateTime(BidderRound::COL_VALID_TO)->nullable();
-            $table->boolean(BidderRound::COL_TARGET_AMOUNT_REACHED)->nullable();
+            $table->integer(BidderRound::COL_ROUND_WON)->unsigned()->nullable();
             $table->integer(BidderRound::COL_COUNT_OFFERS)->nullable();
             $table->text(BidderRound::COL_NOTE)->nullable();
         });

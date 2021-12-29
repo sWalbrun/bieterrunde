@@ -89,6 +89,7 @@
         <exclude name="Squiz.WhiteSpace.FunctionSpacing.Before"/>
         <exclude name="Squiz.WhiteSpace.ObjectOperatorSpacing.Before"/>
         <exclude name="Squiz.Commenting.VariableComment.Missing"/>
+        <exclude name="Squiz.Strings.DoubleQuoteUsage.ContainsVar"/>
     </rule>
 
     <!--Rule configuration-->

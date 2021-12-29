@@ -51,9 +51,19 @@ use App\Models\BidderRound;
         wire:model="bidderRound.countOffers"
     />
 
-    <x-toggle lg
-              left-label="{{trans('Zielbetrag erreicht')}}"
-              wire:model.defer="bidderRound.targetAmountReached" />
+    @if($bidderRound->roundWon)
+        <span class="inline-flex items-center mt-3 px-3 py-0.5 rounded-full text-sm font-medium bg-green-400 text-white">
+            {{trans("Der Zielbetrag wurde mit der Runde $bidderRound->roundWon erreicht")}}
+        </span>
+    @elseif($bidderRound->exists && $bidderRound->bidderRoundBetweenNow())
+        <span class="inline-flex items-center mt-3 px-3 py-0.5 rounded-full text-sm font-medium bg-yellow-300 text-gray-800">
+            {{trans('Die Bieterrunde läuft gerade')}}
+        </span>
+    @elseif($bidderRound->exists)
+        <span class="inline-flex items-center mt-3 px-3 py-0.5 rounded-full text-sm font-medium bg-indigo-100 text-gray-800">
+            {{trans('Die Bieterrunde hat noch nicht begonnen')}}
+        </span>
+    @endif
 
     <div class="py-3">
         <x-button squared positive label="{{__('Speichern')}}" wire:click="save()"/>
