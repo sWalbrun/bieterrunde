@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property User user
  * @property BidderRound bidderRound
  */
-class Offer extends Model
+class Offer extends BaseModel
 {
     use HasFactory;
 

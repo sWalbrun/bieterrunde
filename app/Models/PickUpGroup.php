@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @property int $id
  */
-class PickUpGroup extends Model
+class PickUpGroup extends BaseModel
 {
     use HasFactory;
 

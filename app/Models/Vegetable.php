@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string name
  * @property Unit unit
  */
-class Vegetable extends Model
+class Vegetable extends BaseModel
 {
     use HasFactory;
 

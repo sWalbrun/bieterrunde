@@ -19,7 +19,7 @@ use Illuminate\Support\Collection;
  * @property int countOffers
  * @property string note
  */
-class BidderRound extends Model
+class BidderRound extends BaseModel
 {
     use HasFactory;
 

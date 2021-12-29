@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property int $stars
  */
-class VegetableRating extends Model
+class VegetableRating extends BaseModel
 {
     use HasFactory;
 

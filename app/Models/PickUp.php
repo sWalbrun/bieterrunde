@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property int $id
  * @property Carbon $date
  */
-class PickUp extends Model
+class PickUp extends BaseModel
 {
     use HasFactory;
 
