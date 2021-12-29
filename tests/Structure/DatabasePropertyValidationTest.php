@@ -39,7 +39,7 @@ class DatabasePropertyValidationTest extends TestCase
                 continue;
             }
             $object = resolve($class);
-            if (! ($object instanceof Model)) {
+            if (!($object instanceof Model)) {
                 // this is no model. Therefore we cannot check stuff
                 continue;
             }
@@ -48,13 +48,13 @@ class DatabasePropertyValidationTest extends TestCase
             $dbColumns = $dbSchema->getColumnListing($object->getTable());
             $propertyAnnotations = $this->readPropertiesFromClassAnnotation($reflectionClass);
             $errors = [];
-            if (! $reflectionClass->hasProperty('table')) {
+            if (!$reflectionClass->hasProperty('table')) {
                 $errors[] = ' - missing property $table ('.$class.')'.PHP_EOL;
             } else {
                 $tableReflection = $reflectionClass->getProperty('table');
                 $tableReflection->setAccessible(true);
                 $tableName = $tableReflection->getValue($object);
-                if (! Str::startsWith(strtolower($reflection->getBasename('.php')), strtolower($tableName))) {
+                if (!Str::startsWith(strtolower($reflection->getBasename('.php')), strtolower($tableName))) {
                     $errors[] = ' - the tablename and the classname are not matching'.PHP_EOL;
                 }
             }
@@ -71,7 +71,7 @@ class DatabasePropertyValidationTest extends TestCase
                 }
             }
 
-            if (! empty($errors)) {
+            if (!empty($errors)) {
                 $this->fail('Problems in Class '.$reflection->getFileName()." :\r\n".implode($errors));
             }
         }
@@ -126,7 +126,7 @@ class DatabasePropertyValidationTest extends TestCase
                 $class = substr($fileName, 0, strlen($fileName) - 4);
                 $classNs = $namespace.$class;
                 $reflection = new ReflectionClass($classNs);
-                if (! $reflection->isAbstract()
+                if (!$reflection->isAbstract()
                     && ! $reflection->isInterface()
                     && $reflection->isSubclassOf(Model::class)
                     && strpos($fileName, 'Abstract') === false) {
