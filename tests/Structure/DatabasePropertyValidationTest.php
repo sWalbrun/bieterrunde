@@ -135,6 +135,7 @@ class DatabasePropertyValidationTest extends TestCase
             }
         }
         self::$providerDbObjectsList = $result;
+
         return $result;
     }
 }
