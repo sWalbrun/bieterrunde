@@ -7,13 +7,12 @@ use App\Models\Offer;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 /**
  * This command is checking for all {@link BidderRound rounds} (or for the one given) if there may be a round which reaches
- * the {@link BidderRound::$targetAmount} and sets the {@link BidderRound::$roundWon}
+ * the {@link BidderRound::$targetAmount} and sets the {@link BidderRound::$roundWon}.
  */
 class IsTargetAmountReached extends Command
 {
@@ -55,10 +54,10 @@ class IsTargetAmountReached extends Command
         $rounds = BidderRound::query()
             ->when(
                 $this->getBidderRound(),
-                fn(Builder $builder) => $builder->where('id', '=', $this->getBidderRound())
+                fn (Builder $builder) => $builder->where('id', '=', $this->getBidderRound())
             )->get();
 
-        $rounds->each(fn(BidderRound $round) => $this->handleRound($round));
+        $rounds->each(fn (BidderRound $round) => $this->handleRound($round));
 
         return Command::SUCCESS;
     }
@@ -72,6 +71,7 @@ class IsTargetAmountReached extends Command
     {
         if (isset($bidderRound->roundWon)) {
             Log::info("Skipping bidder round ($bidderRound) since there is already a round won present. Bidder round ($bidderRound)");
+
             return;
         }
 
@@ -96,6 +96,7 @@ class IsTargetAmountReached extends Command
 
         if (!isset($matchingRound)) {
             Log::info("No round found which may has enough money in sum to reach the target amount for bidder round ($bidderRound)");
+
             return;
         }
 

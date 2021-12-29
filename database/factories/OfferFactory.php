@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class OfferFactory extends Factory
 {
-
     private static int $roundCount = 1;
 
     private static int $offerCount = 50;
@@ -30,6 +29,7 @@ class OfferFactory extends Factory
             Offer::COL_AMOUNT => self::$offerCount + $this->faker->numberBetween(0, 10),
         ];
         self::$offerCount += 20;
+
         return $definition;
     }
 }

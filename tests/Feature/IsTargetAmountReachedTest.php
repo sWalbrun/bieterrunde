@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 
 /**
- * This test checks the business logic for setting the {@link BidderRound::$roundWon round which has won}
+ * This test checks the business logic for setting the {@link BidderRound::$roundWon round which has won}.
  */
 class IsTargetAmountReachedTest extends TestCase
 {

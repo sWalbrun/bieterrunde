@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * This little class is handling the intersections of all models
+ * This little class is handling the intersections of all models.
  */
 abstract class BaseModel extends Model
 {

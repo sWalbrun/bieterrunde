@@ -76,8 +76,8 @@ class OfferForm extends Component
     }
 
     /**
-     * This method should be actually not necessary but it is since {@link OfferForm::$offers} is holding a array of arrays instead
-     * of models
+     * This method should be actually not necessary but it is since {@link OfferForm::$offers} is holding a array
+     * of arrays instead of models.
      *
      * @return bool
      */
