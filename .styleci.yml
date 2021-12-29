@@ -16,5 +16,5 @@ finder:
     - "_ide_helper.php"
 disabled:
   - concat_without_spaces
-  - phpdoc_indent
+  - phpdoc_align
   - not_operator_with_successor_space

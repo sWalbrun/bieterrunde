@@ -127,7 +127,7 @@ class DatabasePropertyValidationTest extends TestCase
                 $classNs = $namespace.$class;
                 $reflection = new ReflectionClass($classNs);
                 if (!$reflection->isAbstract()
-                    && ! $reflection->isInterface()
+                    && !$reflection->isInterface()
                     && $reflection->isSubclassOf(Model::class)
                     && strpos($fileName, 'Abstract') === false) {
                     $result[$class] = [$reflection];
