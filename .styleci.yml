@@ -14,3 +14,7 @@ finder:
   not-name:
     - "*.blade.php"
     - "_ide_helper.php"
+disabled:
+  - concat_without_spaces
+  - not_operator_with_space
+  - function_declaration
