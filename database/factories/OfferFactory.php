@@ -22,7 +22,7 @@ class OfferFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         $definition = [
             Offer::COL_ROUND => self::$roundCount++,
