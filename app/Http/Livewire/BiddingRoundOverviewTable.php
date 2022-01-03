@@ -37,6 +37,7 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
         if (!$this->isBidderRoundGiven()) {
             return User::bidderRoundParticipants();
         }
+
         return User::bidderRoundWithRelations($this->bidderRoundId);
     }
 
@@ -116,6 +117,7 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
                 ->field($this->getRoundIdentifier($round))
                 ->withSum(trans('Summe'), false, true);
         }
+
         return $columns;
     }
 
