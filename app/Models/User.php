@@ -137,7 +137,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Returns all users which are enabled to participate at the next {@link BidderRound}
+     * Returns all users which are enabled to participate at the next {@link BidderRound}.
      *
      * @return Builder
      */

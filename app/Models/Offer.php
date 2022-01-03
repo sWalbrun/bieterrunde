@@ -54,7 +54,7 @@ class Offer extends BaseModel
     }
 
     /**
-     * This method returns all offers for the given bidder round id and also preloads all relations
+     * This method returns all offers for the given bidder round id and also preloads all relations.
      *
      * @param int $bidderRoundId
      * @return Builder

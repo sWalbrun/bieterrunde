@@ -92,12 +92,12 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
     {
         $columns = [
             Column::add()
-                ->title(trans("E-Mail"))
+                ->title(trans('E-Mail'))
                 ->field(User::COL_EMAIL)
                 ->searchable()
                 ->sortable(),
             Column::add()
-                ->title(trans("Name"))
+                ->title(trans('Name'))
                 ->field(User::COL_NAME)
                 ->searchable()
                 ->sortable(),
