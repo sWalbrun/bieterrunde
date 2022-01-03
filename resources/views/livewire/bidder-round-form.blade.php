@@ -53,7 +53,7 @@ use App\Models\BidderRound;
 
         <x-input
             label="{{trans('Anzahl der Runden')}}"
-            placeholder="{{__('Betrag')}}"
+            placeholder="{{__('Runden')}}"
             wire:model="bidderRound.countOffers"
         />
     </div>
@@ -78,8 +78,7 @@ use App\Models\BidderRound;
 
     <x-errors/>
 
-
-    <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-        <livewire:bidding-round-overview/>
+    <div class="mt-10 bg-white overflow-hidden shadow-xl sm:rounded-lg">
+        <livewire:bidding-round-overview-table bidderRoundId="{{$bidderRound->exists ? $bidderRound->id : 0}}"/>
     </div>
 </div>
