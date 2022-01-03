@@ -77,4 +77,9 @@ use App\Models\BidderRound;
     </div>
 
     <x-errors/>
+
+
+    <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+        <livewire:bidding-round-overview/>
+    </div>
 </div>

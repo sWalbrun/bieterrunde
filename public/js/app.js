@@ -2069,7 +2069,7 @@ function setStylesFromString(el, value) {
   let cache = el.getAttribute("style", value);
   el.setAttribute("style", value);
   return () => {
-    el.setAttribute("style", cache);
+    el.setAttribute("style", cache || "");
   };
 }
 function kebabCase(subject) {
@@ -2491,7 +2491,7 @@ var Alpine = {
   get raw() {
     return raw;
   },
-  version: "3.7.0",
+  version: "3.7.1",
   flushAndStopDeferringMutations,
   disableEffectScheduling,
   setReactivityEngine,
@@ -2542,8 +2542,7 @@ magic("watch", (el) => (key, callback) => {
   let firstTime = true;
   let oldValue;
   effect(() => evaluate2((value) => {
-    let div = document.createElement("div");
-    div.dataset.throwAway = value;
+    JSON.stringify(value);
     if (!firstTime) {
       queueMicrotask(() => {
         callback(value, oldValue);
@@ -2625,7 +2624,11 @@ magic("el", (el) => el);
 
 // packages/alpinejs/src/directives/x-teleport.js
 directive("teleport", (el, {expression}, {cleanup}) => {
+  if (el.tagName.toLowerCase() !== "template")
+    warn("x-teleport can only be used on a <template> tag", el);
   let target = document.querySelector(expression);
+  if (!target)
+    warn(`Cannot find x-teleport element for selector: "${expression}"`);
   let clone2 = el.content.cloneNode(true).firstElementChild;
   el._x_teleport = clone2;
   clone2._x_teleportBack = el;
@@ -3063,9 +3066,6 @@ function applyBindingsObject(el, expression, original, effect3) {
       cleanupRunners.pop()();
     getBindings((bindings) => {
       let attributes = Object.entries(bindings).map(([name, value]) => ({name, value}));
-      attributes = attributes.filter((attr) => {
-        return !(typeof attr.value === "object" && !Array.isArray(attr.value) && attr.value !== null);
-      });
       let staticAttributes = attributesOnly(attributes);
       attributes = attributes.map((attribute) => {
         if (staticAttributes.find((attr) => attr.name === attribute.name)) {
@@ -5226,10 +5226,13 @@ module.exports = {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var alpinejs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/module.esm.js");
+/* harmony import */ var _vendor_power_components_livewire_powergrid_dist_powergrid__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./../../vendor/power-components/livewire-powergrid/dist/powergrid */ "./vendor/power-components/livewire-powergrid/dist/powergrid.js");
+/* harmony import */ var _vendor_power_components_livewire_powergrid_dist_powergrid__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_vendor_power_components_livewire_powergrid_dist_powergrid__WEBPACK_IMPORTED_MODULE_1__);
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 
 window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_0__.default;
+
 alpinejs__WEBPACK_IMPORTED_MODULE_0__.default.start();
 
 /***/ }),
@@ -5262,6 +5265,322 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     forceTLS: true
 // });
+
+/***/ }),
+
+/***/ "./vendor/power-components/livewire-powergrid/dist/powergrid.js":
+/*!**********************************************************************!*\
+  !*** ./vendor/power-components/livewire-powergrid/dist/powergrid.js ***!
+  \**********************************************************************/
+/***/ (() => {
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+(function () {
+  "use strict";
+
+  var e,
+      t = {
+    293: function _() {
+      var e = function e(_e) {
+        var t, i, l;
+        return {
+          tableName: null !== (t = _e.tableName) && void 0 !== t ? t : null,
+          columnField: null !== (i = _e.columnField) && void 0 !== i ? i : null,
+          dataField: null !== (l = _e.dataField) && void 0 !== l ? l : null,
+          options: [],
+          data: _e.data,
+          selected: [],
+          show: !1,
+          init: function init() {
+            for (var e = this.data, t = 0; t < e.length; t++) {
+              this.options.push({
+                value: e[t].value.id,
+                text: e[t].value.name,
+                selected: !1
+              });
+            }
+          },
+          selectedValues: function selectedValues() {
+            var e = this;
+            return this.selected.map(function (t) {
+              return e.options[t].value;
+            });
+          },
+          select: function select(e, t) {
+            this.options[e].selected ? (this.selected.splice(this.selected.lastIndexOf(e), 1), this.options[e].selected = !1, this.show = !1) : (this.options[e].selected = !0, this.options[e].element = t.target, this.selected.push(e), this.show = !1, this.$wire.emit("pg:multiSelect-" + this.tableName, {
+              id: this.dataField,
+              values: this.selectedValues()
+            }));
+          },
+          remove: function remove(e, t) {
+            this.options[t].selected = !1, this.selected.splice(e, 1), this.$wire.emit("pg:multiSelect-" + this.tableName, {
+              id: this.dataField,
+              values: this.selectedValues()
+            });
+          }
+        };
+      },
+          t = function t(e) {
+        var t, i, l;
+        return {
+          field: null !== (t = e.field) && void 0 !== t ? t : null,
+          tableName: null !== (i = e.tableName) && void 0 !== i ? i : null,
+          enabled: null !== (l = e.enabled) && void 0 !== l && l,
+          id: e.id,
+          trueValue: e.trueValue,
+          falseValue: e.falseValue,
+          toggle: e.toggle,
+          save: function save() {
+            var e = 0 === this.toggle ? this.toggle = 1 : this.toggle = 0;
+            document.getElementsByClassName("message")[0].style.display = "none", this.$wire.emit("pg:toggleable-" + this.tableName, {
+              id: this.id,
+              field: this.field,
+              value: e
+            });
+          }
+        };
+      },
+          i = function i(e) {
+        var t, i;
+        return {
+          dataField: null !== (t = e.dataField) && void 0 !== t ? t : null,
+          tableName: null !== (i = e.tableName) && void 0 !== i ? i : null,
+          init: function init() {
+            var e = this,
+                t = '[x-ref="select_picker_' + e.dataField + '"]';
+            $(function () {
+              $(t).selectpicker();
+            }), $(t).selectpicker(), $(t).on("change", function () {
+              var i = $(this).find("option:selected");
+              console.log(i);
+              var l = [];
+              i.each(function () {
+                l.push($(this).val());
+              }), window.livewire.emit("pg:multiSelect-" + e.tableName, {
+                id: e.dataField,
+                values: l
+              }), $(t).selectpicker("refresh");
+            });
+          }
+        };
+      };
+
+      function l(e, t) {
+        var i = Object.keys(e);
+
+        if (Object.getOwnPropertySymbols) {
+          var l = Object.getOwnPropertySymbols(e);
+          t && (l = l.filter(function (t) {
+            return Object.getOwnPropertyDescriptor(e, t).enumerable;
+          })), i.push.apply(i, l);
+        }
+
+        return i;
+      }
+
+      function n(e) {
+        for (var t = 1; t < arguments.length; t++) {
+          var i = null != arguments[t] ? arguments[t] : {};
+          t % 2 ? l(Object(i), !0).forEach(function (t) {
+            o(e, t, i[t]);
+          }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(i)) : l(Object(i)).forEach(function (t) {
+            Object.defineProperty(e, t, Object.getOwnPropertyDescriptor(i, t));
+          });
+        }
+
+        return e;
+      }
+
+      function o(e, t, i) {
+        return t in e ? Object.defineProperty(e, t, {
+          value: i,
+          enumerable: !0,
+          configurable: !0,
+          writable: !0
+        }) : e[t] = i, e;
+      }
+
+      var a = function a(e) {
+        var t, i, l, o, a;
+        return {
+          dataField: e.dataField,
+          tableName: e.tableName,
+          filterKey: e.filterKey,
+          label: null !== (t = e.label) && void 0 !== t ? t : null,
+          locale: null !== (i = e.locale) && void 0 !== i ? i : "en",
+          onlyFuture: null !== (l = e.onlyFuture) && void 0 !== l && l,
+          noWeekEnds: null !== (o = e.noWeekEnds) && void 0 !== o && o,
+          customConfig: null !== (a = e.customConfig) && void 0 !== a ? a : null,
+          init: function init() {
+            var e = this,
+                t = n(n({
+              mode: "range",
+              defaultHour: 0
+            }, this.locale), this.customConfig);
+            this.onlyFuture && (t.minDate = "today"), this.noWeekEnds && (t.disable = [function (e) {
+              return 0 === e.getDay() || 6 === e.getDay();
+            }]), t.onClose = function (t, i, l) {
+              t.length > 0 && window.livewire.emit("pg:datePicker-" + e.tableName, {
+                selectedDates: t,
+                field: e.dataField,
+                values: e.filterKey,
+                label: e.label
+              });
+            }, this.$refs.rangeInput && flatpickr(this.$refs.rangeInput, t);
+          }
+        };
+      },
+          r = function r(e) {
+        var t, i, l;
+        return {
+          editable: !1,
+          tableName: null !== (t = e.tableName) && void 0 !== t ? t : null,
+          id: null !== (i = e.id) && void 0 !== i ? i : null,
+          dataField: null !== (l = e.dataField) && void 0 !== l ? l : null,
+          content: e.content,
+          save: function save() {
+            document.getElementsByClassName("message")[0].style.display = "none", this.$wire.emit("pg:editable-" + this.tableName, {
+              id: this.id,
+              value: this.$el.value,
+              field: this.dataField
+            }), this.editable = !1, this.content = this.htmlSpecialChars(this.$el.value);
+          },
+          htmlSpecialChars: function htmlSpecialChars(e) {
+            var t = document.createElement("div");
+            return t.innerText = e, t.innerHTML;
+          }
+        };
+      };
+
+      function s(e) {
+        return s = "function" == typeof Symbol && "symbol" == _typeof(Symbol.iterator) ? function (e) {
+          return _typeof(e);
+        } : function (e) {
+          return e && "function" == typeof Symbol && e.constructor === Symbol && e !== Symbol.prototype ? "symbol" : _typeof(e);
+        }, s(e);
+      }
+
+      var u = function u() {};
+
+      function d(e) {
+        e.magic("pgClipboard", function () {
+          return function (e) {
+            return "function" == typeof e && (e = e()), "object" === s(e) && (e = JSON.stringify(e)), window.navigator.clipboard.writeText(e).then(u);
+          };
+        });
+      }
+
+      d.configure = function (e) {
+        return e.hasOwnProperty("onCopy") && "function" == typeof e.onCopy && (u = e.onCopy), d;
+      };
+
+      var c = d;
+      window.pgMultiSelect = e, window.pgToggleable = t, window.pgMultiSelectBs5 = i, window.pgFlatPickr = a, window.pgEditable = r, document.addEventListener("alpine:init", function () {
+        window.Alpine.data("pgMultiSelect", e), window.Alpine.data("pgToggleable", t), window.Alpine.data("pgMultiSelectBs5", i), window.Alpine.data("pgFlatPickr", a), window.Alpine.data("phEditable", r), window.Alpine.plugin(c);
+      });
+    },
+    123: function _() {}
+  },
+      i = {};
+
+  function l(e) {
+    var n = i[e];
+    if (void 0 !== n) return n.exports;
+    var o = i[e] = {
+      exports: {}
+    };
+    return t[e](o, o.exports, l), o.exports;
+  }
+
+  l.m = t, e = [], l.O = function (t, i, n, o) {
+    if (!i) {
+      var a = 1 / 0;
+
+      for (d = 0; d < e.length; d++) {
+        for (var _e$d = _slicedToArray(e[d], 3), i = _e$d[0], n = _e$d[1], o = _e$d[2], r = !0, s = 0; s < i.length; s++) {
+          (!1 & o || a >= o) && Object.keys(l.O).every(function (e) {
+            return l.O[e](i[s]);
+          }) ? i.splice(s--, 1) : (r = !1, o < a && (a = o));
+        }
+
+        if (r) {
+          e.splice(d--, 1);
+          var u = n();
+          void 0 !== u && (t = u);
+        }
+      }
+
+      return t;
+    }
+
+    o = o || 0;
+
+    for (var d = e.length; d > 0 && e[d - 1][2] > o; d--) {
+      e[d] = e[d - 1];
+    }
+
+    e[d] = [i, n, o];
+  }, l.o = function (e, t) {
+    return Object.prototype.hasOwnProperty.call(e, t);
+  }, function () {
+    var e = {
+      698: 0,
+      405: 0
+    };
+
+    l.O.j = function (t) {
+      return 0 === e[t];
+    };
+
+    var t = function t(_t, i) {
+      var n,
+          o,
+          _i2 = _slicedToArray(i, 3),
+          a = _i2[0],
+          r = _i2[1],
+          s = _i2[2],
+          u = 0;
+
+      if (a.some(function (t) {
+        return 0 !== e[t];
+      })) {
+        for (n in r) {
+          l.o(r, n) && (l.m[n] = r[n]);
+        }
+
+        if (s) var d = s(l);
+      }
+
+      for (_t && _t(i); u < a.length; u++) {
+        o = a[u], l.o(e, o) && e[o] && e[o][0](), e[a[u]] = 0;
+      }
+
+      return l.O(d);
+    },
+        i = self.webpackChunklivewire_powergrid = self.webpackChunklivewire_powergrid || [];
+
+    i.forEach(t.bind(null, 0)), i.push = t.bind(null, i.push.bind(i));
+  }(), l.O(void 0, [405], function () {
+    return l(293);
+  });
+  var n = l.O(void 0, [405], function () {
+    return l(123);
+  });
+  n = l.O(n);
+})();
 
 /***/ }),
 
@@ -22745,6 +23064,18 @@ process.umask = function() { return 0; };
 /******/ 				}
 /******/ 			}
 /******/ 			return result;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
 /******/ 		};
 /******/ 	})();
 /******/ 	
