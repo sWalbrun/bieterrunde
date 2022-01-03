@@ -5,7 +5,7 @@ namespace App\Http\Livewire;
 use App\Models\BidderRound;
 use App\Models\Offer;
 use App\Models\User;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Builder;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
@@ -13,7 +13,7 @@ use PowerComponents\LivewirePowerGrid\PowerGridEloquent;
 use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 
 /**
- * This class is a table which is showing all offers of all user for one {@link BidderRound}
+ * This class is a table which is showing all offers of all user for one {@link BidderRound}.
  */
 final class BiddingRoundOverviewTable extends PowerGridComponent
 {
@@ -22,45 +22,22 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
     public bool $showUpdateMessages = true;
 
     public ?int $bidderRoundId;
-
-    private Collection $dataSource;
+    private ?BidderRound $bidderRound;
 
     public function setUp(): void
     {
         $this->showCheckBox()
-            ->showPerPage()
             ->showSearchInput()
+            ->showPerPage()
             ->showExportOption('download', ['excel', 'csv']);
     }
 
-    public function datasource(): Collection
+    public function datasource(): Builder
     {
-        if ($this->isBidderRoundGiven()) {
-            return collect();
+        if (!$this->isBidderRoundGiven()) {
+            return User::bidderRoundParticipants();
         }
-        $offers = Offer::getOffersForBidderRound($this->bidderRoundId);
-
-        $dataSource = collect();
-        $offers->each(function (Offer $offer) use ($dataSource) {
-            if ($dataSource->first(fn (Collection $entry) => $entry->has(User::COL_EMAIL)) === null) {
-                $entry = collect([
-                    User::COL_ID => $offer->user->id,
-                    User::COL_EMAIL => $offer->user->email,
-                    User::COL_NAME => $offer->user->name
-                ]);
-                $dataSource->push($entry);
-            }
-            if (!isset($entry)) {
-                /** @var Collection $entry */
-                $entry = $dataSource
-                    ->first(fn (Collection $entry) => $entry->has(User::COL_EMAIL)
-                        && $entry->get(User::COL_EMAIL) === $offer->user->email);
-            }
-
-            $entry->put($this->getRoundIdentifier($offer->round), $offer->amount);
-        });
-        $this->dataSource = $dataSource;
-        return $dataSource;
+        return User::bidderRoundWithRelations($this->bidderRoundId);
     }
 
     /**
@@ -73,33 +50,41 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
         return [];
     }
 
+    /**
+     * The return value will be used for adding the data rows.
+     *
+     * @return PowerGridEloquent|null
+     */
     public function addColumns(): ?PowerGridEloquent
     {
-        $columns = PowerGrid::eloquent()
-            ->addColumn(User::COL_ID, fn (Collection $offer) => $offer->get(User::COL_ID))
-            ->addColumn(User::COL_EMAIL, fn (Collection $offer) => $offer->get(User::COL_EMAIL))
-            ->addColumn(User::COL_NAME, fn (Collection $offer) => $offer->get(User::COL_NAME));
-        $firstRow = $this->dataSource->first();
-
-        if (!($firstRow instanceof Collection)) {
+        if (!isset($this->bidderRoundId) || $this->bidderRoundId <= 0) {
             return null;
         }
-        $rounds = $firstRow->filter(fn ($value, string $key) => !in_array(
-            $key,
-            [
-                User::COL_ID,
-                User::COL_EMAIL,
-                User::COL_NAME
-            ]
-        ));
-        $rounds->each(
-            fn ($amount, string $round) => $columns->addColumn($round, fn (Collection $offer) => $offer->get($round))
-        );
+
+        $columns = PowerGrid::eloquent()
+            ->addColumn(User::COL_ID, fn (User $user) => $user->id)
+            ->addColumn(User::COL_EMAIL, fn (User $user) => $user->email)
+            ->addColumn(User::COL_NAME, fn (User $user) => $user->name);
+
+        /** @var BidderRound $bidderRound */
+        $this->bidderRound ??= BidderRound::query()->find($this->bidderRoundId);
+
+        for ($round = 1; $round <= $this->bidderRound->countOffers; $round++) {
+            $columns->addColumn(
+                $this->getRoundIdentifier($round),
+                fn (User $user) => $user
+                    ->offers
+                    ->filter(fn (Offer $offer) => $offer->round === $round)
+                    ->map(fn (Offer $offer) => $offer->amount)
+                    ->first()
+            );
+        }
+
         return $columns;
     }
 
     /**
-     * PowerGrid Columns.
+     * The return value will be used for the heading row.
      *
      * @return array<int, Column>
      */
@@ -118,17 +103,18 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
                 ->sortable(),
         ];
 
-        if (!isset($this->bidderRoundId) || $this->bidderRoundId <= 0) {
+        if (!$this->isBidderRoundGiven()) {
             return $columns;
         }
 
         /** @var BidderRound $bidderRound */
-        $bidderRound = BidderRound::find($this->bidderRoundId);
+        $this->bidderRound ??= BidderRound::find($this->bidderRoundId);
 
-        for ($round = 1; $round <= $bidderRound->countOffers; $round++) {
+        for ($round = 1; $round <= $this->bidderRound->countOffers; $round++) {
             $columns[] = Column::add()
                 ->title(trans('Runde :round', ['round' => $round]))
-                ->field($this->getRoundIdentifier($round));
+                ->field($this->getRoundIdentifier($round))
+                ->withSum(trans('Summe'), false, true);
         }
         return $columns;
     }
@@ -138,7 +124,7 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
      */
     private function isBidderRoundGiven(): bool
     {
-        return !isset($this->bidderRoundId) || $this->bidderRoundId <= 0;
+        return isset($this->bidderRoundId) && $this->bidderRoundId >= 0;
     }
 
     /**

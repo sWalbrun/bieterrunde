@@ -2061,17 +2061,21 @@ select {
 	--tw-bg-opacity: 1;
 	background-color: rgba(238, 242, 255, var(--tw-bg-opacity));
 }
-.bg-secondary-100 {
-	--tw-bg-opacity: 1;
-	background-color: rgba(244, 244, 245, var(--tw-bg-opacity));
-}
 .bg-secondary-400 {
 	--tw-bg-opacity: 1;
 	background-color: rgba(161, 161, 170, var(--tw-bg-opacity));
 }
+.bg-secondary-100 {
+	--tw-bg-opacity: 1;
+	background-color: rgba(244, 244, 245, var(--tw-bg-opacity));
+}
 .bg-primary-600 {
 	--tw-bg-opacity: 1;
 	background-color: rgba(79, 70, 229, var(--tw-bg-opacity));
+}
+.bg-secondary-50 {
+	--tw-bg-opacity: 1;
+	background-color: rgba(250, 250, 250, var(--tw-bg-opacity));
 }
 .bg-gray-600 {
 	--tw-bg-opacity: 1;
@@ -2105,10 +2109,6 @@ select {
 	--tw-bg-opacity: 1;
 	background-color: rgba(219, 234, 254, var(--tw-bg-opacity));
 }
-.bg-secondary-50 {
-	--tw-bg-opacity: 1;
-	background-color: rgba(250, 250, 250, var(--tw-bg-opacity));
-}
 .bg-secondary-300 {
 	--tw-bg-opacity: 1;
 	background-color: rgba(212, 212, 216, var(--tw-bg-opacity));
@@ -2132,10 +2132,6 @@ select {
 .bg-blue-200 {
 	--tw-bg-opacity: 1;
 	background-color: rgba(191, 219, 254, var(--tw-bg-opacity));
-}
-.bg-red-500 {
-	--tw-bg-opacity: 1;
-	background-color: rgba(239, 68, 68, var(--tw-bg-opacity));
 }
 .bg-opacity-25 {
 	--tw-bg-opacity: 0.25;
@@ -2299,6 +2295,12 @@ select {
 .pb-1 {
 	padding-bottom: 0.25rem;
 }
+.pl-2 {
+	padding-left: 0.5rem;
+}
+.pr-9 {
+	padding-right: 2.25rem;
+}
 .pr-2\.5 {
 	padding-right: 0.625rem;
 }
@@ -2307,12 +2309,6 @@ select {
 }
 .pr-1 {
 	padding-right: 0.25rem;
-}
-.pl-2 {
-	padding-left: 0.5rem;
-}
-.pr-9 {
-	padding-right: 2.25rem;
 }
 .pl-1 {
 	padding-left: 0.25rem;
@@ -2497,10 +2493,6 @@ select {
 	--tw-text-opacity: 1;
 	color: rgba(16, 185, 129, var(--tw-text-opacity));
 }
-.text-secondary-500 {
-	--tw-text-opacity: 1;
-	color: rgba(113, 113, 122, var(--tw-text-opacity));
-}
 .text-secondary-700 {
 	--tw-text-opacity: 1;
 	color: rgba(63, 63, 70, var(--tw-text-opacity));
@@ -2512,6 +2504,10 @@ select {
 .text-secondary-600 {
 	--tw-text-opacity: 1;
 	color: rgba(82, 82, 91, var(--tw-text-opacity));
+}
+.text-secondary-500 {
+	--tw-text-opacity: 1;
+	color: rgba(113, 113, 122, var(--tw-text-opacity));
 }
 .text-primary-600 {
 	--tw-text-opacity: 1;

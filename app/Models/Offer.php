@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Collection;
 
 /**
  * @property int id
@@ -57,16 +57,15 @@ class Offer extends BaseModel
      * This method returns all offers for the given bidder round id and also preloads all relations
      *
      * @param int $bidderRoundId
-     * @return Collection
+     * @return Builder
      */
-    public static function getOffersForBidderRound(int $bidderRoundId): Collection
+    public static function getOffersForBidderRound(int $bidderRoundId): Builder
     {
         return self::query()
             ->with(
                 'bidderRound',
                 fn (BelongsTo $builder) => $builder->where(BidderRound::COL_ID, '=', $bidderRoundId)
             )
-            ->with('user')
-            ->get();
+            ->with('user');
     }
 }
