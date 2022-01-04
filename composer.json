@@ -19,7 +19,8 @@
         "spatie/laravel-backup": "^6.16",
         "spatie/laravel-permission": "^5.4",
         "squizlabs/php_codesniffer": "^3.6",
-        "wireui/wireui": "^0.15.0"
+        "wireui/wireui": "^0.15.0",
+        "ext-intl": "*"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.5",

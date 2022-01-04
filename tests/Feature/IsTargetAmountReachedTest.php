@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Console\Commands\IsTargetAmountReached;
 use App\Models\BidderRound;
 use App\Models\Offer;
 use App\Models\User;
@@ -16,7 +17,7 @@ use Tests\TestCase;
  */
 class IsTargetAmountReachedTest extends TestCase
 {
-    public function testTargetAmountNotReached()
+    public function testNotAllOffersMade()
     {
         /** @var BidderRound $bidderRound */
         $bidderRound = BidderRound::query()->create([
@@ -28,9 +29,32 @@ class IsTargetAmountReachedTest extends TestCase
         ]);
 
         Log::shouldReceive('info')
-            ->with("No round found which may has enough money in sum to reach the target amount for bidder round ($bidderRound)");
+            ->with("No round found for which the the offer count has been reached (0) for bidder round ($bidderRound)");
 
-        $this->artisan('bidderRound:targetAmountReached')->assertSuccessful();
+        $this->artisan('bidderRound:targetAmountReached')->assertExitCode(IsTargetAmountReached::NOT_ALL_OFFERS_GIVEN);
+    }
+
+    public function testNotEnoughMoney()
+    {
+        /** @var BidderRound $bidderRound */
+        $bidderRound = BidderRound::query()->create([
+            BidderRound::COL_TARGET_AMOUNT => 100,
+            BidderRound::COL_START_OF_SUBMISSION => Carbon::now()->subDay(),
+            BidderRound::COL_END_OF_SUBMISSION => Carbon::now()->addDay(),
+            BidderRound::COL_COUNT_OFFERS => 1,
+            BidderRound::COL_NOTE => '',
+        ]);
+
+        Offer::factory()->create([
+            Offer::COL_FK_BIDDER_ROUND => $bidderRound->id,
+            Offer::COL_AMOUNT => 51,
+            Offer::COL_ROUND => 1,
+        ]);
+
+        Log::shouldReceive('info')
+            ->with("No round found for which the the offer count has been reached (0) for bidder round ($bidderRound)");
+
+        $this->artisan('bidderRound:targetAmountReached')->assertExitCode(IsTargetAmountReached::NOT_ALL_OFFERS_GIVEN);
     }
 
     public function testIsTargetAmountReached()
@@ -75,7 +99,7 @@ class IsTargetAmountReachedTest extends TestCase
         Log::shouldReceive('info')
             ->with("Skipping bidder round ($bidderRound) since there is already a round won present. Bidder round ($bidderRound)");
 
-        $this->artisan('bidderRound:targetAmountReached')->assertSuccessful();
+        $this->artisan('bidderRound:targetAmountReached')->assertExitCode(IsTargetAmountReached::ROUND_ALREADY_PROCESSED);
         $bidderRound = $bidderRound->fresh();
 
         $this->assertEquals(1, $bidderRound->roundWon);

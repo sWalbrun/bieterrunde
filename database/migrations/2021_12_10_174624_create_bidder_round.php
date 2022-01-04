@@ -20,6 +20,7 @@ class CreateBidderRound extends Migration
             $table->timestamp(User::COL_CREATED_AT)->nullable();
             $table->timestamp(User::COL_UPDATED_AT)->nullable();
             $table->float(BidderRound::COL_TARGET_AMOUNT)->nullable();
+            $table->float(BidderRound::COL_REACHED_AMOUNT)->nullable();
             $table->dateTime(BidderRound::COL_START_OF_SUBMISSION)->nullable();
             $table->dateTime(BidderRound::COL_END_OF_SUBMISSION)->nullable();
             $table->dateTime(BidderRound::COL_VALID_FROM)->nullable();

@@ -11,6 +11,7 @@ use Illuminate\Support\Collection;
 /**
  * @property int id
  * @property float targetAmount
+ * @property float reachedAmount
  * @property int $roundWon
  * @property Carbon startOfSubmission
  * @property Carbon endOfSubmission
@@ -29,6 +30,7 @@ class BidderRound extends BaseModel
     protected $table = self::TABLE;
 
     public const COL_TARGET_AMOUNT = 'targetAmount';
+    public const COL_REACHED_AMOUNT = 'reachedAmount';
     public const COL_START_OF_SUBMISSION = 'startOfSubmission';
     public const COL_END_OF_SUBMISSION = 'endOfSubmission';
     public const COL_VALID_FROM = 'validFrom';
@@ -46,6 +48,7 @@ class BidderRound extends BaseModel
 
     protected $fillable = [
         self::COL_TARGET_AMOUNT,
+        self::COL_REACHED_AMOUNT,
         self::COL_START_OF_SUBMISSION,
         self::COL_END_OF_SUBMISSION,
         self::COL_VALID_FROM,

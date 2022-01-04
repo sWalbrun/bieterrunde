@@ -2,12 +2,18 @@
 
 namespace App\Http\Livewire;
 
+use App\Console\Commands\IsTargetAmountReached;
 use App\Models\BidderRound;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Artisan;
 use Livewire\Component;
+use Symfony\Component\Console\Command\Command;
+use WireUi\Traits\Actions;
 
 class BidderRoundForm extends Component
 {
+    use Actions;
+
     public BidderRound $bidderRound;
 
     public ?string $validFrom = '';
@@ -57,5 +63,39 @@ class BidderRoundForm extends Component
         $this->bidderRound->endOfSubmission = Carbon::createFromFormat('Y-m-d+', $this->endOfSubmission);
 
         $this->bidderRound->save();
+    }
+
+    public function calculateBidderRound()
+    {
+        $result = Artisan::call('bidderRound:targetAmountReached', ['bidderRoundId' => $this->bidderRound->id]);
+        $this->bidderRound = $this->bidderRound->fresh();
+        switch ($result) {
+            case Command::SUCCESS:
+                $round = $this->bidderRound->roundWon;
+                $amount = number_format($this->bidderRound->reachedAmount, 2, ',', '.');
+                $this->dialog()->success(
+                    trans('Es konnte eine Runde ermittelt werden!'),
+                    trans("Bieterrunde $round mit dem Betrag $amount\€ deckt die Kosten")
+                );
+                break;
+            case IsTargetAmountReached::ROUND_ALREADY_PROCESSED:
+                $round = $this->bidderRound->roundWon;
+                $amount = number_format($this->bidderRound->reachedAmount, 2, ',', '.');
+                $this->dialog()->success(
+                    trans('Die Runde wurde bereits ermittelt!'),
+                    trans("Bieterrunde $round mit dem Betrag $amount\€ deckt die Kosten")
+                );
+                break;
+            case IsTargetAmountReached::NOT_ALL_OFFERS_GIVEN:
+                $this->dialog()->info(
+                    trans('Es wurden noch nicht alle Gebote abgegeben!')
+                );
+                break;
+            case IsTargetAmountReached::NOT_ENOUGH_MONEY:
+                $this->dialog()->error(
+                    trans('Leider konnte mit keiner einzigen Runde der Zielbetrag ermittelt werden.')
+                );
+                break;
+        }
     }
 }

@@ -63,14 +63,20 @@ use App\Models\BidderRound;
             {{trans("Der Zielbetrag wurde mit der Runde $bidderRound->roundWon erreicht")}}
         </span>
     @elseif($bidderRound->exists && $bidderRound->bidderRoundBetweenNow())
-        <span class="inline-flex items-center mt-3 px-3 py-0.5 rounded-full text-sm font-medium bg-yellow-300 text-gray-800">
-            {{trans('Die Bieterrunde läuft gerade')}}
+        <span wire:click="calculateBidderRound()" class="inline-flex items-center mt-3 px-3 py-0.5 rounded-full text-sm font-medium bg-yellow-300 text-gray-800">
+            {{trans('Die Bieterrunde läuft gerade (Klicken um Prüfung durchzuführen)')}}
+        </span>
+    @elseif($bidderRound->exists && $bidderRound->endOfSubmission->lt(\Carbon\Carbon::now()))
+        <span class="inline-flex items-center mt-3 px-3 py-0.5 rounded-full text-sm font-medium bg-indigo-100 text-gray-800">
+            {{trans('Die Bieterrunde wurde bereits abgeschlossen')}}
         </span>
     @elseif($bidderRound->exists)
         <span class="inline-flex items-center mt-3 px-3 py-0.5 rounded-full text-sm font-medium bg-indigo-100 text-gray-800">
             {{trans('Die Bieterrunde hat noch nicht begonnen')}}
         </span>
     @endif
+
+    <x-dialog />
 
     <div class="py-3">
         <x-button squared positive label="{{__('Speichern')}}" wire:click="save()"/>

@@ -16,7 +16,11 @@ use Illuminate\Support\Facades\Log;
  */
 class IsTargetAmountReached extends Command
 {
-    private const BIDDER_ROUND_ID = 'bidderRoundId';
+    public const ROUND_ALREADY_PROCESSED = 2;
+    public const NOT_ALL_OFFERS_GIVEN = 3;
+    public const NOT_ENOUGH_MONEY = 4;
+
+    public const BIDDER_ROUND_ID = 'bidderRoundId';
     private const SUM_AMOUNT = 'sumAmount';
     private const COUNT_AMOUNT = 'countAmount';
 
@@ -57,9 +61,7 @@ class IsTargetAmountReached extends Command
                 fn (Builder $builder) => $builder->where('id', '=', $this->getBidderRound())
             )->get();
 
-        $rounds->each(fn (BidderRound $round) => $this->handleRound($round));
-
-        return Command::SUCCESS;
+        return $rounds->map(fn (BidderRound $round) => $this->handleRound($round))->max();
     }
 
     public function getBidderRound(): ?int
@@ -67,12 +69,12 @@ class IsTargetAmountReached extends Command
         return $this->argument(self::BIDDER_ROUND_ID);
     }
 
-    private function handleRound(BidderRound $bidderRound)
+    private function handleRound(BidderRound $bidderRound): int
     {
         if (isset($bidderRound->roundWon)) {
             Log::info("Skipping bidder round ($bidderRound) since there is already a round won present. Bidder round ($bidderRound)");
 
-            return;
+            return self::ROUND_ALREADY_PROCESSED;
         }
 
         $sum = $bidderRound
@@ -88,23 +90,35 @@ class IsTargetAmountReached extends Command
             ->groupBy([Offer::COL_ROUND])
             ->get();
 
+        $userCount = User::bidderRoundParticipants()->count();
         $matchingRound = $sum
             // make sure enough money has been raised
-            ->where(self::SUM_AMOUNT, '>=', $bidderRound->targetAmount)
+            ->where(self::COUNT_AMOUNT, '=', $userCount);
+
+        if ($matchingRound->count() <= 0) {
+            Log::info("No round found for which the the offer count has been reached ($userCount) for bidder round ($bidderRound)");
+
+            return self::NOT_ALL_OFFERS_GIVEN;
+        }
+
+        $matchingRound = $matchingRound
             // make sure every user has made its offer
-            ->where(self::COUNT_AMOUNT, '=', User::bidderRoundParticipants()->count())
+            ->where(self::SUM_AMOUNT, '>=', $bidderRound->targetAmount)
             // make sure the smallest 'enough money' gets used
             ->sortBy(self::SUM_AMOUNT)
             // the lowest round is enough
             ->first();
 
         if (!isset($matchingRound)) {
-            Log::info("No round found which may has enough money in sum to reach the target amount for bidder round ($bidderRound)");
+            Log::info("No round found which may has enough money in sum ($sum) to reach the target amount ($bidderRound->targetAmount) for bidder round ($bidderRound)");
 
-            return;
+            return self::NOT_ENOUGH_MONEY;
         }
 
         $bidderRound->roundWon = $matchingRound->{Offer::COL_ROUND};
+        $bidderRound->reachedAmount = $matchingRound->{self::SUM_AMOUNT};
         $bidderRound->save();
+
+        return Command::SUCCESS;
     }
 }
