@@ -11,7 +11,7 @@ use Livewire\Livewire;
 use Tests\TestCase;
 
 /**
- * Those tests make sure the bidder round form is working properly for creating and editing a {@link BidderRound}
+ * Those tests make sure the bidder round form is working properly for creating and editing a {@link BidderRound}.
  */
 class OfferFormTest extends TestCase
 {
@@ -28,7 +28,7 @@ class OfferFormTest extends TestCase
             BidderRound::COL_START_OF_SUBMISSION => Carbon::createFromFormat('Y-m-d', '2022-03-01'),
             BidderRound::COL_END_OF_SUBMISSION => Carbon::createFromFormat('Y-m-d', '2022-03-15'),
             BidderRound::COL_TARGET_AMOUNT => 68_000,
-            BidderRound::COL_COUNT_OFFERS => self::COUNT_OFFERS
+            BidderRound::COL_COUNT_OFFERS => self::COUNT_OFFERS,
         ]);
 
         $this->get("bidderRounds/$bidderRound->id/offers")->assertSeeLivewire('offer-form');
@@ -43,7 +43,7 @@ class OfferFormTest extends TestCase
         for ($i = 50; $i < 55; $i++) {
             $offers[] = [
                 Offer::COL_AMOUNT => 51 + $i,
-                Offer::COL_ROUND => 1 + $i
+                Offer::COL_ROUND => 1 + $i,
             ];
         }
         $bidderRound = $this->createBidderRound();
@@ -81,7 +81,7 @@ class OfferFormTest extends TestCase
             BidderRound::COL_START_OF_SUBMISSION => Carbon::createFromFormat('Y-m-d', '2022-03-01'),
             BidderRound::COL_END_OF_SUBMISSION => Carbon::createFromFormat('Y-m-d', '2022-03-15'),
             BidderRound::COL_TARGET_AMOUNT => 68_000,
-            BidderRound::COL_COUNT_OFFERS => self::COUNT_OFFERS
+            BidderRound::COL_COUNT_OFFERS => self::COUNT_OFFERS,
         ]);
     }
 }

@@ -12,17 +12,12 @@ use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 /**
- * This test takes care of all methods and business logic of the {@link User}
+ * This test takes care of all methods and business logic of the {@link User}.
  */
 class UserTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * A basic test example.
-     *
-     * @return void
-     */
     public function testIsNewMember()
     {
         /** @var User $user */
@@ -64,7 +59,7 @@ class UserTest extends TestCase
         /** @var BidderRound $bidderRound */
         $bidderRound = BidderRound::factory()->create()->first();
 
-        $offers = $this->createOffers($user, $bidderRound);
+        $this->createOffers($user, $bidderRound);
 
         /** @var Collection<User> $users */
         $users = User::bidderRoundWithRelations($bidderRound->id);
@@ -74,7 +69,7 @@ class UserTest extends TestCase
         /** @var User $user */
         $user = $users->first();
 
-        $this->assertNotNull($user->getRelation('offers'),'No offers have been loaded');
+        $this->assertNotNull($user->getRelation('offers'), 'No offers have been loaded');
         /** @var Offer $offer */
         $offer = $user->offers->first();
 

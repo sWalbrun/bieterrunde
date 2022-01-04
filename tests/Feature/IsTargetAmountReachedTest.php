@@ -16,7 +16,6 @@ use Tests\TestCase;
  */
 class IsTargetAmountReachedTest extends TestCase
 {
-
     public function testTargetAmountNotReached()
     {
         /** @var BidderRound $bidderRound */

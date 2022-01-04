@@ -18,6 +18,7 @@ abstract class TestCase extends BaseTestCase
         $user = User::factory()->create();
         $user->assignRole(Role::findOrCreate(User::ROLE_ADMIN));
         $this->actingAs($user);
+
         return $user;
     }
 }

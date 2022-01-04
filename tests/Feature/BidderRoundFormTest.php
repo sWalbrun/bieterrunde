@@ -9,13 +9,12 @@ use Livewire\Livewire;
 use Tests\TestCase;
 
 /**
- * Those tests make sure the bidder round form is working properly for creating and editing a {@link BidderRound}
+ * Those tests make sure the bidder round form is working properly for creating and editing a {@link BidderRound}.
  */
 class BidderRoundFormTest extends TestCase
 {
-
     /**
-     * This tests checks the creation of a bidder round and the corresponding validations
+     * This tests checks the creation of a bidder round and the corresponding validations.
      */
     public function testCreateBidderRound()
     {
@@ -49,7 +48,7 @@ class BidderRoundFormTest extends TestCase
     }
 
     /**
-     * This test checks if there is a bidder round route available for a fresh created round
+     * This test checks if there is a bidder round route available for a fresh created round.
      */
     public function testEditExistingBidderRound()
     {
@@ -62,7 +61,7 @@ class BidderRoundFormTest extends TestCase
             BidderRound::COL_START_OF_SUBMISSION => Carbon::createFromFormat('Y-m-d', '2022-03-01'),
             BidderRound::COL_END_OF_SUBMISSION => Carbon::createFromFormat('Y-m-d', '2022-03-15'),
             BidderRound::COL_TARGET_AMOUNT => 68_000,
-            BidderRound::COL_COUNT_OFFERS => 5
+            BidderRound::COL_COUNT_OFFERS => 5,
         ]);
 
         $this->get("bidderRounds/$bidderRound->id")->assertSeeLivewire('bidder-round-form');
