@@ -133,8 +133,8 @@ class User extends Authenticatable
             ->with(
                 'offers',
                 fn (HasMany $offers) => $offers
-                ->where(Offer::COL_FK_BIDDER_ROUND, '=', $bidderRoundId)
-                ->with('bidderRound')
+                    ->where(Offer::COL_FK_BIDDER_ROUND, '=', $bidderRoundId)
+                    ->with('bidderRound')
             );
     }
 

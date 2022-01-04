@@ -92,7 +92,7 @@ class IsTargetAmountReached extends Command
 
         $userCount = User::bidderRoundParticipants()->count();
         $matchingRound = $sum
-            // make sure enough money has been raised
+            // Make sure enough money has been raised
             ->where(self::COUNT_AMOUNT, '=', $userCount);
 
         if ($matchingRound->count() <= 0) {
@@ -102,11 +102,11 @@ class IsTargetAmountReached extends Command
         }
 
         $matchingRound = $matchingRound
-            // make sure every user has made its offer
+            // Make sure every user has made its offer
             ->where(self::SUM_AMOUNT, '>=', $bidderRound->targetAmount)
-            // make sure the smallest 'enough money' gets used
+            // Make sure the smallest 'enough money' gets used
             ->sortBy(self::SUM_AMOUNT)
-            // the lowest round is enough
+            // The lowest round is enough
             ->first();
 
         if (!isset($matchingRound)) {

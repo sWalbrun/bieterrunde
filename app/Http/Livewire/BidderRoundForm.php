@@ -78,6 +78,7 @@ class BidderRoundForm extends Component
                     trans("Bieterrunde $round mit dem Betrag $amount\€ deckt die Kosten")
                 );
                 break;
+
             case IsTargetAmountReached::ROUND_ALREADY_PROCESSED:
                 $round = $this->bidderRound->roundWon;
                 $amount = number_format($this->bidderRound->reachedAmount, 2, ',', '.');
@@ -86,14 +87,22 @@ class BidderRoundForm extends Component
                     trans("Bieterrunde $round mit dem Betrag $amount\€ deckt die Kosten")
                 );
                 break;
+
             case IsTargetAmountReached::NOT_ALL_OFFERS_GIVEN:
                 $this->dialog()->info(
                     trans('Es wurden noch nicht alle Gebote abgegeben!')
                 );
                 break;
+
             case IsTargetAmountReached::NOT_ENOUGH_MONEY:
                 $this->dialog()->error(
                     trans('Leider konnte mit keiner einzigen Runde der Zielbetrag ermittelt werden.')
+                );
+                break;
+
+            default:
+                $this->dialog()->error(
+                    trans('Es ist ein unerwarteter Fehler aufgetreten')
                 );
                 break;
         }

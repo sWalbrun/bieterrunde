@@ -22,6 +22,7 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
     public bool $showUpdateMessages = true;
 
     public ?int $bidderRoundId;
+
     private ?BidderRound $bidderRound;
 
     public function setUp(): void
@@ -67,7 +68,6 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
             ->addColumn(User::COL_EMAIL, fn (User $user) => $user->email)
             ->addColumn(User::COL_NAME, fn (User $user) => $user->name);
 
-        /** @var BidderRound $bidderRound */
         $this->bidderRound ??= BidderRound::query()->find($this->bidderRoundId);
 
         for ($round = 1; $round <= $this->bidderRound->countOffers; $round++) {
@@ -108,7 +108,6 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
             return $columns;
         }
 
-        /** @var BidderRound $bidderRound */
         $this->bidderRound ??= BidderRound::find($this->bidderRoundId);
 
         for ($round = 1; $round <= $this->bidderRound->countOffers; $round++) {
@@ -129,10 +128,6 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
         return isset($this->bidderRoundId) && $this->bidderRoundId > 0;
     }
 
-    /**
-     * @param int $round
-     * @return string
-     */
     private function getRoundIdentifier(int $round): string
     {
         return "round$round";
