@@ -108,13 +108,13 @@ class BidderRound extends BaseModel
             ->get();
     }
 
-    public function __toString()
-    {
-        return trans('Bieterrunde ') . ($this->validTo ? $this->validTo->format('Y') : '');
-    }
-
     public function bidderRoundBetweenNow(): bool
     {
         return Carbon::now()->isBetween($this->startOfSubmission, $this->endOfSubmission);
+    }
+
+    public function __toString()
+    {
+        return trans('Bieterrunde ') . ($this->validTo ? $this->validTo->format('Y') : '');
     }
 }

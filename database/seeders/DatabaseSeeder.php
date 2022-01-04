@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
             return;
         }
 
-        $bidderRoundParticipant = Role::findOrCreate(User::BIDDER_ROUND_PARTICIPANT);
+        $bidderRoundParticipant = Role::findOrCreate(User::ROLE_BIDDER_ROUND_PARTICIPANT);
 
         $email = 's.walbrun@consolinno.de';
         $user = User::query()->where(User::COL_EMAIL, '=', $email)->first();
@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
         $user->email = $email;
         $user->password = Hash::make('LetMeIn');
         $user->name = 'Sebastian';
-        $user->assignRole(Role::findOrCreate('admin'));
+        $user->assignRole(Role::findOrCreate(User::ROLE_ADMIN));
         $user->assignRole($bidderRoundParticipant);
         $user->save();
     }

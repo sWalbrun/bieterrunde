@@ -59,7 +59,7 @@ class UserTest extends TestCase
     public function testBidderRoundWithRelations()
     {
         $user = $this->createUser();
-        $user->assignRole(Role::findOrCreate(User::BIDDER_ROUND_PARTICIPANT));
+        $user->assignRole(Role::findOrCreate(User::ROLE_BIDDER_ROUND_PARTICIPANT));
 
         /** @var BidderRound $bidderRound */
         $bidderRound = BidderRound::factory()->create()->first();

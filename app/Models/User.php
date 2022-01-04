@@ -41,7 +41,8 @@ class User extends Authenticatable
     use HasRoles;
 
     public const TABLE = 'user';
-    public const BIDDER_ROUND_PARTICIPANT = 'bidderRoundParticipant';
+    public const ROLE_BIDDER_ROUND_PARTICIPANT = 'bidderRoundParticipant';
+    public const ROLE_ADMIN = 'admin';
 
     protected $table = self::TABLE;
 
@@ -128,7 +129,7 @@ class User extends Authenticatable
     public static function bidderRoundWithRelations(int $bidderRoundId): Builder
     {
         return self::query()
-            ->role(Role::findOrCreate(self::BIDDER_ROUND_PARTICIPANT))
+            ->role(Role::findOrCreate(self::ROLE_BIDDER_ROUND_PARTICIPANT))
             ->with(
                 'offers',
                 fn (HasMany $offers) => $offers
@@ -144,6 +145,6 @@ class User extends Authenticatable
      */
     public static function bidderRoundParticipants(): Builder
     {
-        return self::query()->role(Role::findOrCreate(self::BIDDER_ROUND_PARTICIPANT));
+        return self::query()->role(Role::findOrCreate(self::ROLE_BIDDER_ROUND_PARTICIPANT));
     }
 }

@@ -58,7 +58,7 @@ class IsTargetAmountReachedTest extends TestCase
         User::factory()
             ->count($countOffers)
             ->create()
-            ->each(fn (User $user) => $user->assignRole(Role::findOrCreate(User::BIDDER_ROUND_PARTICIPANT)));
+            ->each(fn (User $user) => $user->assignRole(Role::findOrCreate(User::ROLE_BIDDER_ROUND_PARTICIPANT)));
 
         $this->artisan('bidderRound:targetAmountReached')->assertSuccessful();
         $bidderRound = $bidderRound->fresh();
