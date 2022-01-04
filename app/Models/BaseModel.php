@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * This little class is handling the intersections of all models.
+ *
+ * @property int id
  */
 abstract class BaseModel extends Model
 {

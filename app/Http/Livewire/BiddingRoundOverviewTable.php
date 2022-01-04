@@ -125,7 +125,7 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
      */
     private function isBidderRoundGiven(): bool
     {
-        return isset($this->bidderRoundId) && $this->bidderRoundId >= 0;
+        return isset($this->bidderRoundId) && $this->bidderRoundId > 0;
     }
 
     /**

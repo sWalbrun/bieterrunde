@@ -81,13 +81,6 @@ class UserTest extends TestCase
         $this->assertNotNull($offer->getRelation('bidderRound'));
     }
 
-    private function createUser(): User
-    {
-        /** @var User $user */
-        $user = User::factory()->create()->first();
-        return $user;
-    }
-
     private function createOffers(User $user, ?BidderRound $bidderRound = null): Collection
     {
         return Offer::factory()

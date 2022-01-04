@@ -29,7 +29,7 @@ class OfferForm extends Component
             ->get()
             ->toArray();
 
-        if (count($this->offers) <= $bidderRound->countOffers) {
+        if (count($this->offers) < $bidderRound->countOffers) {
             $this->createOfferTemplates();
         }
     }
@@ -42,7 +42,7 @@ class OfferForm extends Component
     public function save()
     {
         $this->validate();
-        $this->offers = collect($this->offers)->map(function (array $offerAsArray, $index) {
+        $this->offers = collect($this->offers)->map(function (array $offerAsArray) {
             $offer = isset($offerAsArray['id'])
                 ? Offer::query()->find($offerAsArray['id'])
                 : new Offer();

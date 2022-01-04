@@ -42,30 +42,4 @@ class Offer extends BaseModel
     {
         return $this->belongsTo(BidderRound::class, self::COL_FK_BIDDER_ROUND);
     }
-
-    public function isInputStillPossible(): bool
-    {
-        if (!$this->bidderRound) {
-            // Should never happen
-            return false;
-        }
-
-        return $this->bidderRound->isOfferStillPossible();
-    }
-
-    /**
-     * This method returns all offers for the given bidder round id and also preloads all relations.
-     *
-     * @param int $bidderRoundId
-     * @return Builder
-     */
-    public static function getOffersForBidderRound(int $bidderRoundId): Builder
-    {
-        return self::query()
-            ->with(
-                'bidderRound',
-                fn (BelongsTo $builder) => $builder->where(BidderRound::COL_ID, '=', $bidderRoundId)
-            )
-            ->with('user');
-    }
 }
