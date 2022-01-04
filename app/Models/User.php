@@ -13,6 +13,7 @@ use Illuminate\Support\Collection;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -127,7 +128,7 @@ class User extends Authenticatable
     public static function bidderRoundWithRelations(int $bidderRoundId): Builder
     {
         return self::query()
-            ->role(self::BIDDER_ROUND_PARTICIPANT)
+            ->role(Role::findOrCreate(self::BIDDER_ROUND_PARTICIPANT))
             ->with(
                 'offers',
                 fn (HasMany $offers) => $offers
@@ -143,6 +144,6 @@ class User extends Authenticatable
      */
     public static function bidderRoundParticipants(): Builder
     {
-        return self::query()->role(self::BIDDER_ROUND_PARTICIPANT);
+        return self::query()->role(Role::findOrCreate(self::BIDDER_ROUND_PARTICIPANT));
     }
 }

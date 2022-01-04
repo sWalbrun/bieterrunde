@@ -28,7 +28,6 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
     {
         $this->showCheckBox()
             ->showSearchInput()
-            ->showPerPage()
             ->showExportOption('download', ['excel', 'csv']);
     }
 

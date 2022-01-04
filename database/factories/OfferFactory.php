@@ -26,7 +26,7 @@ class OfferFactory extends Factory
     {
         $definition = [
             Offer::COL_ROUND => self::$roundCount++,
-            Offer::COL_AMOUNT => self::$offerCount + $this->faker->numberBetween(0, 10),
+            Offer::COL_AMOUNT => self::$offerCount + 5,
         ];
         self::$offerCount += 20;
 

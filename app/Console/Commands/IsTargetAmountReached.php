@@ -82,16 +82,20 @@ class IsTargetAmountReached extends Command
                 [
                     Offer::COL_ROUND,
                     DB::raw('COUNT(' . Offer::COL_AMOUNT . ') as ' . self::COUNT_AMOUNT),
-                    DB::raw('SUM(' . Offer::COL_AMOUNT . ') as ' . self::SUM_AMOUNT),
+                    DB::raw('SUM(' . Offer::COL_AMOUNT . ') * 12 as ' . self::SUM_AMOUNT),
                 ]
             )
             ->groupBy([Offer::COL_ROUND])
             ->get();
 
         $matchingRound = $sum
+            // make sure enough money has been raised
             ->where(self::SUM_AMOUNT, '>=', $bidderRound->targetAmount)
-            ->where(self::COUNT_AMOUNT, '=', User::query()->count())
+            // make sure every user has made its offer
+            ->where(self::COUNT_AMOUNT, '=', User::bidderRoundParticipants()->count())
+            // make sure the smallest 'enough money' gets used
             ->sortBy(self::SUM_AMOUNT)
+            // the lowest round is enough
             ->first();
 
         if (!isset($matchingRound)) {

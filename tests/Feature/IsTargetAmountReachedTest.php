@@ -7,8 +7,8 @@ use App\Models\Offer;
 use App\Models\User;
 use Carbon\Carbon;
 use Database\Factories\OfferFactory;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 /**
@@ -16,9 +16,8 @@ use Tests\TestCase;
  */
 class IsTargetAmountReachedTest extends TestCase
 {
-    use RefreshDatabase;
 
-    public function testIsTargetAmountReached()
+    public function testTargetAmountNotReached()
     {
         /** @var BidderRound $bidderRound */
         $bidderRound = BidderRound::query()->create([
@@ -33,17 +32,38 @@ class IsTargetAmountReachedTest extends TestCase
             ->with("No round found which may has enough money in sum to reach the target amount for bidder round ($bidderRound)");
 
         $this->artisan('bidderRound:targetAmountReached')->assertSuccessful();
+    }
 
-        Offer::factory()->count(5)->make()->each(fn (Offer $offer) => $offer->bidderRound()->associate($bidderRound)->save());
-        OfferFactory::reset();
-        Offer::factory()->count(5)->make()->each(fn (Offer $offer) => $offer->bidderRound()->associate($bidderRound)->save());
+    public function testIsTargetAmountReached()
+    {
+        $countRounds = 5;
+        /** @var BidderRound $bidderRound */
+        $bidderRound = BidderRound::query()->create([
+            BidderRound::COL_TARGET_AMOUNT => '1981',
+            BidderRound::COL_START_OF_SUBMISSION => Carbon::now()->subDay(),
+            BidderRound::COL_END_OF_SUBMISSION => Carbon::now()->addDay(),
+            BidderRound::COL_COUNT_OFFERS => $countRounds,
+            BidderRound::COL_NOTE => '',
+        ]);
 
-        User::factory()->count(2)->create();
+        $countOffers = 3;
+        for ($i = 0; $i < $countOffers; $i++) {
+            OfferFactory::reset();
+            Offer::factory()
+                ->count($countRounds)
+                ->make()
+                ->each(fn (Offer $offer) => $offer->bidderRound()->associate($bidderRound)->save());
+        }
+
+        User::factory()
+            ->count($countOffers)
+            ->create()
+            ->each(fn (User $user) => $user->assignRole(Role::findOrCreate(User::BIDDER_ROUND_PARTICIPANT)));
 
         $this->artisan('bidderRound:targetAmountReached')->assertSuccessful();
         $bidderRound = $bidderRound->fresh();
 
-        $this->assertEquals(1, $bidderRound->roundWon);
+        $this->assertEquals(2, $bidderRound->roundWon, 'Not the matching round has been found');
     }
 
     public function testBreakBecauseOfExistingRoundWon()
