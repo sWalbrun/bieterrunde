@@ -71,20 +71,20 @@ class BidderRoundForm extends Component
         $this->bidderRound = $this->bidderRound->fresh();
         switch ($result) {
             case Command::SUCCESS:
-                $round = $this->bidderRound->roundWon;
-                $amount = number_format($this->bidderRound->reachedAmount, 2, ',', '.');
+                $round = $this->bidderRound->bidderRoundReport->roundWon;
+                $amount = $this->bidderRound->bidderRoundReport->sumAmountFormatted;
                 $this->dialog()->success(
                     trans('Es konnte eine Runde ermittelt werden!'),
-                    trans("Bieterrunde $round mit dem Betrag $amount\€ deckt die Kosten")
+                    trans("Bieterrunde $round mit dem Betrag {$amount}€ deckt die Kosten")
                 );
                 break;
 
             case IsTargetAmountReached::ROUND_ALREADY_PROCESSED:
-                $round = $this->bidderRound->roundWon;
-                $amount = number_format($this->bidderRound->reachedAmount, 2, ',', '.');
+                $round = $this->bidderRound->bidderRoundReport->roundWon;
+                $amount = $this->bidderRound->bidderRoundReport->sumAmountFormatted;
                 $this->dialog()->success(
                     trans('Die Runde wurde bereits ermittelt!'),
-                    trans("Bieterrunde $round mit dem Betrag $amount\€ deckt die Kosten")
+                    trans("Bieterrunde $round mit dem Betrag {$amount}€ deckt die Kosten")
                 );
                 break;
 

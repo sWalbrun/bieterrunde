@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\BidderRound;
+use App\Models\BidderRoundReport;
 use App\Models\Offer;
 use App\Models\User;
 use Illuminate\Console\Command;
@@ -11,8 +12,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 /**
- * This command is checking for all {@link BidderRound rounds} (or for the one given) if there may be a round which reaches
- * the {@link BidderRound::$targetAmount} and sets the {@link BidderRound::$roundWon}.
+ * This command is checking for all {@link BidderRound rounds} (or for the one given) if there may be a
+ * round which reaches the {@link BidderRound::$targetAmount} and creates a {@link BidderRoundReport report}.
  */
 class IsTargetAmountReached extends Command
 {
@@ -71,8 +72,8 @@ class IsTargetAmountReached extends Command
 
     private function handleRound(BidderRound $bidderRound): int
     {
-        if (isset($bidderRound->roundWon)) {
-            Log::info("Skipping bidder round ($bidderRound) since there is already a round won present. Bidder round ($bidderRound)");
+        if (isset($bidderRound->bidderRoundReport)) {
+            Log::info("Skipping bidder round ($bidderRound) since there is already a round won present. Report ($bidderRound->bidderRoundReport)");
 
             return self::ROUND_ALREADY_PROCESSED;
         }
@@ -115,10 +116,19 @@ class IsTargetAmountReached extends Command
             return self::NOT_ENOUGH_MONEY;
         }
 
-        $bidderRound->roundWon = $matchingRound->{Offer::COL_ROUND};
-        $bidderRound->reachedAmount = $matchingRound->{self::SUM_AMOUNT};
-        $bidderRound->save();
+        $this->createReport($matchingRound, $bidderRound);
 
         return Command::SUCCESS;
+    }
+
+    private function createReport($matchingRound, BidderRound $bidderRound): void
+    {
+        $report = new BidderRoundReport();
+        $report->roundWon = $matchingRound->{Offer::COL_ROUND};
+        $report->sumAmount = $matchingRound->{self::SUM_AMOUNT};
+        $report->countParticipants = $matchingRound->{self::COUNT_AMOUNT};
+        $report->countRounds = $bidderRound->countOffers;
+        $report->save();
+        $report->bidderRound()->associate($bidderRound)->save();
     }
 }

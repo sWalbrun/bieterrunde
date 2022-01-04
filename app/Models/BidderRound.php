@@ -6,13 +6,12 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 
 /**
  * @property int id
  * @property float targetAmount
- * @property float reachedAmount
- * @property int $roundWon
  * @property Carbon startOfSubmission
  * @property Carbon endOfSubmission
  * @property Carbon validFrom
@@ -20,6 +19,7 @@ use Illuminate\Support\Collection;
  * @property int countOffers
  * @property string note
  * @property Collection<Offer> offers
+ * @property BidderRoundReport $bidderRoundReport
  */
 class BidderRound extends BaseModel
 {
@@ -30,12 +30,10 @@ class BidderRound extends BaseModel
     protected $table = self::TABLE;
 
     public const COL_TARGET_AMOUNT = 'targetAmount';
-    public const COL_REACHED_AMOUNT = 'reachedAmount';
     public const COL_START_OF_SUBMISSION = 'startOfSubmission';
     public const COL_END_OF_SUBMISSION = 'endOfSubmission';
     public const COL_VALID_FROM = 'validFrom';
     public const COL_VALID_TO = 'validTo';
-    public const COL_ROUND_WON = 'roundWon';
     public const COL_COUNT_OFFERS = 'countOffers';
     public const COL_NOTE = 'note';
 
@@ -48,12 +46,10 @@ class BidderRound extends BaseModel
 
     protected $fillable = [
         self::COL_TARGET_AMOUNT,
-        self::COL_REACHED_AMOUNT,
         self::COL_START_OF_SUBMISSION,
         self::COL_END_OF_SUBMISSION,
         self::COL_VALID_FROM,
         self::COL_VALID_TO,
-        self::COL_ROUND_WON,
         self::COL_COUNT_OFFERS,
     ];
 
@@ -81,7 +77,7 @@ class BidderRound extends BaseModel
      */
     public function isOfferStillPossible(): bool
     {
-        return !isset($this->roundWon)
+        return !$this->bidderRoundReport()->exists()
             && $this->bidderRoundBetweenNow();
     }
 
@@ -109,6 +105,11 @@ class BidderRound extends BaseModel
             ->orderBy(self::COL_VALID_FROM, 'DESC')
             ->orderBy(self::COL_VALID_TO, 'DESC')
             ->get();
+    }
+
+    public function bidderRoundReport(): HasOne
+    {
+        return $this->hasOne(BidderRoundReport::class, BidderRoundReport::COL_FK_BIDDER_ROUND);
     }
 
     public function bidderRoundBetweenNow(): bool

@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Console\Commands\IsTargetAmountReached;
 use App\Models\BidderRound;
+use App\Models\BidderRoundReport;
 use App\Models\Offer;
 use App\Models\User;
 use Carbon\Carbon;
@@ -13,7 +14,7 @@ use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 /**
- * This test checks the business logic for setting the {@link BidderRound::$roundWon round which has won}.
+ * This test checks the business logic for creating the {@link BidderRoundReport}.
  */
 class IsTargetAmountReachedTest extends TestCase
 {
@@ -86,22 +87,21 @@ class IsTargetAmountReachedTest extends TestCase
         $this->artisan('bidderRound:targetAmountReached')->assertSuccessful();
         $bidderRound = $bidderRound->fresh();
 
-        $this->assertEquals(2, $bidderRound->roundWon, 'Not the matching round has been found');
+        $this->assertEquals(2, $bidderRound->bidderRoundReport->roundWon, 'Not the matching round has been found');
     }
 
     public function testBreakBecauseOfExistingRoundWon()
     {
         /** @var BidderRound $bidderRound */
-        $bidderRound = BidderRound::query()->create([
-            BidderRound::COL_ROUND_WON => 1,
-        ]);
+        $bidderRound = BidderRound::query()->create();
+
+        /** @var BidderRoundReport $report */
+        $report = BidderRoundReport::factory()->create();
+        $report->bidderRound()->associate($bidderRound)->save();
 
         Log::shouldReceive('info')
-            ->with("Skipping bidder round ($bidderRound) since there is already a round won present. Bidder round ($bidderRound)");
+            ->with("Skipping bidder round ($bidderRound) since there is already a round won present. Report ($bidderRound->bidderRoundReport)");
 
         $this->artisan('bidderRound:targetAmountReached')->assertExitCode(IsTargetAmountReached::ROUND_ALREADY_PROCESSED);
-        $bidderRound = $bidderRound->fresh();
-
-        $this->assertEquals(1, $bidderRound->roundWon);
     }
 }
