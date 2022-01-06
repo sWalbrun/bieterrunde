@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -31,7 +32,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Carbon $createdAt
  * @property Collection<Offer> offers
  */
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens;
     use HasFactory;
