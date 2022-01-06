@@ -41,4 +41,16 @@ class Offer extends BaseModel
     {
         return $this->belongsTo(BidderRound::class, self::COL_FK_BIDDER_ROUND);
     }
+
+    /**
+     * Returns true in case this offer is the one of the round won in case the bidder round is over already.
+     *
+     * @return bool
+     */
+    public function isOfWinningRound(): bool
+    {
+        return isset($this->bidderRound)
+            && isset($this->bidderRound->bidderRoundReport)
+            && $this->bidderRound->bidderRoundReport->roundWon === $this->round;
+    }
 }

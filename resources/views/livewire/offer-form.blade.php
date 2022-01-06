@@ -18,24 +18,28 @@ use Ramsey\Collection\Collection;
     >
         @foreach ($offers as $index => $offer)
             <div class="mt-5">
-                @if($this->isInputStillPossible())
-                    <x-input
-                        label="{{__('Runde Nr :index', ['index' => $offer['round']])}}"
-                        placeholder="{{__('Betrag')}}"
-                        hint="{{$user->isNewMember && $index == 0 ? __('Da du ein Neumitglied bist, wäre ein Obulus extra ziemlich knorke') : ''}}"
-                        wire:model.defer="offers.{{ $index }}.amount"
-                        suffix="€"
-                    />
-                @else
-                    <x-input
-                        readonly
-                        label="{{__('Runde Nr :index', ['index' => $offer['round']])}}"
-                        placeholder="{{__('Betrag')}}"
-                        hint="{{$user->isNewMember && $index == 0 ? __('Da du ein Neumitglied bist, wäre ein Obulus extra ziemlich knorke') : ''}}"
-                        wire:model.defer="offers.{{ $index }}.amount"
-                        suffix="€"
-                    />
-                @endif
+                <div class="p-1 @if($this->offerOfWinningRound($index)) border-4 border-dashed border-lime-300 border-green-400 @endif"
+                     @if($this->offerOfWinningRound($index)) title="{{trans('Runde mit genügend Umsatz')}}" @endif
+                >
+                    @if($this->isInputStillPossible())
+                        <x-input
+                            label="{{__('Runde Nr :index', ['index' => $offer['round']])}}"
+                            placeholder="{{__('Betrag')}}"
+                            hint="{{$user->isNewMember && $index == 0 ? __('Da du ein Neumitglied bist, wäre ein Obulus extra ziemlich knorke') : ''}}"
+                            wire:model.defer="offers.{{ $index }}.amount"
+                            suffix="€"
+                        />
+                    @else
+                        <x-input
+                            readonly
+                            label="{{__('Runde Nr :index', ['index' => $offer['round']])}}"
+                            placeholder="{{__('Betrag')}}"
+                            hint="{{$user->isNewMember && $index == 0 ? __('Da du ein Neumitglied bist, wäre ein Obulus extra ziemlich knorke') : ''}}"
+                            wire:model.defer="offers.{{ $index }}.amount"
+                            suffix="€"
+                        />
+                    @endif
+                </div>
             </div>
         @endforeach
 
