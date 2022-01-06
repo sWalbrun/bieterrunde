@@ -7,9 +7,12 @@ use App\Models\Offer;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Livewire\Component;
+use WireUi\Traits\Actions;
 
 class OfferForm extends Component
 {
+    use Actions;
+
     public BidderRound $bidderRound;
 
     public array $offers = [];
@@ -42,7 +45,8 @@ class OfferForm extends Component
     public function save()
     {
         $this->validate();
-        $this->offers = collect($this->offers)->map(function (array $offerAsArray) {
+        $atLeastOneChange = false;
+        $this->offers = collect($this->offers)->map(function (array $offerAsArray) use (&$atLeastOneChange) {
             $offer = isset($offerAsArray['id'])
                 ? Offer::query()->find($offerAsArray['id'])
                 : new Offer();
@@ -54,10 +58,15 @@ class OfferForm extends Component
             }
             $offer->bidderRound()->associate($this->bidderRound);
             $offer->user()->associate($this->user);
+            $atLeastOneChange |= $offer->isDirty();
             $offer->save();
 
             return $offer;
         })->toArray();
+
+        if ($atLeastOneChange) {
+            $this->dialog()->success(trans('Vielen Dank für deine Gebote. Sobald es Neuigkeiten gibt, melden wir uns!'));
+        }
     }
 
     /**

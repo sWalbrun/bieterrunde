@@ -132,6 +132,7 @@ class IsTargetAmountReached extends Command
         $report->countRounds = $bidderRound->countOffers;
         $report->save();
         $report->bidderRound()->associate($bidderRound)->save();
+
         return $report;
     }
 

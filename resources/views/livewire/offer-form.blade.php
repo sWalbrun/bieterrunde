@@ -49,5 +49,6 @@ use Ramsey\Collection\Collection;
 
     </x-card>
 
+    <x-dialog/>
     <x-errors/>
 </div>

@@ -66,7 +66,7 @@ class BidderRoundFound extends Notification implements ShouldQueue
     {
         return [
             BidderRound::TABLE . ucfirst(BidderRound::COL_ID) => $this->report->bidderRound,
-            self::URL => '/bidderRounds/' . $this->report->bidderRound->id . '/offers'
+            self::URL => '/bidderRounds/' . $this->report->bidderRound->id . '/offers',
         ];
     }
 
