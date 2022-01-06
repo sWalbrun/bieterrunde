@@ -6,6 +6,7 @@ use App\Models\BidderRound;
 use App\Models\BidderRoundReport;
 use App\Models\Offer;
 use App\Models\User;
+use App\Notifications\BidderRoundFound;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -62,7 +63,7 @@ class IsTargetAmountReached extends Command
                 fn (Builder $builder) => $builder->where('id', '=', $this->getBidderRound())
             )->get();
 
-        return $rounds->map(fn (BidderRound $round) => $this->handleRound($round))->max();
+        return $rounds->map(fn (BidderRound $round) => DB::transaction(fn () => $this->handleRound($round)))->max();
     }
 
     public function getBidderRound(): ?int
@@ -116,12 +117,13 @@ class IsTargetAmountReached extends Command
             return self::NOT_ENOUGH_MONEY;
         }
 
-        $this->createReport($matchingRound, $bidderRound);
+        $report = $this->createReport($matchingRound, $bidderRound);
+        $this->notifyUsers($report);
 
         return Command::SUCCESS;
     }
 
-    private function createReport($matchingRound, BidderRound $bidderRound): void
+    private function createReport($matchingRound, BidderRound $bidderRound): BidderRoundReport
     {
         $report = new BidderRoundReport();
         $report->roundWon = $matchingRound->{Offer::COL_ROUND};
@@ -130,5 +132,12 @@ class IsTargetAmountReached extends Command
         $report->countRounds = $bidderRound->countOffers;
         $report->save();
         $report->bidderRound()->associate($bidderRound)->save();
+        return $report;
+    }
+
+    private function notifyUsers(BidderRoundReport $report)
+    {
+        $notification = new BidderRoundFound($report);
+        User::bidderRoundParticipants()->each(fn (User $user) => $user->notify($notification));
     }
 }

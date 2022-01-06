@@ -89,17 +89,18 @@ class OfferForm extends Component
     /**
      * Returns true in case this offer is the one of the round won in case the bidder round is over already.
      *
-     * @param $offerIndex
+     * @param int $offerIndex
+     *
      * @return bool
      */
-    public function offerOfWinningRound($offerIndex): bool
+    public function offerOfWinningRound(int $offerIndex): bool
     {
         if (!isset($this->offers[$offerIndex]['id'])) {
             return false;
         }
 
-        /** @var Offer $offer */
         $offer = Offer::query()->findOrFail($this->offers[$offerIndex]['id']);
+
         return $offer->isOfWinningRound();
     }
 }
