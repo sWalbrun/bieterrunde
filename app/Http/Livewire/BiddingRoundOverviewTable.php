@@ -6,6 +6,7 @@ use App\Models\BidderRound;
 use App\Models\Offer;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Validator;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
@@ -18,6 +19,7 @@ use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
 final class BiddingRoundOverviewTable extends PowerGridComponent
 {
     use ActionButton;
+    use BiddingRoundOverviewUpdate;
 
     public bool $showUpdateMessages = true;
 
@@ -25,11 +27,12 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
 
     private ?BidderRound $bidderRound;
 
+    public const USER_ID = User::COL_ID;
+
     public function setUp(): void
     {
         $this->showCheckBox()
             ->showSearchInput()
-            ->showPerPage()
             ->showExportOption('download', ['excel', 'csv']);
     }
 
@@ -64,7 +67,7 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
         }
 
         $columns = PowerGrid::eloquent()
-            ->addColumn(User::COL_ID, fn (User $user) => $user->id)
+            ->addColumn(self::USER_ID, fn (User $user) => $user->id)
             ->addColumn(User::COL_EMAIL, fn (User $user) => $user->email)
             ->addColumn(User::COL_NAME, fn (User $user) => $user->name);
 
@@ -77,7 +80,7 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
                     ->offers
                     ->filter(fn (Offer $offer) => $offer->round === $round)
                     ->map(fn (Offer $offer) => $offer->amount)
-                    ->first()
+                    ->first(null, '0')
             );
         }
 
@@ -114,7 +117,7 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
             $columns[] = Column::add()
                 ->title(trans('Runde :round', ['round' => $round]))
                 ->field($this->getRoundIdentifier($round))
-                ->withSum(trans('Summe'), false, true);
+                ->editOnClick(true);
         }
 
         return $columns;
@@ -131,5 +134,46 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
     private function getRoundIdentifier(int $round): string
     {
         return "round$round";
+    }
+
+    private function getRoundFromIdentifier(string $roundIdentifier): int
+    {
+        return intval(substr($roundIdentifier, strlen('round')));
+    }
+
+    private function updateRound(array $data): bool
+    {
+        $this->bidderRound ??= BidderRound::find($this->bidderRoundId);
+
+        // phpcs:ignore
+        /** @var User $user */
+        $user = User::query()->findOrFail($data[self::USER_ID]);
+
+        // phpcs:ignore
+        /** @var Offer $offer */
+        $offer = $user->offersForRound($this->bidderRound)
+            ->get()
+            ->first(fn (Offer $offer) => $this->getRoundIdentifier($offer->round) === $data['field']);
+
+        if (!isset($offer)) {
+            $offer = new Offer();
+        }
+
+        $amount = $data['value'];
+        if (Validator::make(['amount' => $amount], ['amount' => 'numeric|between:50,100'])->fails()) {
+            return false;
+        }
+
+        $offer->amount = $amount;
+
+        if (!$offer->exists) {
+            $offer->save();
+            $offer->round = $this->getRoundFromIdentifier($data['field']);
+            $offer->bidderRound()->associate($this->bidderRound);
+            $offer->user()->associate($user);
+        }
+        $offer->save();
+
+        return true;
     }
 }

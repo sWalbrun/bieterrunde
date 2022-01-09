@@ -20,7 +20,8 @@
         "spatie/laravel-permission": "^5.4",
         "squizlabs/php_codesniffer": "^3.6",
         "wireui/wireui": "^0.15.0",
-        "ext-intl": "*"
+        "ext-intl": "*",
+        "ext-json": "*"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.5",
