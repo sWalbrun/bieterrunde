@@ -4,6 +4,8 @@ namespace App\Notifications;
 
 use App\Models\BidderRound;
 use App\Models\BidderRoundReport;
+use App\Models\Offer;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -43,13 +45,22 @@ class BidderRoundFound extends Notification implements ShouldQueue
     /**
      * Get the mail representation of the notification.
      *
+     * @param User $user
+     *
      * @return MailMessage
      */
-    public function toMail(): MailMessage
+    public function toMail(User $user): MailMessage
     {
+        // phpcs:ignore
+        /** @var Offer $offer */
+        $offer = $user
+            ->offersForRound($this->report->bidderRound)
+            ->where(Offer::COL_ROUND, '=', $this->report->roundWon)->first();
+
         return (new MailMessage)
             ->greeting(trans('Servus'))
-            ->line('Es ist soweit! Eine Runde mit genügend Umsatz wurde gefunden')
+            ->line(trans('Es ist soweit! Die Runde :round wurde als ausreichende Runde ermittelt!', ['round' => $offer->round]))
+            ->line(trans('Damit liegt dein monatlicher Beitrag bei :amount €', ['amount' => $offer->amountFormatted]))
             ->action(
                 trans('Gebote ansehen'),
                 url($this->getUrl())

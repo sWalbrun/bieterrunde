@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @property int id
  * @property float amount
+ * @property string amountFormatted
  * @property int round
  * @property User user
  * @property BidderRound bidderRound
@@ -52,5 +53,10 @@ class Offer extends BaseModel
         return isset($this->bidderRound)
             && isset($this->bidderRound->bidderRoundReport)
             && $this->bidderRound->bidderRoundReport->roundWon === $this->round;
+    }
+
+    public function getAmountFormattedAttribute(): string
+    {
+        return number_format($this->amount, 2, ',', '.');
     }
 }
