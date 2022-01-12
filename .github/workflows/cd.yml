@@ -1,0 +1,32 @@
+name: "CD"
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Deployment
+        uses: appleboy/ssh-action@main
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          username: ${{ secrets.SSH_USERNAME }}
+          script: |
+            REPOSRC="${{ GITHUB_SERVER_URL }}/${{ GITHUB_REPOSITORY }}.git"
+            LOCALREPO="${{ secrets.LOCALREPO }}"
+            LOCALREPO_VC_DIR="$LOCALREPO/.git"
+            if [ ! -d $LOCALREPO_VC_DIR ]
+            then
+                git clone $REPOSRC $LOCALREPO
+            else
+                cd $LOCALREPO
+                git checkout -f
+                git pull
+            fi
