@@ -21,7 +21,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           username: ${{ secrets.SSH_USERNAME }}
-          envs: REPOSRC,LOCALREPO,LOCALREPO_VC_DIR
+          envs: REPOSRC,LOCALREPO
           script: |
             if [ ! -d $LOCALREPO ]
             then
