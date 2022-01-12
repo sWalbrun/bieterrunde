@@ -19,7 +19,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           username: ${{ secrets.SSH_USERNAME }}
           script: |
-            REPOSRC="${{ GITHUB_SERVER_URL }}/${{ GITHUB_REPOSITORY }}.git"
+            REPOSRC="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY"
             LOCALREPO="${{ secrets.LOCALREPO }}"
             LOCALREPO_VC_DIR="$LOCALREPO/.git"
             if [ ! -d $LOCALREPO_VC_DIR ]
