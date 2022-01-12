@@ -261,7 +261,7 @@ use App\Models\BidderRound;
                            class="block px-4 py-2 text-sm text-gray-700"
                            role="menuitem"
                            tabindex="-1"
-                           id="user-menu-item-0">Your Profile</a>
+                           id="user-menu-item-0">{{__('Dein Profil')}}</a>
 
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
