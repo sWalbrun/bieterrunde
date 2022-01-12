@@ -15,7 +15,7 @@ jobs:
       - name: Deployment
         uses: appleboy/ssh-action@master
         env:
-          REPOSRC: ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}.git
+          REPOSRC: ${{ github.server_url }}/${{ github.repository }}.git
           LOCALREPO: ${{ secrets.LOCALREPO }}
         with:
           host: ${{ secrets.SSH_HOST }}
