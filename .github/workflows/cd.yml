@@ -15,16 +15,15 @@ jobs:
       - name: Deployment
         uses: appleboy/ssh-action@master
         env:
-          REPOSRC: "$GITHUB_SERVER_URL/${GITHUB_REPOSITORY}.git"
-          LOCALREPO: "${{ secrets.LOCALREPO }}"
-          LOCALREPO_VC_DIR: "$LOCALREPO/.git"
+          REPOSRC: ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY }}.git
+          LOCALREPO: ${{ secrets.LOCALREPO }}
         with:
           host: ${{ secrets.SSH_HOST }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           username: ${{ secrets.SSH_USERNAME }}
           envs: REPOSRC,LOCALREPO,LOCALREPO_VC_DIR
           script: |
-            if [ ! -d $LOCALREPO_VC_DIR ]
+            if [ ! -d $LOCALREPO ]
             then
                 git clone $REPOSRC $LOCALREPO
             else
