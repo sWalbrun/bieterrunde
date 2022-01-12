@@ -14,14 +14,16 @@ jobs:
         uses: actions/checkout@v2
       - name: Deployment
         uses: appleboy/ssh-action@master
+        env:
+          REPOSRC: "$GITHUB_SERVER_URL/${GITHUB_REPOSITORY}.git"
+          LOCALREPO: "${{ secrets.LOCALREPO }}"
+          LOCALREPO_VC_DIR: "$LOCALREPO/.git"
         with:
           host: ${{ secrets.SSH_HOST }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           username: ${{ secrets.SSH_USERNAME }}
+          envs: REPOSRC,LOCALREPO,LOCALREPO_VC_DIR
           script: |
-            REPOSRC=$GITHUB_SERVER_URL/${GITHUB_REPOSITORY}.git
-            LOCALREPO="${{ secrets.LOCALREPO }}"
-            LOCALREPO_VC_DIR="$LOCALREPO/.git"
             if [ ! -d $LOCALREPO_VC_DIR ]
             then
                 git clone $REPOSRC $LOCALREPO
