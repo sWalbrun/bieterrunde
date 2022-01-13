@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\EnumContributionGroup;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
@@ -23,6 +24,10 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string email
  * @property string password
  * @property Carbon email_verified_at
+ * @property EnumContributionGroup contributionGroup
+ * @property Carbon joinDate
+ * @property Carbon exitDate
+ * @property int countShares
  * @property bool remember_token
  * @property string two_factor_secret
  * @property string two_factor_recovery_codes
@@ -61,6 +66,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public const CREATED_AT = self::COL_CREATED_AT;
     public const COL_UPDATED_AT = 'updatedAt';
     public const UPDATED_AT = self::COL_UPDATED_AT;
+    public const COL_CONTRIBUTION_GROUP = 'contributionGroup';
+    public const COL_JOIN_DATE = 'joinDate';
+    public const COL_EXIT_DATE = 'exitDate';
+    public const COL_COUNT_SHARES = 'countShares';
     public const DYN_IS_NEW_MEMBER = 'isNewMember';
 
     /**
@@ -92,7 +101,9 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        self::COL_EMAIL_VERIFIED_AT => 'datetime',
+        self::COL_JOIN_DATE => 'date',
+        self::COL_EXIT_DATE => 'date',
     ];
 
     /**
@@ -106,8 +117,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getIsNewMemberAttribute(): bool
     {
-        // TODO introduce start of membership boolean
-        return $this->createdAt->isCurrentYear();
+        return isset($this->joinDate) && $this->joinDate->isCurrentYear();
     }
 
     public function offers(): HasMany
@@ -146,6 +156,12 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public static function bidderRoundParticipants(): Builder
     {
-        return self::query()->role(Role::findOrCreate(self::ROLE_BIDDER_ROUND_PARTICIPANT));
+        return self::query()
+            ->where(
+                fn (Builder $builder) => $builder
+                    ->whereNull(self::COL_EXIT_DATE)
+                    ->orWhere(self::COL_EXIT_DATE, '>=', Carbon::now())
+            )
+            ->role(Role::findOrCreate(self::ROLE_BIDDER_ROUND_PARTICIPANT));
     }
 }
