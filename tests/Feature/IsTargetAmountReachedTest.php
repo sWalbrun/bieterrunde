@@ -71,18 +71,24 @@ class IsTargetAmountReachedTest extends TestCase
         ]);
 
         $countOffers = 3;
+        $users = User::factory()
+            ->count($countOffers)
+            ->create();
         for ($i = 0; $i < $countOffers; $i++) {
             OfferFactory::reset();
+
             Offer::factory()
                 ->count($countRounds)
                 ->make()
-                ->each(fn (Offer $offer) => $offer->bidderRound()->associate($bidderRound)->save());
+                ->each(function (Offer $offer) use ($users, $bidderRound) {
+                    $offer->bidderRound()->associate($bidderRound);
+
+                    // This leads to $countOffers offered by every user
+                    $offer->user()->associate($users->get($offer->round - 1))->save();
+                });
         }
 
-        User::factory()
-            ->count($countOffers)
-            ->create()
-            ->each(fn (User $user) => $user->assignRole(Role::findOrCreate(User::ROLE_BIDDER_ROUND_PARTICIPANT)));
+        $users->each(fn (User $user) => $user->assignRole(Role::findOrCreate(User::ROLE_BIDDER_ROUND_PARTICIPANT)));
 
         $this->artisan('bidderRound:targetAmountReached')->assertSuccessful();
         $bidderRound = $bidderRound->fresh();
@@ -103,5 +109,12 @@ class IsTargetAmountReachedTest extends TestCase
             ->with("Skipping bidder round ($bidderRound) since there is already a round won present. Report ($bidderRound->bidderRoundReport)");
 
         $this->artisan('bidderRound:targetAmountReached')->assertExitCode(IsTargetAmountReached::ROUND_ALREADY_PROCESSED);
+    }
+
+    public function testTargetAmountReachedWithSomeMixedSharedCounts()
+    {
+        // TODO write this test
+
+        $this->assertTrue(true);
     }
 }

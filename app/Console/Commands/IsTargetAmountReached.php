@@ -81,12 +81,13 @@ class IsTargetAmountReached extends Command
 
         $sum = $bidderRound
             ->offers()
+            ->join(User::TABLE, User::TABLE . '.' . User::COL_ID, '=', Offer::TABLE . '.' . Offer::COL_FK_USER)
             ->toBase()
             ->select(
                 [
                     Offer::COL_ROUND,
                     DB::raw('COUNT(' . Offer::COL_AMOUNT . ') as ' . self::COUNT_AMOUNT),
-                    DB::raw('SUM(' . Offer::COL_AMOUNT . ') * 12 as ' . self::SUM_AMOUNT),
+                    DB::raw('SUM(' . Offer::COL_AMOUNT . ' * ' . User::COL_COUNT_SHARES . ') * 12 as ' . self::SUM_AMOUNT),
                 ]
             )
             ->groupBy([Offer::COL_ROUND])
