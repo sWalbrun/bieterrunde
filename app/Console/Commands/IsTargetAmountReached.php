@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Notifications\BidderRoundFound;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -21,6 +22,8 @@ class IsTargetAmountReached extends Command
     public const ROUND_ALREADY_PROCESSED = 2;
     public const NOT_ALL_OFFERS_GIVEN = 3;
     public const NOT_ENOUGH_MONEY = 4;
+
+    public const START_CAPITAL_AMOUNT = 12.5 * 12;
 
     public const BIDDER_ROUND_ID = 'bidderRoundId';
     private const SUM_AMOUNT = 'sumAmount';
@@ -79,57 +82,48 @@ class IsTargetAmountReached extends Command
             return self::ROUND_ALREADY_PROCESSED;
         }
 
-        $sum = $bidderRound
-            ->offers()
-            ->join(User::TABLE, User::TABLE . '.' . User::COL_ID, '=', Offer::TABLE . '.' . Offer::COL_FK_USER)
-            ->toBase()
-            ->select(
-                [
-                    Offer::COL_ROUND,
-                    DB::raw('COUNT(' . Offer::COL_AMOUNT . ') as ' . self::COUNT_AMOUNT),
-                    DB::raw('SUM(' . Offer::COL_AMOUNT . ' * ' . User::COL_COUNT_SHARES . ') * 12 as ' . self::SUM_AMOUNT),
-                ]
-            )
-            ->groupBy([Offer::COL_ROUND])
-            ->get();
-
+        $groupedByRound = $bidderRound->offers()->with('user')->get()->groupBy(Offer::COL_ROUND);
         $userCount = User::bidderRoundParticipants()->count();
-        $matchingRound = $sum
-            // Make sure enough money has been raised
-            ->where(self::COUNT_AMOUNT, '=', $userCount);
+        // Filter all rounds in which not all offers have been made
+        $groupedByRound = $groupedByRound->filter(fn (Collection $offersOfOneRound) => $offersOfOneRound->count() === $userCount);
 
-        if ($matchingRound->count() <= 0) {
+        if ($groupedByRound->count() <= 0) {
             Log::info("No round found for which the the offer count has been reached ($userCount) for bidder round ($bidderRound)");
 
             return self::NOT_ALL_OFFERS_GIVEN;
         }
 
-        $matchingRound = $matchingRound
-            // Make sure every user has made its offer
-            ->where(self::SUM_AMOUNT, '>=', $bidderRound->targetAmount)
-            // Make sure the smallest 'enough money' gets used
-            ->sortBy(self::SUM_AMOUNT)
-            // The lowest round is enough
-            ->first();
+        $sumOfRounds = $groupedByRound
+            ->mapWithKeys(function (Collection $offersOfOneRound, int $round) {
+                return [$round => $offersOfOneRound->sum(fn (Offer $offer) => $offer->amount * 12 * $offer->user->countShares + ($offer->user->isNewMember ? self::START_CAPITAL_AMOUNT : 0))];
+            });
 
-        if (!isset($matchingRound)) {
-            Log::info("No round found which may has enough money in sum ($sum) to reach the target amount ($bidderRound->targetAmount) for bidder round ($bidderRound)");
+        foreach ($sumOfRounds->sort() as $round => $sum) {
+            if ($sum >= $bidderRound->targetAmount) {
+                $reachedAmount = $sum;
+                $roundWon = $round;
+                break;
+            }
+        }
+
+        if (!isset($reachedAmount) || !isset($roundWon)) {
+            Log::info("No round found which may has enough money in sum ($sumOfRounds->first()) to reach the target amount ($bidderRound->targetAmount) for bidder round ($bidderRound)");
 
             return self::NOT_ENOUGH_MONEY;
         }
 
-        $report = $this->createReport($matchingRound, $bidderRound);
+        $report = $this->createReport($reachedAmount, $roundWon, $userCount, $bidderRound);
         $this->notifyUsers($report);
 
         return Command::SUCCESS;
     }
 
-    private function createReport($matchingRound, BidderRound $bidderRound): BidderRoundReport
+    private function createReport(float $sumAmount, int $roundWon, int $countParticipants, BidderRound $bidderRound): BidderRoundReport
     {
         $report = new BidderRoundReport();
-        $report->roundWon = $matchingRound->{Offer::COL_ROUND};
-        $report->sumAmount = $matchingRound->{self::SUM_AMOUNT};
-        $report->countParticipants = $matchingRound->{self::COUNT_AMOUNT};
+        $report->roundWon = $roundWon;
+        $report->sumAmount = $sumAmount;
+        $report->countParticipants = $countParticipants;
         $report->countRounds = $bidderRound->countOffers;
         $report->save();
         $report->bidderRound()->associate($bidderRound)->save();

@@ -4,6 +4,7 @@
  * @var Offer $offer
  * @var Collection<Offer> $offers
  * @var User $user
+ * @var string $offerHint
  */
 
 use App\Models\Offer;
@@ -25,7 +26,7 @@ use Ramsey\Collection\Collection;
                         <x-input
                             label="{{__('Runde Nr :index', ['index' => $offer['round']])}}"
                             placeholder="{{__('Betrag')}}"
-                            hint="{{$user->isNewMember && $index == 0 ? __('Um Startkapital für nötige Investitionen zu generieren, zahlten die Vollmitglieder in den ersten beiden Gartenjahren außer den Monatsbeiträgen noch eine Aufnahmegebühr in Höhe von drei Monatsbeiträgen (ca. 150 €). Um den Vorstand zu entlasten, wurde die Aufnahmegebühr im dritten Gartenjahr abgeschafft. Einige Mitglieder sahen darin einen Verstoß gegen das Gleichheitsprinzip. Deshalb wurde vereinbart, dass Neumitglieder darauf hingewiesen und der Fairness halber darum gebeten werden, im Eintrittsjahr ihr eigentliches Gebot um ca. 12,50 € zu erhöhen. Dies entspricht dann in etwa der früheren Aufnahmegebühr. ') : ''}}"
+                            hint="{{$index == 0 ? $offerHint : ''}}"
                             wire:model.defer="offers.{{ $index }}.amount"
                             suffix="€"
                         />
@@ -34,7 +35,7 @@ use Ramsey\Collection\Collection;
                             readonly
                             label="{{__('Runde Nr :index', ['index' => $offer['round']])}}"
                             placeholder="{{__('Betrag')}}"
-                            hint="{{$user->isNewMember && $index == 0 ? __('Um Startkapital für nötige Investitionen zu generieren, zahlten die Vollmitglieder in den ersten beiden Gartenjahren außer den Monatsbeiträgen noch eine Aufnahmegebühr in Höhe von drei Monatsbeiträgen (ca. 150 €). Um den Vorstand zu entlasten, wurde die Aufnahmegebühr im dritten Gartenjahr abgeschafft. Einige Mitglieder sahen darin einen Verstoß gegen das Gleichheitsprinzip. Deshalb wurde vereinbart, dass Neumitglieder darauf hingewiesen und der Fairness halber darum gebeten werden, im Eintrittsjahr ihr eigentliches Gebot um ca. 12,50 € zu erhöhen. Dies entspricht dann in etwa der früheren Aufnahmegebühr. ') : ''}}"
+                            hint="{{$index == 0 ? $offerHint : ''}}"
                             wire:model.defer="offers.{{ $index }}.amount"
                             suffix="€"
                         />

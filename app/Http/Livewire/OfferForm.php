@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Enums\EnumContributionGroup;
 use App\Models\BidderRound;
 use App\Models\Offer;
 use App\Models\User;
@@ -19,6 +20,8 @@ class OfferForm extends Component
 
     public User $user;
 
+    public string $offerHint = '';
+
     protected $rules = [
         'offers.*.amount' => 'numeric|between:50,100',
     ];
@@ -35,6 +38,8 @@ class OfferForm extends Component
         if (count($this->offers) < $bidderRound->countOffers) {
             $this->createOfferTemplates();
         }
+
+        $this->setOfferHint();
     }
 
     public function render()
@@ -111,5 +116,26 @@ class OfferForm extends Component
         $offer = Offer::query()->findOrFail($this->offers[$offerIndex]['id']);
 
         return $offer->isOfWinningRound();
+    }
+
+    private function setOfferHint(): void
+    {
+        if (!$this->user->isNewMember) {
+            $this->offerHint = trans('Da du sowohl ein Bestands- als auch ein ordentliches Mitglied bist, ergeben sich für dich keine weiteren Besonderheiten');
+            return;
+        }
+
+        switch ($this->user->contributionGroup) {
+            case EnumContributionGroup::FULL_MEMBER:
+                $this->offerHint = trans('Um Startkapital für nötige Investitionen zu generieren, zahlten die Vollmitglieder in den ersten beiden Gartenjahren außer den Monatsbeiträgen noch eine Aufnahmegebühr in Höhe von drei Monatsbeiträgen (ca. 150 €). Um den Vorstand zu entlasten, wurde die Aufnahmegebühr im dritten Gartenjahr abgeschafft. Einige Mitglieder sahen darin einen Verstoß gegen das Gleichheitsprinzip. Deshalb wurde vereinbart, dass Neumitglieder darauf hingewiesen und der Fairness halber darum gebeten werden, im Eintrittsjahr ihr eigentliches Gebot um ca. 12,50 € zu erhöhen. Dies entspricht dann in etwa der früheren Aufnahmegebühr.');
+                break;
+
+            case EnumContributionGroup::SUSTAINING_MEMBER:
+                $this->offerHint = trans('Danke, dass du die Welt mit deinem Beitrag zu einem besseren Ort machst!');
+                break;
+
+            default:
+                $this->offerHint = '';
+        }
     }
 }

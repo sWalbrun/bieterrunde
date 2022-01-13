@@ -60,7 +60,7 @@ class IsTargetAmountReachedTest extends TestCase
 
     public function testIsTargetAmountReached()
     {
-        $countRounds = 5;
+        $countRounds = 3;
         /** @var BidderRound $bidderRound */
         $bidderRound = BidderRound::query()->create([
             BidderRound::COL_TARGET_AMOUNT => '1981',
@@ -80,11 +80,11 @@ class IsTargetAmountReachedTest extends TestCase
             Offer::factory()
                 ->count($countRounds)
                 ->make()
-                ->each(function (Offer $offer) use ($users, $bidderRound) {
+                ->each(function (Offer $offer) use ($i, $users, $bidderRound) {
                     $offer->bidderRound()->associate($bidderRound);
 
                     // This leads to $countOffers offered by every user
-                    $offer->user()->associate($users->get($offer->round - 1))->save();
+                    $offer->user()->associate($users->get($i))->save();
                 });
         }
 
