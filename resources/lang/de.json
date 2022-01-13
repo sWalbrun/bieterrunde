@@ -615,5 +615,7 @@
     "Your email address is not verified.": "Ihre E-Mail Adresse wurde noch nicht bestätigt.",
     "Zambia": "Zambia",
     "Zimbabwe": "Zimbabwe",
-    "Your Profile": "Dein Profil"
+    "Your Profile": "Dein Profil",
+    "TARGET_AMOUNT_OF_NEW_MEMBER": "Um Startkapital für nötige Investitionen zu generieren, zahlten die Vollmitglieder in den ersten beiden Gartenjahren außer den Monatsbeiträgen noch eine Aufnahmegebühr in Höhe von drei Monatsbeiträgen (ca. 150 €). Um den Vorstand zu entlasten, wurde die Aufnahmegebühr im dritten Gartenjahr abgeschafft. Einige Mitglieder sahen darin einen Verstoß gegen das Gleichheitsprinzip. Deshalb wurde vereinbart, dass Neumitglieder darauf hingewiesen und der Fairness halber darum gebeten werden, im Eintrittsjahr ihr eigentliches Gebot um ca. 12,50 € zu erhöhen. Dies entspricht dann in etwa der früheren Aufnahmegebühr.",
+    "TARGET_AMOUNT_OF_SUSTAINING_MEMBER": "Danke, dass du die Welt mit deinem Beitrag zu einem besseren Ort machst!"
 }

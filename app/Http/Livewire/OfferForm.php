@@ -122,20 +122,22 @@ class OfferForm extends Component
     {
         if (!$this->user->isNewMember) {
             $this->offerHint = trans('Da du sowohl ein Bestands- als auch ein ordentliches Mitglied bist, ergeben sich für dich keine weiteren Besonderheiten');
+
             return;
         }
 
         switch ($this->user->contributionGroup) {
             case EnumContributionGroup::FULL_MEMBER:
-                $this->offerHint = trans('Um Startkapital für nötige Investitionen zu generieren, zahlten die Vollmitglieder in den ersten beiden Gartenjahren außer den Monatsbeiträgen noch eine Aufnahmegebühr in Höhe von drei Monatsbeiträgen (ca. 150 €). Um den Vorstand zu entlasten, wurde die Aufnahmegebühr im dritten Gartenjahr abgeschafft. Einige Mitglieder sahen darin einen Verstoß gegen das Gleichheitsprinzip. Deshalb wurde vereinbart, dass Neumitglieder darauf hingewiesen und der Fairness halber darum gebeten werden, im Eintrittsjahr ihr eigentliches Gebot um ca. 12,50 € zu erhöhen. Dies entspricht dann in etwa der früheren Aufnahmegebühr.');
+                $this->offerHint = trans('TARGET_AMOUNT_OF_NEW_MEMBER');
                 break;
 
             case EnumContributionGroup::SUSTAINING_MEMBER:
-                $this->offerHint = trans('Danke, dass du die Welt mit deinem Beitrag zu einem besseren Ort machst!');
+                $this->offerHint = trans('TARGET_AMOUNT_OF_SUSTAINING_MEMBER');
                 break;
 
             default:
                 $this->offerHint = '';
+                break;
         }
     }
 }
