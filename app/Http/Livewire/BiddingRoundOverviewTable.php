@@ -69,7 +69,8 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
         $columns = PowerGrid::eloquent()
             ->addColumn(self::USER_ID, fn (User $user) => $user->id)
             ->addColumn(User::COL_EMAIL, fn (User $user) => $user->email)
-            ->addColumn(User::COL_NAME, fn (User $user) => $user->name);
+            ->addColumn(User::COL_NAME, fn (User $user) => $user->name)
+            ->addColumn(User::COL_PAYMENT_INTERVAL, fn (User $user) => $user->paymentInterval);
 
         $this->bidderRound ??= BidderRound::query()->find($this->bidderRoundId);
 
@@ -103,6 +104,11 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
             Column::add()
                 ->title(trans('Name'))
                 ->field(User::COL_NAME)
+                ->searchable()
+                ->sortable(),
+            Column::add()
+                ->title(trans('Zahlungsintervall'))
+                ->field(User::COL_PAYMENT_INTERVAL)
                 ->searchable()
                 ->sortable(),
         ];

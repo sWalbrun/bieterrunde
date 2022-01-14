@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Enums\EnumContributionGroup;
+use App\Enums\EnumPaymentInterval;
 use App\Models\BidderRound;
 use App\Models\Offer;
 use App\Models\User;
@@ -22,14 +23,19 @@ class OfferForm extends Component
 
     public string $offerHint = '';
 
-    protected $rules = [
-        'offers.*.amount' => 'numeric|between:50,100',
-    ];
+    public ?string $paymentInterval = '';
+
+    public array $rules = [];
 
     public function mount(BidderRound $bidderRound)
     {
+        $this->rules = [
+            'offers.*.amount' => 'required|numeric|between:50,100',
+            'paymentInterval' => 'required|in:' . collect(EnumPaymentInterval::getValues())->join(','),
+        ];
         $this->bidderRound = $bidderRound;
         $this->user = auth()->user();
+        $this->paymentInterval = $this->user->paymentInterval;
         $this->offers = $this->user
             ->offersForRound($this->bidderRound)
             ->get()
@@ -68,6 +74,10 @@ class OfferForm extends Component
 
             return $offer;
         })->toArray();
+
+        $this->user->paymentInterval = $this->paymentInterval;
+        $atLeastOneChange |= $this->user->wasChanged(User::COL_PAYMENT_INTERVAL);
+        $this->user->save();
 
         if ($atLeastOneChange) {
             $this->dialog()->success(trans('Vielen Dank für deine Gebote. Sobald es Neuigkeiten gibt, melden wir uns!'));

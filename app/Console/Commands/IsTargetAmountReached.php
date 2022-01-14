@@ -95,7 +95,7 @@ class IsTargetAmountReached extends Command
 
         $sumOfRounds = $groupedByRound
             ->mapWithKeys(function (Collection $offersOfOneRound, int $round) {
-                return [$round => $offersOfOneRound->sum(fn (Offer $offer) => $offer->amount * 12 * $offer->user->countShares + ($offer->user->isNewMember ? self::START_CAPITAL_AMOUNT : 0))];
+                return [$round => $offersOfOneRound->sum(fn (Offer $offer) => $offer->amount * 12 * $offer->user->countShares)];
             });
 
         foreach ($sumOfRounds->sort() as $round => $sum) {

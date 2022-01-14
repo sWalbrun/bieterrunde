@@ -17,6 +17,15 @@ use Ramsey\Collection\Collection;
         title="{{__('Tosh a coin to your witcher')}}"
         footer="{{$this->isInputStillPossible() ? '' : trans('Eine Abgabe bzw. Änderung der Gebote ist nicht mehr möglich')}}"
     >
+        <div class="mt-5 opacity-60">
+            <select wire:model="paymentInterval" class="form-control rounded-md" name="paymentInterval">
+                <option value="" selected> {{trans('Zahlungsintervall')}} </option>
+                @foreach(\App\Enums\EnumPaymentInterval::getValues() as $paymentInterval)
+                    <option value="{{ $paymentInterval }}">{{ trans($paymentInterval) }}</option>
+                @endforeach
+            </select>
+
+        </div>
         @foreach ($offers as $index => $offer)
             <div class="mt-5">
                 <div class="p-1 @if($this->offerOfWinningRound($index)) border-4 border-dashed border-lime-300 border-green-400 @endif"
@@ -45,7 +54,11 @@ use Ramsey\Collection\Collection;
         @endforeach
 
         <div class="py-3 mt-5 float-right">
-            <x-button squared positive label="{{__('Speichern')}}" wire:click="save()"/>
+            @if($this->isInputStillPossible())
+                <x-button squared positive label="{{__('Speichern')}}" wire:click="save()"/>
+            @else
+                <x-button disabled squared positive label="{{__('Speichern')}}" wire:click="save()"/>
+            @endif
         </div>
 
     </x-card>

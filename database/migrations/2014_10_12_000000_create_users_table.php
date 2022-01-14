@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\EnumContributionGroup;
+use App\Enums\EnumPaymentInterval;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -23,6 +24,8 @@ class CreateUsersTable extends Migration
             $table->string(User::COL_PASSWORD);
             $table->rememberToken();
             $table->enum(User::COL_CONTRIBUTION_GROUP, EnumContributionGroup::getValues())->nullable();
+            $table->enum(User::COL_PAYMENT_INTERVAL, EnumPaymentInterval::getValues())
+                ->nullable();
             $table->time(User::COL_JOIN_DATE)->nullable();
             $table->time(User::COL_EXIT_DATE)->nullable();
             $table->integer(User::COL_COUNT_SHARES)->unsigned()->nullable();

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\EnumContributionGroup;
+use App\Enums\EnumPaymentInterval;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
@@ -34,6 +35,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property int current_team_id
  * @property string profile_photo_path
  * @property bool isNewMember
+ * @property EnumPaymentInterval paymentInterval
  * @property Carbon $createdAt
  * @property Collection<Offer> offers
  */
@@ -71,6 +73,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public const COL_EXIT_DATE = 'exitDate';
     public const COL_COUNT_SHARES = 'countShares';
     public const DYN_IS_NEW_MEMBER = 'isNewMember';
+    public const COL_PAYMENT_INTERVAL = 'paymentInterval';
 
     /**
      * The attributes that are mass assignable.
@@ -78,9 +81,9 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var string[]
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        self::COL_NAME,
+        self::COL_EMAIL,
+        self::COL_PASSWORD,
     ];
 
     /**
@@ -89,10 +92,10 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $hidden = [
-        'password',
-        'remember_token',
-        'two_factor_recovery_codes',
-        'two_factor_secret',
+        self::COL_PASSWORD,
+        self::COL_REMEMBER_TOKEN,
+        self::COL_TWO_FACTOR_RECOVERY_CODES,
+        self::COL_TWO_FACTOR_SECRET,
     ];
 
     /**
