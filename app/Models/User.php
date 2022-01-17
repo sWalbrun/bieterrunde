@@ -84,6 +84,12 @@ class User extends Authenticatable implements MustVerifyEmail
         self::COL_NAME,
         self::COL_EMAIL,
         self::COL_PASSWORD,
+        self::COL_CONTRIBUTION_GROUP,
+        self::COL_JOIN_DATE,
+        self::COL_EXIT_DATE,
+        self::COL_COUNT_SHARES,
+        self::COL_PAYMENT_INTERVAL,
+        self::COL_EMAIL_VERIFIED_AT,
     ];
 
     /**
@@ -105,8 +111,8 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $casts = [
         self::COL_EMAIL_VERIFIED_AT => 'datetime',
-        self::COL_JOIN_DATE => 'date',
-        self::COL_EXIT_DATE => 'date',
+        self::COL_JOIN_DATE => 'datetime',
+        self::COL_EXIT_DATE => 'datetime',
     ];
 
     /**

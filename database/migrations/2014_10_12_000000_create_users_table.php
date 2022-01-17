@@ -26,8 +26,8 @@ class CreateUsersTable extends Migration
             $table->enum(User::COL_CONTRIBUTION_GROUP, EnumContributionGroup::getValues())->nullable();
             $table->enum(User::COL_PAYMENT_INTERVAL, EnumPaymentInterval::getValues())
                 ->nullable();
-            $table->time(User::COL_JOIN_DATE)->nullable();
-            $table->time(User::COL_EXIT_DATE)->nullable();
+            $table->timestamp(User::COL_JOIN_DATE)->nullable();
+            $table->timestamp(User::COL_EXIT_DATE)->nullable();
             $table->integer(User::COL_COUNT_SHARES)->unsigned()->nullable();
             $table->foreignId(User::COL_CURRENT_TEAM_ID)->nullable();
             $table->string(User::COL_PROFILE_PHOTO_PATH, 2048)->nullable();
