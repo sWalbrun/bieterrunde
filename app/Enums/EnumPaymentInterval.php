@@ -11,7 +11,8 @@ use BenSampo\Enum\Enum;
  */
 final class EnumPaymentInterval extends Enum
 {
-    const ANNUAL = 'ANNUAL';
-    const SEMIANNUAL = 'SEMIANNUAL';
-    const QUARTERLY = 'QUARTERLY';
+    public const ANNUAL = 'ANNUAL';
+    public const SEMIANNUAL = 'SEMIANNUAL';
+    public const QUARTERLY = 'QUARTERLY';
+    public const MONTHLY = 'MONTHLY';
 }
