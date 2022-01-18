@@ -38,10 +38,10 @@ class BidderRoundForm extends Component
         if (isset($bidderRound) && $bidderRound->exists) {
             // Seems like we are actually editing an existing round
             $this->bidderRound = $bidderRound;
-            $this->validFrom = $bidderRound->validFrom->format('Y-m-d\Th:i:sP');
-            $this->validTo = $bidderRound->validTo->format('Y-m-d\Th:i:sP');
-            $this->startOfSubmission = $bidderRound->startOfSubmission->format('Y-m-d\Th:i:sP');
-            $this->endOfSubmission = $bidderRound->endOfSubmission->format('Y-m-d\Th:i:sP');
+            $this->validFrom = $bidderRound->validFrom->format('d.m.Y');
+            $this->validTo = $bidderRound->validTo->format('d.m.Y');
+            $this->startOfSubmission = $bidderRound->startOfSubmission->format('d.m.Y');
+            $this->endOfSubmission = $bidderRound->endOfSubmission->format('d.m.Y');
 
             return;
         }
@@ -57,10 +57,10 @@ class BidderRoundForm extends Component
     public function save()
     {
         $this->validate();
-        $this->bidderRound->validFrom = Carbon::createFromFormat('Y-m-d+', $this->validFrom);
-        $this->bidderRound->validTo = Carbon::createFromFormat('Y-m-d+', $this->validTo);
-        $this->bidderRound->startOfSubmission = Carbon::createFromFormat('Y-m-d+', $this->startOfSubmission);
-        $this->bidderRound->endOfSubmission = Carbon::createFromFormat('Y-m-d+', $this->endOfSubmission);
+        $this->bidderRound->validFrom = Carbon::createFromFormat('d.m.Y', $this->validFrom);
+        $this->bidderRound->validTo = Carbon::createFromFormat('d.m.Y', $this->validTo);
+        $this->bidderRound->startOfSubmission = Carbon::createFromFormat('d.m.Y', $this->startOfSubmission);
+        $this->bidderRound->endOfSubmission = Carbon::createFromFormat('d.m.Y', $this->endOfSubmission);
 
         $this->bidderRound->save();
     }

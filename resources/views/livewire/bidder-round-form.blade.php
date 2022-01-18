@@ -15,37 +15,55 @@ use App\Models\BidderRound;
         </h1>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="w-3/4">
-                <x-datetime-picker
-                    label="{{trans('Begin des Jahres')}}"
-                    placeholder="{{\Carbon\Carbon::now()->startOfYear()->format('d.m.Y')}}"
+            <div class="w-3/4 opacity-60">
+                <label for="validFrom">{{trans('Begin des Jahres')}}</label>
+                <input class="form-control rounded-md"
                     wire:model="validFrom"
-                    without-time="true"
+                    type="text" class="form-control datepicker" placeholder="{{\Carbon\Carbon::now()->startOfYear()->format('d.m.Y')}}"
+                    autocomplete="off"
+                    data-provide="datepicker" data-date-autoclose="true"
+                    data-date-format="dd.mm.yyyy" data-date-today-highlight="true"
+                    onchange="this.dispatchEvent(new InputEvent('input'))"
+                    id="validFrom"
                 />
             </div>
 
-            <div class="w-3/4">
-                <x-datetime-picker
-                    label="{{trans('Ende des Jahres')}}"
-                    placeholder="{{\Carbon\Carbon::now()->endOfYear()->format('d.m.Y')}}"
-                    wire:model="validTo"
-                    without-time="true"
+            <div class="w-3/4 opacity-60">
+                <label for="validTo">{{trans('Ende des Jahres')}}</label>
+                <input class="form-control rounded-md"
+                       wire:model="validTo"
+                       type="text" class="form-control datepicker" placeholder="{{\Carbon\Carbon::now()->endOfYear()->format('d.m.Y')}}"
+                       autocomplete="off"
+                       data-provide="datepicker" data-date-autoclose="true"
+                       data-date-format="dd.mm.yyyy" data-date-today-highlight="true"
+                       onchange="this.dispatchEvent(new InputEvent('input'))"
+                       id="validTo"
                 />
             </div>
-            <div class="w-3/4">
-                <x-datetime-picker
-                    label="{{trans('Begin der Abstimmung')}}"
-                    placeholder="{{\Carbon\Carbon::now()->format('d.m.Y')}}"
-                    wire:model="startOfSubmission"
-                    without-time="true"
+
+            <div class="w-3/4 opacity-60">
+                <label for="startOfSubmission">{{trans('Begin der Abstimmung')}}</label>
+                <input class="form-control rounded-md"
+                       wire:model="startOfSubmission"
+                       type="text" class="form-control datepicker" placeholder="{{\Carbon\Carbon::now()->format('d.m.Y')}}"
+                       autocomplete="off"
+                       data-provide="datepicker" data-date-autoclose="true"
+                       data-date-format="dd.mm.yyyy" data-date-today-highlight="true"
+                       onchange="this.dispatchEvent(new InputEvent('input'))"
+                       id="startOfSubmission"
                 />
             </div>
-            <div class="w-3/4">
-                <x-datetime-picker
-                    label="{{trans('Ende der Abstimmung')}}"
-                    placeholder="{{\Carbon\Carbon::now()->addMonth()->endOfMonth()->format('d.m.Y')}}"
-                    wire:model="endOfSubmission"
-                    without-time="true"
+
+            <div class="w-3/4 opacity-60">
+                <label for="endOfSubmission">{{trans('Ende der Abstimmung')}}</label>
+                <input class="form-control rounded-md"
+                       wire:model="endOfSubmission"
+                       type="text" class="form-control datepicker" placeholder="{{\Carbon\Carbon::now()->addMonth()->endOfMonth()->format('d.m.Y')}}"
+                       autocomplete="off"
+                       data-provide="datepicker" data-date-autoclose="true"
+                       data-date-format="dd.mm.yyyy" data-date-today-highlight="true"
+                       onchange="this.dispatchEvent(new InputEvent('input'))"
+                       id="endOfSubmission"
                 />
             </div>
 

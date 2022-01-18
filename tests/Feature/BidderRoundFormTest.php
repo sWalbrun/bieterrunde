@@ -25,10 +25,10 @@ class BidderRoundFormTest extends TestCase
             ->assertHasErrors();
 
         Livewire::test(BidderRoundForm::class)
-            ->set('validFrom', '2022-01-01T13:22:21+01:00')
-            ->set('validTo', '2022-12-31T13:22:21+01:00')
-            ->set('startOfSubmission', '2022-03-01T13:22:21+01:00')
-            ->set('endOfSubmission', '2022-03-15T13:22:21+01:00')
+            ->set('validFrom', '01.01.2022')
+            ->set('validTo', '31.12.2022')
+            ->set('startOfSubmission', '01.03.2022')
+            ->set('endOfSubmission', '15.03.2022')
             ->set('bidderRound.countOffers', 4)
             ->set('bidderRound.targetAmount', 68_000)
             ->call('save')
