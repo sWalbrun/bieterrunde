@@ -62,7 +62,14 @@ class BidderRoundForm extends Component
         $this->bidderRound->startOfSubmission = Carbon::createFromFormat('d.m.Y', $this->startOfSubmission);
         $this->bidderRound->endOfSubmission = Carbon::createFromFormat('d.m.Y', $this->endOfSubmission);
 
+        $alreadyExisting = $this->bidderRound->exists;
         $this->bidderRound->save();
+
+        if (!$alreadyExisting) {
+            return redirect("/bidderRounds/{$this->bidderRound->id}");
+        }
+
+        return null;
     }
 
     public function calculateBidderRound()

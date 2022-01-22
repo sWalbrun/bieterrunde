@@ -107,7 +107,7 @@ class IsTargetAmountReached extends Command
         }
 
         if (!isset($reachedAmount) || !isset($roundWon)) {
-            Log::info("No round found which may has enough money in sum ($sumOfRounds->first()) to reach the target amount ($bidderRound->targetAmount) for bidder round ($bidderRound)");
+            Log::info("No round found which may has enough money in sum ({$sumOfRounds->first()}) to reach the target amount ($bidderRound->targetAmount) for bidder round ($bidderRound)");
 
             return self::NOT_ENOUGH_MONEY;
         }

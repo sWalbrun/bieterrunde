@@ -118,12 +118,13 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
         }
 
         $this->bidderRound ??= BidderRound::find($this->bidderRoundId);
+        $noReportExisting = $this->bidderRound->bidderRoundReport()->doesntExist();
 
         for ($round = 1; $round <= $this->bidderRound->countOffers; $round++) {
             $columns[] = Column::add()
                 ->title(trans('Runde :round', ['round' => $round]))
                 ->field($this->getRoundIdentifier($round))
-                ->editOnClick(true);
+                ->editOnClick($noReportExisting);
         }
 
         return $columns;
