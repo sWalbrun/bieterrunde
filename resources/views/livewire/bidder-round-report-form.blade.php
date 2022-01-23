@@ -7,7 +7,7 @@ use App\Models\BidderRoundReport;
 
 ?>
 <div class="relative">
-    <h1 class="mb-5">
+    <h1 class="mb-5 w-20 md:w-1/2">
         {{trans('Ergebnis der Bieterrunde')}}
     </h1>
     <div class="absolute top-0 right-0">
