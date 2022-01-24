@@ -1,7 +1,9 @@
 <x-guest-layout>
     <x-jet-authentication-card>
         <x-slot name="logo">
-            <x-application-logo />
+            <a href="{{route('dashboard')}}">
+                <x-application-logo/>
+            </a>
         </x-slot>
 
         <div class="mb-4 text-sm text-gray-600">
