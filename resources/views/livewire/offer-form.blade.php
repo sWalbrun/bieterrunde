@@ -4,9 +4,11 @@
  * @var Offer $offer
  * @var Collection<Offer> $offers
  * @var User $user
+ * @var BidderRound $bidderRound
  * @var string $offerHint
  */
 
+use App\Models\BidderRound;
 use App\Models\Offer;
 use App\Models\User;
 use Ramsey\Collection\Collection;
@@ -15,15 +17,30 @@ use Ramsey\Collection\Collection;
 <div class="box-border w-full lg:w-1/2 p-4 border-4">
     <x-card
         title="{{__('Tosh a coin to your witcher')}}"
-        footer="{{$this->isInputStillPossible() ? '' : trans('Eine Abgabe bzw. Änderung der Gebote ist nicht mehr möglich')}}"
+        footer="{{$this->isInputStillPossible() ? '' : trans(
+                    'Eine Abgabe bzw. Änderung der Gebote ist zwischen dem :from und dem :to möglich.',
+                     ['from' => $bidderRound->startOfSubmission->format('d.m.Y'), 'to' => $bidderRound->endOfSubmission->format('d.m.Y')]
+                     )
+                }}"
     >
         <div class="mt-5 opacity-60">
+            @if($this->isInputStillPossible())
             <select wire:model="paymentInterval" class="form-control rounded-md" name="paymentInterval">
                 <option value="" selected> {{trans('Zahlungsintervall')}} </option>
                 @foreach(\App\Enums\EnumPaymentInterval::getValues() as $paymentInterval)
                     <option value="{{ $paymentInterval }}">{{ trans($paymentInterval) }}</option>
                 @endforeach
             </select>
+            @else
+                <select
+                    disabled
+                    wire:model="paymentInterval" class="form-control rounded-md" name="paymentInterval">
+                    <option value="" selected> {{trans('Zahlungsintervall')}} </option>
+                    @foreach(\App\Enums\EnumPaymentInterval::getValues() as $paymentInterval)
+                        <option value="{{ $paymentInterval }}">{{ trans($paymentInterval) }}</option>
+                    @endforeach
+                </select>
+            @endif
 
         </div>
         @foreach ($offers as $index => $offer)

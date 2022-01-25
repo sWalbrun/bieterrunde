@@ -119,6 +119,6 @@ class BidderRound extends BaseModel
 
     public function __toString()
     {
-        return trans('Bieterrunde ') . ($this->validTo ? $this->validTo->format('Y') : '');
+        return trans('Bieterrunde ') . ($this->validFrom ? $this->validFrom->format('Y') : '');
     }
 }
