@@ -27,6 +27,8 @@ class OfferForm extends Component
 
     public array $rules = [];
 
+    public string $memberType = '';
+
     public function mount(BidderRound $bidderRound)
     {
         $this->rules = [
@@ -45,7 +47,7 @@ class OfferForm extends Component
             $this->createOfferTemplates();
         }
 
-        $this->setOfferHint();
+        $this->setMemberTypeAndOfferHint();
     }
 
     public function render()
@@ -128,26 +130,27 @@ class OfferForm extends Component
         return $offer->isOfWinningRound();
     }
 
-    private function setOfferHint(): void
+    private function setMemberTypeAndOfferHint(): void
     {
-        if (!$this->user->isNewMember) {
-            $this->offerHint = trans('Da du sowohl ein Bestands- als auch ein ordentliches Mitglied bist, ergeben sich für dich keine weiteren Besonderheiten');
+        if ($this->user->contributionGroup === EnumContributionGroup::SUSTAINING_MEMBER) {
+            $this->offerHint = trans('TARGET_AMOUNT_OF_SUSTAINING_MEMBER');
+            $this->memberType = trans($this->user->contributionGroup);
 
             return;
         }
 
-        switch ($this->user->contributionGroup) {
-            case EnumContributionGroup::FULL_MEMBER:
+        if ($this->user->contributionGroup === EnumContributionGroup::FULL_MEMBER) {
+            if ($this->user->isNewMember) {
                 $this->offerHint = trans('TARGET_AMOUNT_OF_NEW_MEMBER');
-                break;
+                $this->memberType = trans('NEW_MEMBER');
 
-            case EnumContributionGroup::SUSTAINING_MEMBER:
-                $this->offerHint = trans('TARGET_AMOUNT_OF_SUSTAINING_MEMBER');
-                break;
+                return;
+            }
 
-            default:
-                $this->offerHint = '';
-                break;
+            if (!$this->user->isNewMember) {
+                $this->offerHint = trans('TARGET_AMOUNT_OF_FULL_MEMBER');
+                $this->memberType = trans($this->user->contributionGroup);
+            }
         }
     }
 }
