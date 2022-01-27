@@ -70,7 +70,9 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
             ->addColumn(self::USER_ID, fn (User $user) => $user->id)
             ->addColumn(User::COL_EMAIL, fn (User $user) => $user->email)
             ->addColumn(User::COL_NAME, fn (User $user) => $user->name)
-            ->addColumn(User::COL_PAYMENT_INTERVAL, fn (User $user) => $user->paymentInterval);
+            ->addColumn(User::COL_CONTRIBUTION_GROUP, fn (User $user) => trans()->get($user->contributionGroup))
+            ->addColumn(User::COL_COUNT_SHARES, fn (User $user) => $user->countShares)
+            ->addColumn(User::COL_PAYMENT_INTERVAL, fn (User $user) => trans()->get($user->paymentInterval));
 
         $this->bidderRound ??= BidderRound::query()->find($this->bidderRoundId);
 
@@ -106,6 +108,14 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
                 ->field(User::COL_NAME)
                 ->searchable()
                 ->sortable(),
+            Column::add()
+                ->title(trans('Beitragsgruppe'))
+                ->field(User::COL_CONTRIBUTION_GROUP)
+                ->searchable()
+                ->sortable(),
+            Column::add()
+                ->title(trans('Anzahl d. Anteile'))
+                ->field(User::COL_COUNT_SHARES),
             Column::add()
                 ->title(trans('Zahlungsintervall'))
                 ->field(User::COL_PAYMENT_INTERVAL)

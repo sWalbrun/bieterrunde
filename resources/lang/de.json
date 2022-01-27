@@ -622,5 +622,7 @@
     "SEMIANNUAL": "Halbjährlich",
     "QUARTERLY": "Vierteljährlich",
     "MONTHLY": "Monatlich",
-    "CONFIRM_REPORT_DELETION": "Wenn du das Ergebnis löschst ist es wieder möglich Gebote zu ändern. Sobald ein neues Ergebnis feststeht, wird ein weiteres Mal eine E-Mail an die Teilnehmer übermittelt"
+    "CONFIRM_REPORT_DELETION": "Wenn du das Ergebnis löschst ist es wieder möglich Gebote zu ändern. Sobald ein neues Ergebnis feststeht, wird ein weiteres Mal eine E-Mail an die Teilnehmer übermittelt",
+    "FULL_MEMBER": "Ordentliches Mitglied",
+    "SUSTAINING_MEMBER":"Fördermitglied"
 }

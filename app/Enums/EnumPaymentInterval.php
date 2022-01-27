@@ -13,6 +13,5 @@ final class EnumPaymentInterval extends Enum
 {
     public const ANNUAL = 'ANNUAL';
     public const SEMIANNUAL = 'SEMIANNUAL';
-    public const QUARTERLY = 'QUARTERLY';
     public const MONTHLY = 'MONTHLY';
 }
