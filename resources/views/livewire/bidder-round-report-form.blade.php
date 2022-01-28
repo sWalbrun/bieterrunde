@@ -7,11 +7,16 @@ use App\Models\BidderRoundReport;
 
 ?>
 <div class="relative">
-    <h1 class="mb-5 w-20 md:w-1/2">
+    <h1 class="mb-5">
         {{trans('Ergebnis der Bieterrunde')}}
     </h1>
-    <div class="absolute top-0 right-0">
-        <x-button rounded negative label="{{__('Ergebnis löschen')}}" wire:click="confirmDeleteReport()"/>
+    <div class="relative top-0 right-0">
+        <div class="px-2 py-2">
+            <x-button class="px-2" rounded info label="{{__('Mitglieder informieren')}}" wire:click="confirmNotifyUsers()"/>
+        </div>
+        <div class="px-2 py-2">
+            <x-button class="px-2" rounded negative label="{{__('Ergebnis löschen')}}" wire:click="confirmDeleteReport()"/>
+        </div>
     </div>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 pb-2 pl-2 pr-2">

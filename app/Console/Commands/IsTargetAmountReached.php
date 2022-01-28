@@ -112,13 +112,12 @@ class IsTargetAmountReached extends Command
             return self::NOT_ENOUGH_MONEY;
         }
 
-        $report = $this->createReport($reachedAmount, $roundWon, $userCount, $bidderRound);
-        $this->notifyUsers($report);
+        $this->createReport($reachedAmount, $roundWon, $userCount, $bidderRound);
 
         return Command::SUCCESS;
     }
 
-    private function createReport(float $sumAmount, int $roundWon, int $countParticipants, BidderRound $bidderRound): BidderRoundReport
+    private function createReport(float $sumAmount, int $roundWon, int $countParticipants, BidderRound $bidderRound)
     {
         $report = new BidderRoundReport();
         $report->roundWon = $roundWon;
@@ -127,13 +126,5 @@ class IsTargetAmountReached extends Command
         $report->countRounds = $bidderRound->countOffers;
         $report->save();
         $report->bidderRound()->associate($bidderRound)->save();
-
-        return $report;
-    }
-
-    private function notifyUsers(BidderRoundReport $report)
-    {
-        $notification = new BidderRoundFound($report);
-        User::bidderRoundParticipants()->each(fn (User $user) => $user->notify($notification));
     }
 }

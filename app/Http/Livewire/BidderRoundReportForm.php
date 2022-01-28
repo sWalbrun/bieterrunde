@@ -3,6 +3,9 @@
 namespace App\Http\Livewire;
 
 use App\Models\BidderRoundReport;
+use App\Models\User;
+use App\Notifications\BidderRoundFound;
+use Illuminate\Support\Facades\Notification;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 
@@ -39,5 +42,22 @@ class BidderRoundReportForm extends Component
         $this->bidderRoundReport->delete();
 
         return redirect("bidderRounds/$bidderRoundId");
+    }
+
+    public function confirmNotifyUsers(): void
+    {
+        $this->dialog()->confirm([
+            'title'       => trans('Bist du dir sicher?'),
+            'description' => trans('Wenn du bestätigst, dann wird an jeden Teilnehmer eine Email über das Ergebnis versandt.'),
+            'acceptLabel' => trans('Freilich!'),
+            'rejectLabel' => trans('Abbrechen'),
+            'method'      => 'notifyUsers',
+        ]);
+    }
+
+    public function notifyUsers(): void
+    {
+        $notification = new BidderRoundFound($this->bidderRoundReport);
+        Notification::send(User::bidderRoundParticipants()->get(), $notification);
     }
 }
