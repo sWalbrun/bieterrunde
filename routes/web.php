@@ -2,6 +2,8 @@
 
 use App\Http\Livewire\BidderRoundForm;
 use App\Http\Livewire\OfferForm;
+use App\Http\Middleware\CanManipulateBidderRound;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,8 +28,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/bidderRounds/{bidderRound}/offers', OfferForm::class);
 
-    Route::get('/bidderRounds/create', BidderRoundForm::class);
-    Route::get('/bidderRounds/{bidderRound}', BidderRoundForm::class);
+    Route::middleware(CanManipulateBidderRound::class)->group(function () {
+        Route::get('/bidderRounds/create', BidderRoundForm::class);
+        Route::get('/bidderRounds/{bidderRound}', BidderRoundForm::class);
+    });
 });
 
 require __DIR__.'/auth.php';
