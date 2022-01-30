@@ -6,7 +6,6 @@ use App\Models\BidderRound;
 use App\Models\BidderRoundReport;
 use App\Models\Offer;
 use App\Models\User;
-use App\Notifications\BidderRoundFound;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
