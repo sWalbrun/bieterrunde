@@ -88,21 +88,21 @@ use App\Models\BidderRound;
 
             @if(isset($bidderRound->bidderRoundReport) && $bidderRound->bidderRoundReport->roundWon)
                 <span class="inline-flex items-center mt-3 px-3 py-0.5 rounded-full text-sm font-medium bg-green-400 text-white">
-            {{trans("Der Zielbetrag wurde mit der Runde {$bidderRound->bidderRoundReport->roundWon} erreicht")}}
+                    {{trans("Der Zielbetrag wurde mit der Runde {$bidderRound->bidderRoundReport->roundWon} erreicht")}}
                 </span>
             @elseif($bidderRound->exists && $bidderRound->bidderRoundBetweenNow())
                 <span wire:click="calculateBidderRound()"
                       class="inline-flex items-center mt-3 px-3 py-0.5 rounded-full text-sm font-medium bg-yellow-300 text-gray-800">
-                {{trans('Die Bieterrunde läuft gerade (Klicken um Prüfung durchzuführen)')}}
-        </span>
+                    {{trans('Die Bieterrunde läuft gerade (Klicken um Prüfung durchzuführen)')}}
+                </span>
             @elseif($bidderRound->exists && $bidderRound->endOfSubmission->lt(\Carbon\Carbon::now()))
                 <span class="inline-flex items-center mt-3 px-3 py-0.5 rounded-full text-sm font-medium bg-indigo-100 text-gray-800">
-                {{trans('Die Bieterrunde wurde bereits abgeschlossen')}}
-        </span>
+                    {{trans('Die Bieterrunde wurde bereits abgeschlossen')}}
+                </span>
             @elseif($bidderRound->exists)
                 <span class="inline-flex items-center mt-3 px-3 py-0.5 rounded-full text-sm font-medium bg-indigo-100 text-gray-800">
-                {{trans('Die Bieterrunde hat noch nicht begonnen')}}
-        </span>
+                    {{trans('Die Bieterrunde hat noch nicht begonnen')}}
+                </span>
             @endif
 
             <div class="relative py-2 pr-2">

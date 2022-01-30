@@ -2,8 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Enums\EnumContributionGroup;
 use App\Models\Team;
 use App\Models\User;
+use Exception;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use Laravel\Jetstream\Features;
@@ -21,6 +23,7 @@ class UserFactory extends Factory
      * Define the model's default state.
      *
      * @return array
+     * @throws Exception
      */
     public function definition()
     {
@@ -30,14 +33,16 @@ class UserFactory extends Factory
             User::COL_EMAIL_VERIFIED_AT => now(),
             User::COL_PASSWORD => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             User::COL_REMEMBER_TOKEN => Str::random(10),
-            User::COL_COUNT_SHARES => 1,
+            User::COL_COUNT_SHARES => random_int(1, 2),
+            User::COL_CONTRIBUTION_GROUP => $this->faker->randomElement(EnumContributionGroup::getValues()),
+            User::COL_JOIN_DATE => $this->faker->dateTimeBetween('-1 years'),
         ];
     }
 
     /**
      * Indicate that the model's email address should be unverified.
      *
-     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     * @return Factory
      */
     public function unverified()
     {

@@ -15,7 +15,7 @@ use Spatie\Permission\Models\Role;
 class LocalDevelopmentSeeder extends Seeder
 {
     public const OFFER_COUNT = 3;
-    public const USER_COUNT = 85;
+    public const USER_COUNT = 120;
 
     /**
      * Seed the application's database.
@@ -48,6 +48,7 @@ class LocalDevelopmentSeeder extends Seeder
         $user->email = $email;
         $user->password = Hash::make('LetMeIn');
         $user->name = 'Admin';
+        $user->email_verified_at = Carbon::now();
         $user->assignRole(Role::findOrCreate(User::ROLE_ADMIN));
         $user->assignRole($bidderRoundParticipant);
         $user->save();

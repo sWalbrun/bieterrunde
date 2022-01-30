@@ -8,7 +8,7 @@ use App\Models\BidderRound;
 ?>
 <div x-show="sidebarIsOpened" class="fixed inset-0 bg-gray-600 bg-opacity-75" aria-hidden="true"></div>
 
-<div x-show="sidebarIsOpened" class="relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 bg-green-400">
+<div x-show="sidebarIsOpened" class="relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 bg-solawi_green">
     <div class="absolute top-0 right-0 -mr-12 pt-2">
         <button @click="sidebarIsOpened = false" type="button"
                 class="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
@@ -36,7 +36,7 @@ use App\Models\BidderRound;
                     <div class="px-2 space-y-1">
                         @foreach(App\Models\BidderRound::orderedRounds() as $round)
                             <a href="/bidderRounds/{{$round->id}}"
-                               class="bg-cyan-800 text-white group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md"
+                               class="text-stone-600 group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md"
                                aria-current="page">
                                 <svg class="mr-4 flex-shrink-0 h-6 w-6 text-cyan-200"
                                      xmlns="http://www.w3.org/2000/svg"
@@ -50,7 +50,7 @@ use App\Models\BidderRound;
                                 @endforeach
                             </a>
                             <a href="/bidderRounds/create"
-                               class="bg-cyan-800 text-white group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md"
+                               class="text-stone-600 group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md"
                                aria-current="page">
                                 <svg class="mr-4 flex-shrink-0 h-6 w-6 text-cyan-200"
                                      xmlns="http://www.w3.org/2000/svg"
@@ -70,7 +70,7 @@ use App\Models\BidderRound;
                 <div class="px-2 space-y-1">
                     @foreach(App\Models\BidderRound::orderedRounds() as $round)
                         <a href="/bidderRounds/{{$round->id}}/offers"
-                           class="bg-cyan-800 text-white group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md"
+                           class="text-stone-600 group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md"
                            aria-current="page">
                             <!-- Heroicon name: outline/home -->
                             <svg class="mr-4 flex-shrink-0 h-6 w-6 text-cyan-200" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -81,21 +81,6 @@ use App\Models\BidderRound;
                             {{$round->__toString() . ($round->allOffersGivenFor(auth()->user()) ? '' : trans(' (Ausstehend)'))}}
                             @endforeach
                         </a>
-                </div>
-            </div>
-            <div class="mt-6 pt-6">
-                <div class="px-2 space-y-1">
-
-                    <a href="#"
-                       class="group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md text-cyan-100 hover:text-white hover:bg-cyan-600">
-                        <!-- Heroicon name: outline/question-mark-circle -->
-                        <svg class="mr-4 h-6 w-6 text-cyan-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                             stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        {{ trans('Hilfe') }}
-                    </a>
                 </div>
             </div>
         </nav>
@@ -110,7 +95,7 @@ use App\Models\BidderRound;
 <!-- Static sidebar for desktop -->
 <div class="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0">
     <!-- Sidebar component, swap this element with another sidebar if you like -->
-    <div class="flex flex-col flex-grow bg-green-400 pt-5 pb-4 overflow-y-auto">
+    <div class="flex flex-col flex-grow bg-solawi_green rounded pt-5 pb-4 overflow-y-auto">
         <a href="{{route('dashboard')}}">
             <div class="flex items-center flex-shrink-0 px-4">
                 <x-application-logo/>
@@ -124,7 +109,7 @@ use App\Models\BidderRound;
                     <div class="px-2 space-y-1">
                         @foreach(App\Models\BidderRound::orderedRounds() as $round)
                             <a href="/bidderRounds/{{$round->id}}"
-                               class="bg-cyan-800 text-white group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md"
+                               class="text-stone-600 group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md"
                                aria-current="page">
                                 <svg class="mr-4 flex-shrink-0 h-6 w-6 text-cyan-200"
                                      xmlns="http://www.w3.org/2000/svg"
@@ -138,7 +123,7 @@ use App\Models\BidderRound;
                                 @endforeach
                             </a>
                             <a href="/bidderRounds/create"
-                               class="bg-cyan-800 text-white group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md"
+                               class="text-stone-600 white group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md"
                                aria-current="page">
                                 <svg class="mr-4 flex-shrink-0 h-6 w-6 text-cyan-200"
                                      xmlns="http://www.w3.org/2000/svg"
@@ -158,7 +143,7 @@ use App\Models\BidderRound;
                 <div class="px-2 space-y-1">
                     @foreach(App\Models\BidderRound::orderedRounds() as $round)
                         <a href="/bidderRounds/{{$round->id}}/offers"
-                           class="bg-cyan-800 text-white group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md"
+                           class="text-stone-600 group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md"
                            aria-current="page">
                             <!-- Heroicon name: outline/home -->
                             <svg class="mr-4 flex-shrink-0 h-6 w-6 text-cyan-200" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -172,18 +157,6 @@ use App\Models\BidderRound;
                 </div>
             </div>
             <div class="mt-6 pt-6">
-                <div class="px-2 space-y-1">
-                    <a href="#"
-                       class="group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md text-cyan-100 hover:text-white hover:bg-cyan-600">
-                        <!-- Heroicon name: outline/question-mark-circle -->
-                        <svg class="mr-4 h-6 w-6 text-cyan-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                             stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        {{ trans('Hilfe') }}
-                    </a>
-                </div>
             </div>
         </nav>
     </div>

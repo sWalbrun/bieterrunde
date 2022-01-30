@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Enums\EnumContributionGroup;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
@@ -15,7 +16,9 @@ abstract class TestCase extends BaseTestCase
     protected function createUser(): User
     {
         /** @var User $user */
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            User::COL_CONTRIBUTION_GROUP => EnumContributionGroup::FULL_MEMBER,
+        ]);
         $user->assignRole(Role::findOrCreate(User::ROLE_ADMIN));
         $this->actingAs($user);
 

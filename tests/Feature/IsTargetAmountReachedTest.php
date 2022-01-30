@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Console\Commands\IsTargetAmountReached;
+use App\Enums\EnumContributionGroup;
 use App\Models\BidderRound;
 use App\Models\BidderRoundReport;
 use App\Models\Offer;
@@ -73,7 +74,10 @@ class IsTargetAmountReachedTest extends TestCase
         $countOffers = 3;
         $users = User::factory()
             ->count($countOffers)
-            ->create();
+            ->create([
+                User::COL_CONTRIBUTION_GROUP => EnumContributionGroup::FULL_MEMBER,
+                User::COL_COUNT_SHARES => 1,
+            ]);
         for ($i = 0; $i < $countOffers; $i++) {
             OfferFactory::reset();
 

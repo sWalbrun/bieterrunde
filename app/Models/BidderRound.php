@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\EnumContributionGroup;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -26,6 +26,7 @@ class BidderRound extends BaseModel
     use HasFactory;
 
     public const TABLE = 'bidderRound';
+    public const AVERAGE_NEW_MEMBER_INCREASE_RATE = 12.5;
 
     protected $table = self::TABLE;
 
@@ -117,8 +118,53 @@ class BidderRound extends BaseModel
         return Carbon::now()->isBetween($this->startOfSubmission, $this->endOfSubmission);
     }
 
+    public function getReferenceAmountFor(User $user): ?string
+    {
+        if ($user->contributionGroup === EnumContributionGroup::SUSTAINING_MEMBER) {
+            return '>= 1,00';
+        }
+
+        $targetAmountPerMonth = $this->targetAmount / 12;
+
+        $participants = User::bidderRoundParticipants()->get();
+
+        if ($participants->isEmpty()) {
+            return trans('Betrag');
+        }
+
+        $countNew = $participants
+            ->filter(fn (User $user) => $user->isNewMember && $user->contributionGroup === EnumContributionGroup::FULL_MEMBER)
+            ->map(fn (User $user) => $user->countShares)
+            ->sum();
+        $countOld = $participants
+            ->filter(fn (User $user) => !$user->isNewMember && $user->contributionGroup === EnumContributionGroup::FULL_MEMBER)
+            ->map(fn (User $user) => $user->countShares)
+            ->sum();
+
+        $countSustainingMember = $participants
+            ->filter(fn (User $user) => $user->contributionGroup === EnumContributionGroup::SUSTAINING_MEMBER)
+            ->count();
+
+        $referenceAmountForFullMember = ($countNew * self::AVERAGE_NEW_MEMBER_INCREASE_RATE + $targetAmountPerMonth - $countSustainingMember) / ($countNew + $countOld);
+        if ($user->isNewMember) {
+            return $this->formatAmount($referenceAmountForFullMember + self::AVERAGE_NEW_MEMBER_INCREASE_RATE)
+                . ' ('
+                . $this->formatAmount($referenceAmountForFullMember)
+                . ' + '
+                . $this->formatAmount(self::AVERAGE_NEW_MEMBER_INCREASE_RATE)
+                . ')';
+        }
+
+        return $this->formatAmount($referenceAmountForFullMember);
+    }
+
     public function __toString()
     {
         return trans('Bieterrunde ') . ($this->validFrom ? $this->validFrom->format('Y') : '');
+    }
+
+    private function formatAmount(string $referenceAmountForFullMember): string
+    {
+        return number_format($referenceAmountForFullMember, 2, ',', '.');
     }
 }
