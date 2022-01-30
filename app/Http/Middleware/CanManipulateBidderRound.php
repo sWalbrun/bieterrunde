@@ -22,6 +22,7 @@ class CanManipulateBidderRound
         if (Gate::denies('createBidderRound')) {
             return redirect('/dashboard');
         }
+
         return $next($request);
     }
 }
