@@ -18,7 +18,7 @@ class BidderRoundFormTest extends TestCase
      */
     public function testCreateBidderRound()
     {
-        $this->createUser();
+        $this->createAndActAsUser();
 
         Livewire::test(BidderRoundForm::class)
             ->call('save')
@@ -52,7 +52,7 @@ class BidderRoundFormTest extends TestCase
      */
     public function testEditExistingBidderRound()
     {
-        $this->createUser();
+        $this->createAndActAsUser();
 
         /** @var BidderRound $bidderRound */
         $bidderRound = BidderRound::query()->create([

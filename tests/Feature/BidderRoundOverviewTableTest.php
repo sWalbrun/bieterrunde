@@ -32,7 +32,7 @@ class BidderRoundOverviewTableTest extends TestCase
 
     public function testUpdateFailedValidation()
     {
-        $user = $this->createUser();
+        $user = $this->createAndActAsUser();
         $bidderRound = $this->createBidderRound();
         $component = Livewire::test(BiddingRoundOverviewTable::class, ['bidderRoundId' => $bidderRound->id]);
 
@@ -54,7 +54,7 @@ class BidderRoundOverviewTableTest extends TestCase
      */
     public function testUpdateUnknownIdentifier()
     {
-        $user = $this->createUser();
+        $user = $this->createAndActAsUser();
         $bidderRound = $this->createBidderRound();
         $component = Livewire::test(BiddingRoundOverviewTable::class, ['bidderRoundId' => $bidderRound->id]);
 
@@ -71,7 +71,7 @@ class BidderRoundOverviewTableTest extends TestCase
 
     public function testUpdateSuccess()
     {
-        $user = $this->createUser();
+        $user = $this->createAndActAsUser();
         $bidderRound = $this->createBidderRound();
         $component = Livewire::test(BiddingRoundOverviewTable::class, ['bidderRoundId' => $bidderRound->id]);
 

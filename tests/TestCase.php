@@ -13,11 +13,12 @@ abstract class TestCase extends BaseTestCase
     use CreatesApplication;
     use RefreshDatabase;
 
-    protected function createUser(): User
+    protected function createAndActAsUser(): User
     {
         /** @var User $user */
         $user = User::factory()->create([
             User::COL_CONTRIBUTION_GROUP => EnumContributionGroup::FULL_MEMBER,
+            User::COL_COUNT_SHARES => 1,
         ]);
         $user->assignRole(Role::findOrCreate(User::ROLE_ADMIN));
         $this->actingAs($user);

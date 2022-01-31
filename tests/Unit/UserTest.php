@@ -30,7 +30,7 @@ class UserTest extends TestCase
 
     public function testOffers()
     {
-        $user = $this->createUser();
+        $user = $this->createAndActAsUser();
 
         $offers = $this->createOffers($user);
 
@@ -41,7 +41,7 @@ class UserTest extends TestCase
 
     public function testOffersForRound()
     {
-        $user = $this->createUser();
+        $user = $this->createAndActAsUser();
 
         /** @var BidderRound $bidderRound */
         $bidderRound = BidderRound::factory()->create()->first();
@@ -55,7 +55,7 @@ class UserTest extends TestCase
 
     public function testBidderRoundWithRelations()
     {
-        $user = $this->createUser();
+        $user = $this->createAndActAsUser();
         $user->assignRole(Role::findOrCreate(User::ROLE_BIDDER_ROUND_PARTICIPANT));
 
         /** @var BidderRound $bidderRound */

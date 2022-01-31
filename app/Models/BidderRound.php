@@ -166,6 +166,6 @@ class BidderRound extends BaseModel
 
     private function formatAmount(string $referenceAmountForFullMember): string
     {
-        return number_format($referenceAmountForFullMember, 2, ',', '.');
+        return number_format(ceil($referenceAmountForFullMember), 2, ',', '.');
     }
 }

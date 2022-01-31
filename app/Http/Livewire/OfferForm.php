@@ -64,11 +64,6 @@ class OfferForm extends Component
                 ? Offer::query()->find($offerAsArray['id'])
                 : new Offer();
             $offer->fill($offerAsArray);
-            if (!isset($offerAsArray[Offer::COL_AMOUNT])
-                || Str::length($offerAsArray[Offer::COL_AMOUNT]) === 0
-            ) {
-                $offer->amount = null;
-            }
             $offer->bidderRound()->associate($this->bidderRound);
             $offer->user()->associate($this->user);
             $atLeastOneChange |= $offer->isDirty();
