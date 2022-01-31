@@ -59,20 +59,19 @@ use Ramsey\Collection\Collection;
                     @endforeach
                 </select>
             @endif
-
         </div>
         @foreach ($offers as $index => $offer)
             <div class="mt-5">
                 <div class="p-1 @if($this->offerOfWinningRound($index)) border-4 border-dashed border-lime-300 border-green-400 @endif"
-                     @if($this->offerOfWinningRound($index)) title="{{trans('Runde mit genügend Umsatz')}}" @endif
+                     @if($this->offerOfWinningRound($index)) data-tooltip-target="tooltip-target-round" @endif
                 >
                     @if($this->isInputStillPossible())
-                        <div class="my-2 w-56 block">
+                        <div class="my-2 w-56 block" data-tooltip-target="tooltip-round-up" data-tooltip-trigger="click" >
                             <x-input
                                 label="{{__('Runde Nr :index', ['index' => $offer['round']])}}"
-                                placeholder="{{$bidderRound->getReferenceAmountFor($user)}}"
+                                placeholder="{{$bidderRound->getReferenceAmountFor($user, $index)}}"
                                 wire:model.defer="offers.{{ $index }}.amount"
-                                prefix="€"
+                                suffix="€"
                             />
                         </div>
                         @if($index == 0)
@@ -83,9 +82,9 @@ use Ramsey\Collection\Collection;
                             <x-input
                                 readonly
                                 label="{{__('Runde Nr :index', ['index' => $offer['round']])}}"
-                                placeholder="{{$bidderRound->getReferenceAmountFor($user)}}"
+                                placeholder="{{$bidderRound->getReferenceAmountFor($user, $index)}}"
                                 wire:model.defer="offers.{{ $index }}.amount"
-                                prefix="€"
+                                suffix="€"
                             />
                         </div>
                         @if($index == 0)
@@ -108,4 +107,17 @@ use Ramsey\Collection\Collection;
 
     <x-dialog/>
     <x-errors/>
+</div>
+
+<div id="tooltip-target-round" role="tooltip"
+     class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 transition-opacity duration-300 tooltip dark:bg-gray-700">
+    {{trans('Runde mit genügend Umsatz')}}
+    <div class="tooltip-arrow" data-popper-arrow></div>
+</div>
+<div id="tooltip-round-up" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+    {{trans('Gerne aufrunden ')}}
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <div class="tooltip-arrow" data-popper-arrow></div>
 </div>

@@ -118,10 +118,10 @@ class BidderRound extends BaseModel
         return Carbon::now()->isBetween($this->startOfSubmission, $this->endOfSubmission);
     }
 
-    public function getReferenceAmountFor(User $user): ?string
+    public function getReferenceAmountFor(User $user, int $roundIndex): ?string
     {
         if ($user->contributionGroup === EnumContributionGroup::SUSTAINING_MEMBER) {
-            return '>= 1,00';
+            return '>= ' . $this->formatAmount(1 + ($roundIndex * 2));
         }
 
         $targetAmountPerMonth = $this->targetAmount / 12;
@@ -145,17 +145,18 @@ class BidderRound extends BaseModel
             ->filter(fn (User $user) => $user->contributionGroup === EnumContributionGroup::SUSTAINING_MEMBER)
             ->count();
 
-        $referenceAmountForFullMember = ($countNew * self::AVERAGE_NEW_MEMBER_INCREASE_RATE + $targetAmountPerMonth - $countSustainingMember) / ($countNew + $countOld);
+        $referenceAmountForFullMember = (-self::AVERAGE_NEW_MEMBER_INCREASE_RATE * $countNew + $targetAmountPerMonth - $countSustainingMember) / ($countNew + $countOld);
         if ($user->isNewMember) {
-            return $this->formatAmount($referenceAmountForFullMember + self::AVERAGE_NEW_MEMBER_INCREASE_RATE)
+            return trans('z. B. ')
+                . $this->formatAmount($referenceAmountForFullMember + self::AVERAGE_NEW_MEMBER_INCREASE_RATE + $roundIndex * 3)
                 . ' ('
-                . $this->formatAmount($referenceAmountForFullMember)
+                . $this->formatAmount($referenceAmountForFullMember + $roundIndex * 3)
                 . ' + '
                 . $this->formatAmount(self::AVERAGE_NEW_MEMBER_INCREASE_RATE)
                 . ')';
         }
 
-        return $this->formatAmount($referenceAmountForFullMember);
+        return trans('z. B. ') . $this->formatAmount($referenceAmountForFullMember + $roundIndex * 2);
     }
 
     public function __toString()

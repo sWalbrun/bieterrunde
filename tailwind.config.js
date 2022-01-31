@@ -15,7 +15,8 @@ module.exports = {
     content: [
         './vendor/wireui/wireui/resources/**/*.blade.php',
         './vendor/wireui/wireui/ts/**/*.ts',
-        './vendor/wireui/wireui/src/View/**/*.php'
+        './vendor/wireui/wireui/src/View/**/*.php',
+        "./node_modules/@themesberg/flowbite/**/*.js"
     ],
     presets: [
         require('./vendor/wireui/wireui/tailwind.config.js')
@@ -62,6 +63,7 @@ module.exports = {
         require('@tailwindcss/forms'), require('@tailwindcss/typography'),
         require("@tailwindcss/forms")({
             strategy: 'class',
-        })
+        }),
+        require('@themesberg/flowbite/plugin')
     ],
 };
