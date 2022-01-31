@@ -7,7 +7,6 @@ use App\Enums\EnumPaymentInterval;
 use App\Models\BidderRound;
 use App\Models\Offer;
 use App\Models\User;
-use Illuminate\Support\Str;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 
