@@ -2,7 +2,9 @@
 
 namespace App\Http\Livewire;
 
+use App\Enums\EnumPaymentInterval;
 use App\Models\BidderRound;
+use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Nette\NotImplementedException;
@@ -27,6 +29,14 @@ trait BiddingRoundOverviewUpdate
 
         if (Str::startsWith($data['field'], 'round')) {
             return $this->updateRound($data);
+        }
+
+        if ($data['field'] === User::COL_PAYMENT_INTERVAL) {
+            $user = User::query()->findOrFail($data[self::USER_ID]);
+            $user->paymentInterval = EnumPaymentInterval::hasValue($data['value']) ? $data['value'] : null;
+            $user->save();
+
+            return true;
         }
 
         Log::info('No update logic found for data (' . json_encode($data) . ')');
