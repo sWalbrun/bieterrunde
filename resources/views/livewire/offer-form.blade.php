@@ -66,12 +66,14 @@ use Ramsey\Collection\Collection;
                      @if($this->offerOfWinningRound($index)) data-tooltip-target="tooltip-target-round" @endif
                 >
                     @if($this->isInputStillPossible())
-                        <x-input
-                            label="{{__('Runde Nr :index', ['index' => $offer['round']])}}"
-                            placeholder="{{$bidderRound->getReferenceAmountFor($user, $index)}}"
-                            wire:model.defer="offers.{{ $index }}.amount"
-                            suffix="€"
-                        />
+                        <div class="my-2 w-56 block" data-tooltip-target="tooltip-round-monthly-amount" data-tooltip-trigger="click" >
+                            <x-input
+                                label="{{__('Runde Nr :index', ['index' => $offer['round']])}}"
+                                placeholder="{{$bidderRound->getReferenceAmountFor($user, $index)}}"
+                                wire:model.defer="offers.{{ $index }}.amount"
+                                suffix="€"
+                            />
+                        </div>
                         @if($index == 0)
                             <label class="text-sm font-medium opacity-60">{{$offerHint}}</label>
                         @endif
@@ -110,5 +112,9 @@ use Ramsey\Collection\Collection;
 <div id="tooltip-target-round" role="tooltip"
      class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 transition-opacity duration-300 tooltip dark:bg-gray-700">
     {{trans('Runde mit genügend Umsatz')}}
+    <div class="tooltip-arrow" data-popper-arrow></div>
+</div>
+<div id="tooltip-round-monthly-amount" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+    {{trans('Hier bitte den monatlichen Beitrag angeben')}}
     <div class="tooltip-arrow" data-popper-arrow></div>
 </div>
