@@ -91,10 +91,10 @@ use App\Models\BidderRound;
                     {{trans("Der Zielbetrag wurde mit der Runde {$bidderRound->bidderRoundReport->roundWon} erreicht")}}
                 </span>
             @elseif($bidderRound->exists && $bidderRound->bidderRoundBetweenNow())
-                <span wire:click="calculateBidderRound()"
+                <button wire:click="calculateBidderRound()"
                       class="inline-flex items-center mt-3 px-3 py-0.5 rounded-full text-sm font-medium bg-yellow-300 text-gray-800">
                     {{trans('Die Bieterrunde läuft gerade (Klicken um Prüfung durchzuführen)')}}
-                </span>
+                </button>
             @elseif($bidderRound->exists && $bidderRound->endOfSubmission->lt(\Carbon\Carbon::now()))
                 <span class="inline-flex items-center mt-3 px-3 py-0.5 rounded-full text-sm font-medium bg-indigo-100 text-gray-800">
                     {{trans('Die Bieterrunde wurde bereits abgeschlossen')}}
