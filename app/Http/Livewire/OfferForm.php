@@ -31,7 +31,7 @@ class OfferForm extends Component
     public function mount(BidderRound $bidderRound)
     {
         $this->rules = [
-            'offers.*.amount' => 'required|numeric|between:50,100',
+            'offers.*.amount' => 'required|numeric|between:1,100',
             'paymentInterval' => 'required|in:' . collect(EnumPaymentInterval::getValues())->join(','),
         ];
         $this->bidderRound = $bidderRound;

@@ -158,5 +158,6 @@ return [
         'title'                 => 'Titel',
         'username'              => 'Benutzername',
         'year'                  => 'Jahr',
+        'offers.*.amount'       => 'Betrag'
     ],
 ];
