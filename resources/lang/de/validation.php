@@ -158,6 +158,6 @@ return [
         'title'                 => 'Titel',
         'username'              => 'Benutzername',
         'year'                  => 'Jahr',
-        'offers.*.amount'       => 'Betrag'
+        'offers.*.amount'       => 'Betrag',
     ],
 ];
