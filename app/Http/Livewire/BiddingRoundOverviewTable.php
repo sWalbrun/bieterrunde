@@ -183,7 +183,8 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
         if (Validator::make(
             ['amount' => $amount],
             ['amount' => OfferForm::OFFER_AMOUNT_VALIDATION]
-        )->fails()) {
+        )->fails()
+        ) {
             return false;
         }
 

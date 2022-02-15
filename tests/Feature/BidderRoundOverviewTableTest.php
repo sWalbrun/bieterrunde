@@ -38,7 +38,7 @@ class BidderRoundOverviewTableTest extends TestCase
 
         $testDataForValidationFail = [
             BiddingRoundOverviewTable::USER_ID => $user->id,
-            'value' => '12.5',
+            'value' => '0',
             'field' => 'round1',
         ];
         $component->call('update', $testDataForValidationFail);
