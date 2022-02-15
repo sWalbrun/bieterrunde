@@ -36,8 +36,8 @@ final class EnumPaymentInterval extends Enum
         }
 
         $foundInterval = collect(self::getValues())
-            ->filter(fn(string $value) => trans($value) === $interval)
-            ->map(fn(string $value) => self::fromValue($value));
+            ->filter(fn (string $value) => trans($value) === $interval)
+            ->map(fn (string $value) => self::fromValue($value));
         if ($foundInterval->isEmpty()) {
             throw new InvalidEnumKeyException($interval, self::class);
         }
