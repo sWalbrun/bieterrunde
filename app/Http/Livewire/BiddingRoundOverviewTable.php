@@ -180,7 +180,10 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
         }
 
         $amount = $data['value'];
-        if (Validator::make(['amount' => $amount], ['amount' => 'numeric|between:50,100'])->fails()) {
+        if (Validator::make(
+            ['amount' => $amount],
+            ['amount' => OfferForm::OFFER_AMOUNT_VALIDATION]
+        )->fails()) {
             return false;
         }
 

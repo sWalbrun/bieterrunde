@@ -14,6 +14,8 @@ class OfferForm extends Component
 {
     use Actions;
 
+    public const OFFER_AMOUNT_VALIDATION = 'required|numeric|between:1,100';
+
     public BidderRound $bidderRound;
 
     public array $offers = [];
@@ -31,7 +33,7 @@ class OfferForm extends Component
     public function mount(BidderRound $bidderRound)
     {
         $this->rules = [
-            'offers.*.amount' => 'required|numeric|between:1,100',
+            'offers.*.amount' => self::OFFER_AMOUNT_VALIDATION,
             'paymentInterval' => 'required|in:' . collect(EnumPaymentInterval::getValues())->join(','),
         ];
         $this->bidderRound = $bidderRound;
