@@ -95,7 +95,7 @@ class BidderRoundOverviewTableTest extends TestCase
         /** @var BiddingRoundOverviewTable $component */
         $component = resolve(BiddingRoundOverviewTable::class, ['bidderRoundId' => $bidderRound->id]);
         $this->assertEquals('Änderung wurde gespeichert', $component->updateMessages('success'));
-        $this->assertEquals('Das Ändern der Runde war nicht erfolgreich', $component->updateMessages('error'));
+        $this->assertEquals('Das Ändern des Datensatzes war nicht erfolgreich', $component->updateMessages('error'));
 
         $this->expectException(NotImplementedException::class);
         $component->updateMessages('unknown');

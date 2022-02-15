@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use App\Enums\EnumPaymentInterval;
 use App\Models\BidderRound;
 use App\Models\User;
+use BenSampo\Enum\Exceptions\InvalidEnumKeyException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Nette\NotImplementedException;
@@ -33,7 +34,11 @@ trait BiddingRoundOverviewUpdate
 
         if ($data['field'] === User::COL_PAYMENT_INTERVAL) {
             $user = User::query()->findOrFail($data[self::USER_ID]);
-            $user->paymentInterval = EnumPaymentInterval::hasValue($data['value']) ? $data['value'] : null;
+            try {
+                $user->paymentInterval = EnumPaymentInterval::determine($data['value']);
+            } catch (InvalidEnumKeyException $e) {
+                return false;
+            }
             $user->save();
 
             return true;
@@ -51,7 +56,7 @@ trait BiddingRoundOverviewUpdate
                 return trans('Änderung wurde gespeichert');
 
             case 'error':
-                return trans('Das Ändern der Runde war nicht erfolgreich');
+                return trans('Das Ändern des Datensatzes war nicht erfolgreich');
 
             default:
                 throw new NotImplementedException("No implementation for status ($status) found");
