@@ -78,7 +78,7 @@ class UserTest extends TestCase
         $this->assertNotNull($offer->getRelation('bidderRound'));
     }
 
-    private function createOffers(User $user, ?BidderRound $bidderRound = null): Collection
+    protected function createOffers(User $user, ?BidderRound $bidderRound = null): Collection
     {
         return Offer::factory()
             ->count(7)

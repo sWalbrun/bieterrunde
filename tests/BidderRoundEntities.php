@@ -13,14 +13,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Spatie\Permission\Models\Role;
 
-abstract class TestCase extends BaseTestCase
+trait BidderRoundEntities
 {
-    use CreatesApplication;
-    use RefreshDatabase;
-    use BidderRoundEntities;
-
-    public const TARGET_AMOUNT = 68_000;
-    public const COUNT_OFFERS = 5;
 
     protected function createAndActAsUser(): User
     {
@@ -47,10 +41,6 @@ abstract class TestCase extends BaseTestCase
         ]);
     }
 
-    /**
-     * @param User $user
-     * @param BidderRound $bidderRound
-     */
     protected function createOffers(User $user, BidderRound $bidderRound): Collection
     {
         OfferFactory::reset();

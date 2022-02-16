@@ -25,10 +25,10 @@ class UserFactory extends Factory
      * @return array
      * @throws Exception
      */
-    public function definition()
+    public function definition(): array
     {
         return [
-            User::COL_NAME => $this->faker->name(),
+            User::COL_NAME => $this->faker->unique()->name(),
             User::COL_EMAIL => $this->faker->unique()->safeEmail(),
             User::COL_EMAIL_VERIFIED_AT => now(),
             User::COL_PASSWORD => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password

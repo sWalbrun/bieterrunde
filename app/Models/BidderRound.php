@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\BidderRound\Participant;
 use App\Enums\EnumContributionGroup;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -68,7 +69,15 @@ class BidderRound extends BaseModel
      */
     public function offerFor(User $user): HasMany
     {
-        return $this->offers()->whereBelongsTo($user, 'user');
+        return $this->offers()->whereBelongsTo($user, $user->identifier());
+    }
+
+    /**
+     * @return Collection<Participant>
+     */
+    public function participants(): Collection
+    {
+        return User::bidderRoundParticipants()->get();
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Console\Commands\IsTargetAmountReached;
+use App\Jobs\RememberTheBidderRound;
 use App\Models\BidderRound;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
@@ -32,6 +33,18 @@ class BidderRoundForm extends Component
         'bidderRound.targetAmount' => 'numeric|required',
         'bidderRound.countOffers' => 'numeric|required',
     ];
+
+    /**
+     * This method returns a url directing to the offer form for the given bidder round.
+     *
+     * @param BidderRound $round
+     *
+     * @return string
+     */
+    public static function getUrlForRound(BidderRound $round): string
+    {
+        return url('/bidderRounds/' . $round->id . '/offers');
+    }
 
     public function mount(?BidderRound $bidderRound): void
     {
@@ -113,5 +126,20 @@ class BidderRoundForm extends Component
                 );
                 break;
         }
+    }
+
+    public function remindParticipantsConfirm()
+    {
+        $this->dialog()->confirm([
+            'title' => trans('Bist du dir sicher?'),
+            'acceptLabel' => trans('Freilich!'),
+            'rejectLabel' => trans('Abbrechen'),
+            'method' => 'remindParticipants',
+        ]);
+    }
+
+    public function remindParticipants()
+    {
+        RememberTheBidderRound::dispatch($this->bidderRound);
     }
 }

@@ -86,6 +86,24 @@ use App\Models\BidderRound;
                 />
             </div>
 
+            <div wire:loading wire:target="remindParticipants" class="modal fade text-gray-800 font-medium opacity-60 text-sm">
+                {{trans('Die Seite nicht verlassen. Andernfalls wird das Versenden der E-Mails abgebrochen.')}}
+                <div style="border-top-color:transparent"
+                     class="w-4 h-4 border-4 border-black border-solid rounded-full animate-spin inline-block"
+                ></div>
+            </div>
+
+            <div id="tooltip-round-reminder" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                {{trans('Sendet an alle Teilnehmer eine Erinnerung. Am besten absprechen damit die Teilnehmer nicht von Mails erschlagen werden.')}}
+                <div class="tooltip-arrow" data-popper-arrow></div>
+            </div>
+
+            <button wire:click="remindParticipantsConfirm()"
+                    class=" inline-flex items-center mt-3 px-3 py-0.5 rounded-full text-sm font-medium bg-solawi_green text-gray-800"
+                    data-tooltip-target="tooltip-round-reminder">
+                {{trans('Mitglieder erinnern')}}
+            </button>
+
             @if(isset($bidderRound->bidderRoundReport) && $bidderRound->bidderRoundReport->roundWon)
                 <span class="inline-flex items-center mt-3 px-3 py-0.5 rounded-full text-sm font-medium bg-green-400 text-white">
                     {{trans("Der Zielbetrag wurde mit der Runde {$bidderRound->bidderRoundReport->roundWon} erreicht")}}

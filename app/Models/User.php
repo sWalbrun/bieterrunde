@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\BidderRound\Participant;
 use App\Enums\EnumContributionGroup;
 use App\Enums\EnumPaymentInterval;
 use Carbon\Carbon;
@@ -39,7 +40,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Carbon $createdAt
  * @property Collection<Offer> offers
  */
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements MustVerifyEmail, Participant
 {
     use HasApiTokens;
     use HasFactory;
@@ -124,6 +125,21 @@ class User extends Authenticatable implements MustVerifyEmail
         'profile_photo_url',
     ];
 
+    public function name(): string
+    {
+        return $this->name ?? '';
+    }
+
+    public function email(): string
+    {
+        return $this->email ?? '';
+    }
+
+    public function identifier(): string
+    {
+        return self::TABLE;
+    }
+
     public function getIsNewMemberAttribute(): bool
     {
         return isset($this->joinDate) && $this->joinDate->isCurrentYear();
@@ -159,6 +175,8 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * TODO Change this logic for getting a loose coupling between user and bidder round
+     *
      * Returns all users which are enabled to participate at the next {@link BidderRound}.
      *
      * @return Builder

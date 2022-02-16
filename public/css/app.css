@@ -2193,6 +2193,9 @@ input[type=file]::file-selector-button:hover {
 .border-l-2 {
 	border-left-width: 2px;
 }
+.border-solid {
+	border-style: solid;
+}
 .border-dashed {
 	border-style: dashed;
 }
@@ -2229,6 +2232,10 @@ input[type=file]::file-selector-button:hover {
 .border-negative-300 {
 	--tw-border-opacity: 1;
 	border-color: rgba(252, 165, 165, var(--tw-border-opacity));
+}
+.border-black {
+	--tw-border-opacity: 1;
+	border-color: rgba(0, 0, 0, var(--tw-border-opacity));
 }
 .border-green-600 {
 	--tw-border-opacity: 1;
@@ -2350,9 +2357,17 @@ input[type=file]::file-selector-button:hover {
 	--tw-bg-opacity: 1;
 	background-color: rgba(74, 222, 128, var(--tw-bg-opacity));
 }
+.bg-secondary-400 {
+	--tw-bg-opacity: 1;
+	background-color: rgba(161, 161, 170, var(--tw-bg-opacity));
+}
 .bg-amber-700 {
 	--tw-bg-opacity: 1;
 	background-color: rgba(180, 83, 9, var(--tw-bg-opacity));
+}
+.bg-gray-900 {
+	--tw-bg-opacity: 1;
+	background-color: rgba(23, 23, 23, var(--tw-bg-opacity));
 }
 .bg-yellow-300 {
 	--tw-bg-opacity: 1;
@@ -2374,10 +2389,6 @@ input[type=file]::file-selector-button:hover {
 	--tw-bg-opacity: 1;
 	background-color: rgba(254, 242, 242, var(--tw-bg-opacity));
 }
-.bg-secondary-400 {
-	--tw-bg-opacity: 1;
-	background-color: rgba(161, 161, 170, var(--tw-bg-opacity));
-}
 .bg-secondary-300 {
 	--tw-bg-opacity: 1;
 	background-color: rgba(212, 212, 216, var(--tw-bg-opacity));
@@ -2385,10 +2396,6 @@ input[type=file]::file-selector-button:hover {
 .bg-lime-600 {
 	--tw-bg-opacity: 1;
 	background-color: rgba(101, 163, 13, var(--tw-bg-opacity));
-}
-.bg-gray-900 {
-	--tw-bg-opacity: 1;
-	background-color: rgba(23, 23, 23, var(--tw-bg-opacity));
 }
 .bg-blue-100 {
 	--tw-bg-opacity: 1;
@@ -3499,6 +3506,10 @@ input[type=file]::file-selector-button:hover {
 	--tw-bg-opacity: 1;
 	background-color: rgba(29, 78, 216, var(--tw-bg-opacity));
 }
+.dark .dark\:bg-secondary-700 {
+	--tw-bg-opacity: 1;
+	background-color: rgba(63, 63, 70, var(--tw-bg-opacity));
+}
 .dark .dark\:bg-gray-800 {
 	--tw-bg-opacity: 1;
 	background-color: rgba(38, 38, 38, var(--tw-bg-opacity));
@@ -3514,10 +3525,6 @@ input[type=file]::file-selector-button:hover {
 .dark .dark\:bg-negative-700 {
 	--tw-bg-opacity: 1;
 	background-color: rgba(185, 28, 28, var(--tw-bg-opacity));
-}
-.dark .dark\:bg-secondary-700 {
-	--tw-bg-opacity: 1;
-	background-color: rgba(63, 63, 70, var(--tw-bg-opacity));
 }
 .dark .dark\:bg-secondary-600 {
 	--tw-bg-opacity: 1;

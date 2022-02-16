@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Http\Livewire\BidderRoundForm;
 use App\Models\BidderRound;
 use App\Models\BidderRoundReport;
 use App\Models\Offer;
@@ -63,9 +64,9 @@ class BidderRoundFound extends Notification implements ShouldQueue
             ->line(trans('Damit liegt dein monatlicher Beitrag bei :amount €', ['amount' => $offer->amountFormatted ?? '_']))
             ->action(
                 trans('Gebote ansehen'),
-                url($this->getUrl())
+                BidderRoundForm::getUrlForRound($this->report->bidderRound)
             )
-            ->line(trans('Vielen dank, dass du deine Gebote eingreicht hast!'));
+            ->line(trans('Vielen Dank, dass du deine Gebote eingereicht hast!'));
     }
 
     /**
@@ -77,12 +78,7 @@ class BidderRoundFound extends Notification implements ShouldQueue
     {
         return [
             BidderRound::TABLE . ucfirst(BidderRound::COL_ID) => $this->report->bidderRound,
-            self::URL => '/bidderRounds/' . $this->report->bidderRound->id . '/offers',
+            self::URL => BidderRoundForm::getUrlForRound($this->report->bidderRound),
         ];
-    }
-
-    private function getUrl(): string
-    {
-        return '/bidderRounds/' . $this->report->bidderRound->id . '/offers';
     }
 }

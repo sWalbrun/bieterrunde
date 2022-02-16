@@ -19,8 +19,6 @@ use Tests\TestCase;
  */
 class OfferFormTest extends TestCase
 {
-    public const COUNT_OFFERS = 5;
-    public const TARGET_AMOUNT = 68_000;
 
     public function testSeeOffer()
     {
@@ -32,8 +30,8 @@ class OfferFormTest extends TestCase
             BidderRound::COL_VALID_TO => Carbon::createFromFormat('Y-m-d', '2022-12-31'),
             BidderRound::COL_START_OF_SUBMISSION => Carbon::createFromFormat('Y-m-d', '2022-03-01'),
             BidderRound::COL_END_OF_SUBMISSION => Carbon::createFromFormat('Y-m-d', '2022-03-15'),
-            BidderRound::COL_TARGET_AMOUNT => self::TARGET_AMOUNT,
-            BidderRound::COL_COUNT_OFFERS => self::COUNT_OFFERS,
+            BidderRound::COL_TARGET_AMOUNT => TestCase::TARGET_AMOUNT,
+            BidderRound::COL_COUNT_OFFERS => TestCase::COUNT_OFFERS,
         ]);
 
         $this->get("bidderRounds/$bidderRound->id/offers")->assertSeeLivewire('offer-form');
@@ -62,14 +60,7 @@ class OfferFormTest extends TestCase
     {
         $user = $this->createAndActAsUser();
         $bidderRound = $this->createBidderRound();
-        OfferFactory::reset();
-        Offer::factory()
-            ->count(self::COUNT_OFFERS)
-            ->create()
-            ->each(function (Offer $offer) use ($user, $bidderRound) {
-                $offer->bidderRound()->associate($bidderRound);
-                $offer->user()->associate($user)->save();
-            });
+        $this->createOffers($user, $bidderRound);
 
         Livewire::test(OfferForm::class, [$bidderRound])->assertSuccessful();
         // This does not work out since the input fields do not get rendered correctly. I guess this is strongly connected with the wireui
@@ -134,7 +125,7 @@ class OfferFormTest extends TestCase
         $user->assignRole(Role::findOrCreate(User::ROLE_BIDDER_ROUND_PARTICIPANT));
         Livewire::test(OfferForm::class, ['bidderRound' => $bidderRound->fresh()])
             ->assertSee('z. B. '
-                . number_format(ceil(self::TARGET_AMOUNT / 12), 2, ',', '.')
+                . number_format(ceil(TestCase::TARGET_AMOUNT / 12), 2, ',', '.')
                 . ' ('
                 . '5.655,00'
                 . ' + '
@@ -155,19 +146,7 @@ class OfferFormTest extends TestCase
 
         $user->assignRole(Role::findOrCreate(User::ROLE_BIDDER_ROUND_PARTICIPANT));
         Livewire::test(OfferForm::class, ['bidderRound' => $bidderRound->fresh()])
-            ->assertSee('z. B. ' . number_format(ceil(self::TARGET_AMOUNT / 12), 2, ',', '.')
+            ->assertSee('z. B. ' . number_format(ceil(TestCase::TARGET_AMOUNT / 12), 2, ',', '.')
             );
-    }
-
-    private function createBidderRound(): BidderRound
-    {
-        return BidderRound::query()->create([
-            BidderRound::COL_VALID_FROM => Carbon::createFromFormat('Y-m-d', '2022-01-01'),
-            BidderRound::COL_VALID_TO => Carbon::createFromFormat('Y-m-d', '2022-12-31'),
-            BidderRound::COL_START_OF_SUBMISSION => Carbon::createFromFormat('Y-m-d', '2022-03-01'),
-            BidderRound::COL_END_OF_SUBMISSION => Carbon::createFromFormat('Y-m-d', '2022-03-15'),
-            BidderRound::COL_TARGET_AMOUNT => self::TARGET_AMOUNT,
-            BidderRound::COL_COUNT_OFFERS => self::COUNT_OFFERS,
-        ]);
     }
 }

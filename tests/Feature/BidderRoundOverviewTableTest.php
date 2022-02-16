@@ -100,16 +100,4 @@ class BidderRoundOverviewTableTest extends TestCase
         $this->expectException(NotImplementedException::class);
         $component->updateMessages('unknown');
     }
-
-    private function createBidderRound(): BidderRound
-    {
-        return BidderRound::query()->create([
-            BidderRound::COL_VALID_FROM => Carbon::createFromFormat('Y-m-d', '2022-01-01'),
-            BidderRound::COL_VALID_TO => Carbon::createFromFormat('Y-m-d', '2022-12-31'),
-            BidderRound::COL_START_OF_SUBMISSION => Carbon::createFromFormat('Y-m-d', '2022-03-01'),
-            BidderRound::COL_END_OF_SUBMISSION => Carbon::createFromFormat('Y-m-d', '2022-03-15'),
-            BidderRound::COL_TARGET_AMOUNT => 68_000,
-            BidderRound::COL_COUNT_OFFERS => 5,
-        ]);
-    }
 }
