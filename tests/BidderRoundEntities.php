@@ -41,6 +41,7 @@ trait BidderRoundEntities
     protected function createOffers(User $user, BidderRound $bidderRound): Collection
     {
         OfferFactory::reset();
+
         return Offer::factory()
             ->count($bidderRound->countOffers)
             ->create()
