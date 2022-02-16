@@ -175,7 +175,7 @@ class User extends Authenticatable implements MustVerifyEmail, Participant
     }
 
     /**
-     * TODO Change this logic for getting a loose coupling between user and bidder round
+     * TODO Change this logic for getting a loose coupling between user and bidder round.
      *
      * Returns all users which are enabled to participate at the next {@link BidderRound}.
      *

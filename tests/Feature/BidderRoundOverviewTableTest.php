@@ -3,8 +3,6 @@
 namespace Tests\Feature;
 
 use App\Http\Livewire\BiddingRoundOverviewTable;
-use App\Models\BidderRound;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Livewire\Livewire;
 use Nette\NotImplementedException;

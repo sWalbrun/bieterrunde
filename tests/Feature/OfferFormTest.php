@@ -9,7 +9,6 @@ use App\Models\BidderRound;
 use App\Models\Offer;
 use App\Models\User;
 use Carbon\Carbon;
-use Database\Factories\OfferFactory;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;

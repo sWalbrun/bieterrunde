@@ -9,8 +9,6 @@ use App\Models\User;
 use Carbon\Carbon;
 use Database\Factories\OfferFactory;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Spatie\Permission\Models\Role;
 
 trait BidderRoundEntities

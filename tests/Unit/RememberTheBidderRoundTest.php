@@ -40,30 +40,26 @@ class RememberTheBidderRoundTest extends TestCase
             function (ReminderOfBidderRound $reminder) use ($participantWithoutOffers) {
                 $mailMessage = $reminder->toMail();
                 $this->assertEquals("Servus $participantWithoutOffers->name", $mailMessage->greeting);
+
                 return $reminder;
             });
         Notification::assertNotSentTo($participantWithOffers, ReminderOfBidderRound::class);
     }
 
-    /**
-     * @param BidderRound $round
-     * @return User
-     */
     private function createParticipantWithOffers(BidderRound $round): User
     {
         $participantWithOffers = $this->createAndActAsUser();
         $participantWithOffers->assignRole(Role::findOrCreate(User::ROLE_BIDDER_ROUND_PARTICIPANT));
         $this->createOffers($participantWithOffers, $round);
+
         return $participantWithOffers;
     }
 
-    /**
-     * @return User
-     */
     private function createParticipantWithoutOffers(): User
     {
         $participantWithoutOffers = $this->createAndActAsUser();
         $participantWithoutOffers->assignRole(Role::findOrCreate(User::ROLE_BIDDER_ROUND_PARTICIPANT));
+
         return $participantWithoutOffers;
     }
 }
