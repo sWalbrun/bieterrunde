@@ -18,7 +18,6 @@ use Tests\TestCase;
  */
 class OfferFormTest extends TestCase
 {
-
     public function testSeeOffer()
     {
         $this->createAndActAsUser();

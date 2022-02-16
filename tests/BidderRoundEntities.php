@@ -13,7 +13,6 @@ use Spatie\Permission\Models\Role;
 
 trait BidderRoundEntities
 {
-
     protected function createAndActAsUser(): User
     {
         /** @var User $user */
