@@ -2,10 +2,10 @@
 
 namespace App\Http\Livewire;
 
+use App\BidderRound\Participant;
 use App\Models\BidderRoundReport;
-use App\Models\User;
 use App\Notifications\BidderRoundFound;
-use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use WireUi\Traits\Actions;
 
@@ -58,6 +58,12 @@ class BidderRoundReportForm extends Component
     public function notifyUsers(): void
     {
         $notification = new BidderRoundFound($this->bidderRoundReport);
-        Notification::send(User::bidderRoundParticipants()->get(), $notification);
+        $this->bidderRoundReport->bidderRound->participants()
+            ->filter(fn (Participant $participant) => method_exists($participant, 'notify'))
+            ->each(function (Participant $user) use ($notification) {
+                Log::info("Notifying user ({$user->email()}) about report");
+                $user->notify($notification);
+                Log::info('User has been notified');
+            });
     }
 }

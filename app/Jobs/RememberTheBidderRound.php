@@ -10,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 /**
  * This job sends a notification to all {@link Participant participants} of the given {@link BidderRound}.
@@ -30,6 +31,10 @@ class RememberTheBidderRound implements ShouldQueue
         $this->round->participants()
             ->filter(fn (Participant $participant) => $participant->offersForRound($this->round)->doesntExist())
             ->filter(fn (Participant $participant) => method_exists($participant, 'notify'))
-            ->each(fn (Participant $participant) => $participant->notify(new ReminderOfBidderRound($this->round, $participant)));
+            ->each(function (Participant $participant) {
+                Log::info("Remember user ({$participant->email()}) about bidder round");
+                $participant->notify(new ReminderOfBidderRound($this->round, $participant));
+                Log::info('User has been remembered');
+            });
     }
 }
