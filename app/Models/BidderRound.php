@@ -25,6 +25,7 @@ use Illuminate\Support\Collection;
 class BidderRound extends BaseModel
 {
     use HasFactory;
+    use BidderRoundRelations;
 
     public const TABLE = 'bidderRound';
     public const AVERAGE_NEW_MEMBER_INCREASE_RATE = 12.5;
@@ -124,7 +125,7 @@ class BidderRound extends BaseModel
 
     public function bidderRoundBetweenNow(): bool
     {
-        return Carbon::now()->isBetween($this->startOfSubmission, $this->endOfSubmission);
+        return Carbon::now()->isBetween($this->startOfSubmission->startOfDay(), $this->endOfSubmission->endOfDay());
     }
 
     public function getReferenceAmountFor(User $user, int $roundIndex): ?string

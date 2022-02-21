@@ -34,7 +34,7 @@ class DatabasePropertyValidationTest extends TestCase
             $class = app()->getNamespace().'Models\\'.$reflection->getBasename('.php');
             $reflectionClass = new ReflectionClass($class);
 
-            if ($reflectionClass->isInterface() || $reflectionClass->isAbstract()) {
+            if ($reflectionClass->isInterface() || $reflectionClass->isAbstract() || $reflectionClass->isTrait()) {
                 // we cannot check interfaces or abstract classes
                 continue;
             }
