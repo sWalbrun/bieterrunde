@@ -105,7 +105,7 @@ use App\Models\BidderRound;
             </button>
 
             @if(isset($bidderRound->bidderRoundReport) && $bidderRound->bidderRoundReport->roundWon)
-                <span class="inline-flex items-center mt-3 px-3 py-0.5 rounded-full text-sm font-medium bg-green-400 text-white">
+                <span class="inline-flex items-center mt-3 px-3 py-0.5 rounded-full text-sm font-medium bg-green-400 text-gray-800">
                     {{trans("Der Zielbetrag wurde mit der Runde {$bidderRound->bidderRoundReport->roundWon} erreicht")}}
                 </span>
             @elseif($bidderRound->exists && $bidderRound->bidderRoundBetweenNow())
