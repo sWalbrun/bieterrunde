@@ -11,6 +11,7 @@
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
+        "jeremykenedy/laravel-users": "^4.3",
         "laravel/framework": "^8.40",
         "laravel/jetstream": "^2.4",
         "laravel/sanctum": "^2.13",
@@ -61,7 +62,9 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [
+                "jeremykenedy/laravel-users"
+            ]
         }
     },
     "config": {
