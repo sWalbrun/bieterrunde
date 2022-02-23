@@ -159,6 +159,7 @@ return [
         'username'              => 'Benutzername',
         'year'                  => 'Jahr',
         'offers.*.amount'       => 'Betrag',
-        'paymentInterval'      => 'Zahlungsintervall',
+        'paymentInterval'       => 'Zahlungsintervall',
+        'countOffers'           => 'Anzahl der Runden'
     ],
 ];
