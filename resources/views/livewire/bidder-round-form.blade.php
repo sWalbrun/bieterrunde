@@ -98,11 +98,13 @@ use App\Models\BidderRound;
                 <div class="tooltip-arrow" data-popper-arrow></div>
             </div>
 
-            <button wire:click="remindParticipantsConfirm()"
-                    class=" inline-flex items-center mt-3 px-3 py-0.5 rounded-full text-sm font-medium bg-solawi_green text-gray-800"
-                    data-tooltip-target="tooltip-round-reminder">
-                {{trans('Mitglieder erinnern')}}
-            </button>
+            @if($bidderRound->exists)
+                <button wire:click="remindParticipantsConfirm()"
+                        class=" inline-flex items-center mt-3 px-3 py-0.5 rounded-full text-sm font-medium bg-solawi_green text-gray-800"
+                        data-tooltip-target="tooltip-round-reminder">
+                    {{trans('Mitglieder erinnern')}}
+                </button>
+            @endif
 
             @if(isset($bidderRound->bidderRoundReport) && $bidderRound->bidderRoundReport->roundWon)
                 <span class="inline-flex items-center mt-3 px-3 py-0.5 rounded-full text-sm font-medium bg-green-400 text-gray-800">

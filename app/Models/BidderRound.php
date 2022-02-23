@@ -155,7 +155,11 @@ class BidderRound extends BaseModel
             ->filter(fn (User $user) => $user->contributionGroup === EnumContributionGroup::SUSTAINING_MEMBER)
             ->count();
 
-        $referenceAmountForFullMember = (-self::AVERAGE_NEW_MEMBER_INCREASE_RATE * $countNew + $targetAmountPerMonth - $countSustainingMember) / ($countNew + $countOld);
+        if (($countNew + $countOld) === 0) {
+            $referenceAmountForFullMember = 0;
+        }
+
+        $referenceAmountForFullMember ??= (-self::AVERAGE_NEW_MEMBER_INCREASE_RATE * $countNew + $targetAmountPerMonth - $countSustainingMember) / ($countNew + $countOld);
         if ($user->isNewMember) {
             return trans('z. B. ')
                 . $this->formatAmount($referenceAmountForFullMember + self::AVERAGE_NEW_MEMBER_INCREASE_RATE + $roundIndex * 3)
