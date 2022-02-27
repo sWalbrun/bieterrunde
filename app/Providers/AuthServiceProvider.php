@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
+    public const MANAGE_USERS = 'manageUsers';
+
     /**
      * The policy mappings for the application.
      *
@@ -29,7 +31,15 @@ class AuthServiceProvider extends ServiceProvider
             /** @var User $user */
             $user = auth()->user();
 
-            return $user->hasRole('admin');
+            return $user->hasRole(User::ROLE_ADMIN);
+        });
+
+        Gate::define(self::MANAGE_USERS, function () {
+            // phpcs:ignore
+            /** @var User $user */
+            $user = auth()->user();
+
+            return $user->hasRole(User::ROLE_ADMIN);
         });
     }
 }

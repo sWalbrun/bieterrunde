@@ -6,7 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use jeremykenedy\laravelusers\App\Http\Controllers\SolaWiUsersManagementController;
 
 /**
- * <p>This provider is neccessary since laravel-users is having a bug which disables using other table names than 'users'.
+ * <p>This provider is necessary since laravel-users is having a bug which disables using other table names than 'users'.
  * @see https://github.com/jeremykenedy/laravel-users/issues/76 <br>
  * As soon as this bug get fixed, this provider is not necessary anymore.
  * </p>
@@ -54,15 +54,15 @@ class LaravelUsersServiceProvider extends ServiceProvider
         $publishTag = $this->packageTag;
 
         $this->publishes([
-            __DIR__.'/config/'.$this->packageTag.'.php' => base_path('config/'.$this->packageTag.'.php'),
+            __DIR__ . '/config/' . $this->packageTag . '.php' => base_path('config/' . $this->packageTag . '.php'),
         ], $publishTag);
 
         $this->publishes([
-            __DIR__.'/resources/views' => resource_path('views/vendor/'.$this->packageTag),
+            __DIR__ . '/resources/views' => resource_path('views/vendor/' . $this->packageTag),
         ], $publishTag);
 
         $this->publishes([
-            __DIR__.'/resources/lang' => resource_path('lang/vendor/'.$this->packageTag),
+            __DIR__ . '/resources/lang' => resource_path('lang/vendor/' . $this->packageTag),
         ], $publishTag);
     }
 }
