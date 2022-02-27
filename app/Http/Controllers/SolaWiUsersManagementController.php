@@ -11,10 +11,13 @@ use Validator;
 
 class SolaWiUsersManagementController extends Controller
 {
-    private $_authEnabled;
-    private $_rolesEnabled;
-    private $_rolesMiddlware;
-    private $_rolesMiddleWareEnabled;
+    private $authEnabled;
+
+    private $rolesEnabled;
+
+    private $rolesMiddlware;
+
+    private $rolesMiddleWareEnabled;
 
     /**
      * Create a new controller instance.
@@ -23,17 +26,17 @@ class SolaWiUsersManagementController extends Controller
      */
     public function __construct()
     {
-        $this->_authEnabled = config('laravelusers.authEnabled');
-        $this->_rolesEnabled = config('laravelusers.rolesEnabled');
-        $this->_rolesMiddlware = config('laravelusers.rolesMiddlware');
-        $this->_rolesMiddleWareEnabled = config('laravelusers.rolesMiddlwareEnabled');
+        $this->authEnabled = config('laravelusers.authEnabled');
+        $this->rolesEnabled = config('laravelusers.rolesEnabled');
+        $this->rolesMiddlware = config('laravelusers.rolesMiddlware');
+        $this->rolesMiddleWareEnabled = config('laravelusers.rolesMiddlwareEnabled');
 
-        if ($this->_authEnabled) {
+        if ($this->authEnabled) {
             $this->middleware('auth');
         }
 
-        if ($this->_rolesEnabled && $this->_rolesMiddleWareEnabled) {
-            $this->middleware($this->_rolesMiddlware);
+        if ($this->rolesEnabled && $this->rolesMiddleWareEnabled) {
+            $this->middleware($this->rolesMiddlware);
         }
     }
 
@@ -69,12 +72,12 @@ class SolaWiUsersManagementController extends Controller
     {
         $roles = [];
 
-        if ($this->_rolesEnabled) {
+        if ($this->rolesEnabled) {
             $roles = config('laravelusers.roleModel')::all();
         }
 
         $data = [
-            'rolesEnabled'  => $this->_rolesEnabled,
+            'rolesEnabled'  => $this->rolesEnabled,
             'roles'         => $roles,
         ];
 
@@ -98,7 +101,7 @@ class SolaWiUsersManagementController extends Controller
             'password_confirmation' => 'required|string|same:password',
         ];
 
-        if ($this->_rolesEnabled) {
+        if ($this->rolesEnabled) {
             $rules['role'] = 'required';
         }
 
@@ -126,7 +129,7 @@ class SolaWiUsersManagementController extends Controller
             'password'         => Hash::make($request->input('password')),
         ]);
 
-        if ($this->_rolesEnabled) {
+        if ($this->rolesEnabled) {
             $user->attachRole($request->input('role'));
             $user->save();
         }
@@ -161,7 +164,7 @@ class SolaWiUsersManagementController extends Controller
         $roles = [];
         $currentRole = [];
 
-        if ($this->_rolesEnabled) {
+        if ($this->rolesEnabled) {
             $roles = config('laravelusers.roleModel')::all();
 
             foreach ($user->roles as $user_role) {
@@ -171,10 +174,10 @@ class SolaWiUsersManagementController extends Controller
 
         $data = [
             'user'          => $user,
-            'rolesEnabled'  => $this->_rolesEnabled,
+            'rolesEnabled'  => $this->rolesEnabled,
         ];
 
-        if ($this->_rolesEnabled) {
+        if ($this->rolesEnabled) {
             $data['roles'] = $roles;
             $data['currentRole'] = $currentRole;
         }
@@ -209,7 +212,7 @@ class SolaWiUsersManagementController extends Controller
             $rules['password_confirmation'] = 'required|string|same:password';
         }
 
-        if ($this->_rolesEnabled) {
+        if ($this->rolesEnabled) {
             $rules['role'] = 'required';
         }
 
@@ -229,7 +232,7 @@ class SolaWiUsersManagementController extends Controller
             $user->password = Hash::make($request->input('password'));
         }
 
-        if ($this->_rolesEnabled) {
+        if ($this->rolesEnabled) {
             $user->detachAllRoles();
             $user->attachRole($request->input('role'));
         }
@@ -287,9 +290,9 @@ class SolaWiUsersManagementController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $results = config('laravelusers.defaultUserModel')::where('id', 'like', $searchTerm.'%')
-            ->orWhere('name', 'like', $searchTerm.'%')
-            ->orWhere('email', 'like', $searchTerm.'%')->get();
+        $results = config('laravelusers.defaultUserModel')::where('id', 'like', $searchTerm . '%')
+            ->orWhere('name', 'like', $searchTerm . '%')
+            ->orWhere('email', 'like', $searchTerm . '%')->get();
 
         // Attach roles to results
         foreach ($results as $result) {

@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Gate;
  */
 class AuthenticateUserManager
 {
-
     public function handle(Request $request, Closure $next)
     {
         if (Gate::denies(AuthServiceProvider::MANAGE_USERS)) {

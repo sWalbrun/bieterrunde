@@ -7,8 +7,9 @@ use jeremykenedy\laravelusers\App\Http\Controllers\SolaWiUsersManagementControll
 
 /**
  * <p>This provider is necessary since laravel-users is having a bug which disables using other table names than 'users'.
- * @see https://github.com/jeremykenedy/laravel-users/issues/76 <br>
  * As soon as this bug get fixed, this provider is not necessary anymore.
+ *
+ * @see https://github.com/jeremykenedy/laravel-users/issues/76
  * </p>
  */
 class LaravelUsersServiceProvider extends ServiceProvider
