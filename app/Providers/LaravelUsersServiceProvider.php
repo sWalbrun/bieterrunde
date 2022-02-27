@@ -30,7 +30,7 @@ class LaravelUsersServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $basePath = __DIR__ . '/../../vendor/jeremykenedy/laravel-users/src';
+        $basePath = $this->getBasePath();
         $this->loadRoutesFrom($basePath . '/routes/web.php');
         $this->loadViewsFrom($basePath . '/resources/views/', $this->packageTag);
         $this->mergeConfigFrom($basePath . '/config/' . $this->packageTag . '.php', $this->packageTag);
@@ -53,16 +53,23 @@ class LaravelUsersServiceProvider extends ServiceProvider
     {
         $publishTag = $this->packageTag;
 
+        $basePath = $this->getBasePath();
+
         $this->publishes([
-            __DIR__ . '/config/' . $this->packageTag . '.php' => base_path('config/' . $this->packageTag . '.php'),
+            $basePath . '/config/' . $this->packageTag . '.php' => base_path('config/' . $this->packageTag . '.php'),
         ], $publishTag);
 
         $this->publishes([
-            __DIR__ . '/resources/views' => resource_path('views/vendor/' . $this->packageTag),
+            $basePath . '/resources/views' => resource_path('views/vendor/' . $this->packageTag),
         ], $publishTag);
 
         $this->publishes([
-            __DIR__ . '/resources/lang' => resource_path('lang/vendor/' . $this->packageTag),
+            $basePath . '/resources/lang' => resource_path('lang/vendor/' . $this->packageTag),
         ], $publishTag);
+    }
+
+    private function getBasePath(): string
+    {
+        return __DIR__ . '/../../vendor/jeremykenedy/laravel-users/src';
     }
 }
