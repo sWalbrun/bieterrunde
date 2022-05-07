@@ -18,7 +18,6 @@ class DropSpatiePermissionsTables extends Migration
         Schema::dropIfExists('model_has_roles');
         Schema::dropIfExists('permission_role');
         Schema::dropIfExists('permission_user');
-        Schema::dropIfExists('permissions');
         Schema::dropIfExists('role');
     }
 

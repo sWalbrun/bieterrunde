@@ -10,7 +10,6 @@ use Database\Factories\OfferFactory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
 
 class LocalDevelopmentSeeder extends Seeder
 {
@@ -43,6 +42,7 @@ class LocalDevelopmentSeeder extends Seeder
         $user->password = Hash::make('LetMeIn');
         $user->name = 'Admin';
         $user->email_verified_at = Carbon::now();
+        $user->save();
         $user->attachRole(User::ROLE_ADMIN);
         $user->attachRole(User::ROLE_BIDDER_ROUND_PARTICIPANT);
         $user->save();
