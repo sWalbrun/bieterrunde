@@ -33,6 +33,7 @@ class LaravelUsersServiceProvider extends ServiceProvider
         $basePath = __DIR__ . '/../../vendor/jeremykenedy/laravel-users/src';
         $this->loadRoutesFrom($basePath . '/routes/web.php');
         $this->loadViewsFrom($basePath . '/resources/views/', $this->packageTag);
+        $this->loadTranslationsFrom($basePath . '/resources/lang/vendor/', $this->packageTag);
         $this->mergeConfigFrom($basePath . '/config/' . $this->packageTag . '.php', $this->packageTag);
         $this->publishFiles();
         $this->app->make('jeremykenedy\laravelusers\App\Http\Controllers\UsersManagementController');
