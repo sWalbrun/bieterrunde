@@ -64,7 +64,7 @@ jobs:
         run: composer install --prefer-dist --no-suggest --no-progress
 
       - name: Detect coding standard violations
-        run: vendor/bin/phpcs --standard=ruleset.xml app/ -q --report=checkstyle | cs2pr --graceful-warnings
+        run: php artisan migrate --env=testing && vendor/bin/phpcs --standard=ruleset.xml app/ -q --report=checkstyle | cs2pr --graceful-warnings
 
   deploy:
     runs-on: ubuntu-latest
