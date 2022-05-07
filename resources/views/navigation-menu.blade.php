@@ -31,6 +31,12 @@ use App\Models\BidderRound;
         </a>
         <nav class="mt-5 flex-1 flex flex-col divide-y divide-cyan-800 overflow-y-auto" aria-label="Sidebar">
 
+            <div class="px-2 space-y-1 pt-3">
+                @can('manageUsers')
+                    @include('navigation.user-management-anchor')
+                @endcan
+            </div>
+
             <div class="px-2 space-y-1">
                 @can('createBidderRound')
                     <span class="my-5 font-bold">{{trans('Bieterrunden')}}</span>

@@ -6,9 +6,11 @@ use Illuminate\Support\ServiceProvider;
 use jeremykenedy\laravelusers\App\Http\Controllers\SolaWiUsersManagementController;
 
 /**
- * <p>This provider is neccessary since laravel-users is having a bug which disables using other table names than 'users'.
+ * <p>This provider is necessary since laravel-users is having a bug which disables using other table names than 'users'.
  * {@link https://github.com/jeremykenedy/laravel-users/issues/76 } <br>
  * As soon as this bug get fixed, this provider is not necessary anymore.
+ *
+ * @see https://github.com/jeremykenedy/laravel-users/issues/76
  * </p>
  */
 class LaravelUsersServiceProvider extends ServiceProvider
@@ -30,7 +32,7 @@ class LaravelUsersServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $basePath = __DIR__ . '/../../vendor/jeremykenedy/laravel-users/src';
+        $basePath = $this->getBasePath();
         $this->loadRoutesFrom($basePath . '/routes/web.php');
         $this->loadViewsFrom($basePath . '/resources/views/', $this->packageTag);
         $this->loadTranslationsFrom($basePath . '/resources/lang/vendor/', $this->packageTag);
@@ -54,16 +56,23 @@ class LaravelUsersServiceProvider extends ServiceProvider
     {
         $publishTag = $this->packageTag;
 
+        $basePath = $this->getBasePath();
+
         $this->publishes([
-            __DIR__ . '/config/' . $this->packageTag . '.php' => base_path('config/' . $this->packageTag . '.php'),
+            $basePath . '/config/' . $this->packageTag . '.php' => base_path('config/' . $this->packageTag . '.php'),
         ], $publishTag);
 
         $this->publishes([
-            __DIR__ . '/resources/views' => resource_path('views/vendor/' . $this->packageTag),
+            $basePath . '/resources/views' => resource_path('views/vendor/' . $this->packageTag),
         ], $publishTag);
 
         $this->publishes([
-            __DIR__ . '/resources/lang' => resource_path('lang/vendor/' . $this->packageTag),
+            $basePath . '/resources/lang' => resource_path('lang/vendor/' . $this->packageTag),
         ], $publishTag);
+    }
+
+    private function getBasePath(): string
+    {
+        return __DIR__ . '/../../vendor/jeremykenedy/laravel-users/src';
     }
 }
