@@ -20,3 +20,4 @@ node_modules/
 
 storage/*.key
 /.vagrant
+/.php_cs.cache

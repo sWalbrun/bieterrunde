@@ -29,7 +29,7 @@ abstract class TestCase extends BaseTestCase
             User::COL_CONTRIBUTION_GROUP => EnumContributionGroup::FULL_MEMBER,
             User::COL_COUNT_SHARES => 1,
         ]);
-        $user->assignRole(Role::findOrCreate(User::ROLE_ADMIN));
+        $user->attachRole(User::ROLE_ADMIN);
         $this->actingAs($user);
 
         return $user;

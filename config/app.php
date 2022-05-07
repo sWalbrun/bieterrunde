@@ -1,7 +1,5 @@
 <?php
 
-use Spatie\Permission\PermissionServiceProvider;
-
 return [
 
     /*
@@ -179,7 +177,6 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\FortifyServiceProvider::class,
         App\Providers\JetstreamServiceProvider::class,
-        PermissionServiceProvider::class,
 
     ],
 

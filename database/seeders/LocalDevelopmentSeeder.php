@@ -24,14 +24,10 @@ class LocalDevelopmentSeeder extends Seeder
      */
     public function run()
     {
-        if (App::environment() !== 'local') {
-            return;
-        }
-
         $this->seedAdmin();
         if (User::query()->count() > 1) {
 
-            // we do not seed in case there are already user available
+            // we do not seed in case there are already users available
             return;
         }
         $this->seedBidderRoundParticipants($this->seedBidderRound());
@@ -39,8 +35,6 @@ class LocalDevelopmentSeeder extends Seeder
 
     private function seedAdmin(): void
     {
-        $bidderRoundParticipant = Role::findOrCreate(User::ROLE_BIDDER_ROUND_PARTICIPANT);
-
         $email = 'admin@solawi.de';
         $user = User::query()->where(User::COL_EMAIL, '=', $email)->first();
 
@@ -49,8 +43,8 @@ class LocalDevelopmentSeeder extends Seeder
         $user->password = Hash::make('LetMeIn');
         $user->name = 'Admin';
         $user->email_verified_at = Carbon::now();
-        $user->assignRole(Role::findOrCreate(User::ROLE_ADMIN));
-        $user->assignRole($bidderRoundParticipant);
+        $user->attachRole(User::ROLE_ADMIN);
+        $user->attachRole(User::ROLE_BIDDER_ROUND_PARTICIPANT);
         $user->save();
     }
 
@@ -60,7 +54,7 @@ class LocalDevelopmentSeeder extends Seeder
             ->count(self::USER_COUNT)
             ->create()
             ->each(function (User $user) use ($bidderRound) {
-                $user->assignRole(Role::findOrCreate(User::ROLE_BIDDER_ROUND_PARTICIPANT));
+                $user->attachRole(User::ROLE_BIDDER_ROUND_PARTICIPANT);
                 OfferFactory::reset();
                 OfferFactory::randomize();
                 Offer::factory()

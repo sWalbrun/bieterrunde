@@ -24,6 +24,7 @@ use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Routing\Middleware\ValidateSignature;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use jeremykenedy\LaravelRoles\App\Http\Middleware\VerifyRole;
 use Laravel\Jetstream\Http\Middleware\AuthenticateSession;
 
 class Kernel extends HttpKernel
@@ -82,5 +83,6 @@ class Kernel extends HttpKernel
         'signed' => ValidateSignature::class,
         'throttle' => ThrottleRequests::class,
         'verified' => EnsureEmailIsVerified::class,
+        'role' => VerifyRole::class,
     ];
 }

@@ -119,8 +119,8 @@
                                                     @endforeach
                                                 </td>
                                             @endif
-                                            <td class="hidden-sm hidden-xs hidden-md">{{$user->created_at}}</td>
-                                            <td class="hidden-sm hidden-xs hidden-md">{{$user->updated_at}}</td>
+                                            <td class="hidden-sm hidden-xs hidden-md">{{$user->createdAt->format('d.m.Y H:m:i')}}</td>
+                                            <td class="hidden-sm hidden-xs hidden-md">{{$user->updatedAt->format('d.m.Y H:m:i')}}</td>
                                             <td>
                                                 {!! Form::open(array('url' => 'users/' . $user->id, 'class' => '', 'data-toggle' => 'tooltip', 'title' => trans('laravelusers::laravelusers.tooltips.delete'))) !!}
                                                     {!! Form::hidden('_method', 'DELETE') !!}

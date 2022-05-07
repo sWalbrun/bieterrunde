@@ -11,10 +11,13 @@ use Validator;
 
 class SolaWiUsersManagementController extends Controller
 {
-    private $_authEnabled;
-    private $_rolesEnabled;
-    private $_rolesMiddlware;
-    private $_rolesMiddleWareEnabled;
+    private $authEnabled;
+
+    private $rolesEnabled;
+
+    private $rolesMiddlware;
+
+    private $rolesMiddleWareEnabled;
 
     /**
      * Create a new controller instance.
@@ -23,17 +26,17 @@ class SolaWiUsersManagementController extends Controller
      */
     public function __construct()
     {
-        $this->_authEnabled = config('laravelusers.authEnabled');
-        $this->_rolesEnabled = config('laravelusers.rolesEnabled');
-        $this->_rolesMiddlware = config('laravelusers.rolesMiddlware');
-        $this->_rolesMiddleWareEnabled = config('laravelusers.rolesMiddlwareEnabled');
+        $this->authEnabled = config('laravelusers.authEnabled');
+        $this->rolesEnabled = config('laravelusers.rolesEnabled');
+        $this->rolesMiddlware = config('laravelusers.rolesMiddlware');
+        $this->rolesMiddleWareEnabled = config('laravelusers.rolesMiddlwareEnabled');
 
-        if ($this->_authEnabled) {
+        if ($this->authEnabled) {
             $this->middleware('auth');
         }
 
-        if ($this->_rolesEnabled && $this->_rolesMiddleWareEnabled) {
-            $this->middleware($this->_rolesMiddlware);
+        if ($this->rolesEnabled && $this->rolesMiddleWareEnabled) {
+            $this->middleware($this->rolesMiddlware);
         }
     }
 
@@ -53,7 +56,7 @@ class SolaWiUsersManagementController extends Controller
         }
 
         $data = [
-            'users'             => $users,
+            'users' => $users,
             'pagintaionEnabled' => $pagintaionEnabled,
         ];
 
@@ -69,13 +72,13 @@ class SolaWiUsersManagementController extends Controller
     {
         $roles = [];
 
-        if ($this->_rolesEnabled) {
+        if ($this->rolesEnabled) {
             $roles = config('laravelusers.roleModel')::all();
         }
 
         $data = [
-            'rolesEnabled'  => $this->_rolesEnabled,
-            'roles'         => $roles,
+            'rolesEnabled' => $this->rolesEnabled,
+            'roles' => $roles,
         ];
 
         return view(config('laravelusers.createUserBlade'))->with($data);
@@ -92,26 +95,26 @@ class SolaWiUsersManagementController extends Controller
     {
         $tableName = resolve(config('laravelusers.defaultUserModel'))->getTable() ?? 'users';
         $rules = [
-            'name'                  => 'required|string|max:255|unique:' . $tableName . '|alpha_dash',
-            'email'                 => 'required|email|max:255|unique:' . $tableName,
-            'password'              => 'required|string|confirmed|min:6',
+            'name' => 'required|string|max:255|unique:' . $tableName . '|alpha_dash',
+            'email' => 'required|email|max:255|unique:' . $tableName,
+            'password' => 'required|string|confirmed|min:6',
             'password_confirmation' => 'required|string|same:password',
         ];
 
-        if ($this->_rolesEnabled) {
+        if ($this->rolesEnabled) {
             $rules['role'] = 'required';
         }
 
         $messages = [
-            'name.unique'         => trans('laravelusers::laravelusers.messages.userNameTaken'),
-            'name.required'       => trans('laravelusers::laravelusers.messages.userNameRequired'),
-            'name'                => trans('laravelusers::laravelusers.messages.userNameInvalid'),
-            'email.required'      => trans('laravelusers::laravelusers.messages.emailRequired'),
-            'email.email'         => trans('laravelusers::laravelusers.messages.emailInvalid'),
-            'password.required'   => trans('laravelusers::laravelusers.messages.passwordRequired'),
-            'password.min'        => trans('laravelusers::laravelusers.messages.PasswordMin'),
-            'password.max'        => trans('laravelusers::laravelusers.messages.PasswordMax'),
-            'role.required'       => trans('laravelusers::laravelusers.messages.roleRequired'),
+            'name.unique' => trans('laravelusers::laravelusers.messages.userNameTaken'),
+            'name.required' => trans('laravelusers::laravelusers.messages.userNameRequired'),
+            'name' => trans('laravelusers::laravelusers.messages.userNameInvalid'),
+            'email.required' => trans('laravelusers::laravelusers.messages.emailRequired'),
+            'email.email' => trans('laravelusers::laravelusers.messages.emailInvalid'),
+            'password.required' => trans('laravelusers::laravelusers.messages.passwordRequired'),
+            'password.min' => trans('laravelusers::laravelusers.messages.PasswordMin'),
+            'password.max' => trans('laravelusers::laravelusers.messages.PasswordMax'),
+            'role.required' => trans('laravelusers::laravelusers.messages.roleRequired'),
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -121,12 +124,12 @@ class SolaWiUsersManagementController extends Controller
         }
 
         $user = config('laravelusers.defaultUserModel')::create([
-            'name'             => strip_tags($request->input('name')),
-            'email'            => $request->input('email'),
-            'password'         => Hash::make($request->input('password')),
+            'name' => strip_tags($request->input('name')),
+            'email' => $request->input('email'),
+            'password' => Hash::make($request->input('password')),
         ]);
 
-        if ($this->_rolesEnabled) {
+        if ($this->rolesEnabled) {
             $user->attachRole($request->input('role'));
             $user->save();
         }
@@ -161,7 +164,7 @@ class SolaWiUsersManagementController extends Controller
         $roles = [];
         $currentRole = [];
 
-        if ($this->_rolesEnabled) {
+        if ($this->rolesEnabled) {
             $roles = config('laravelusers.roleModel')::all();
 
             foreach ($user->roles as $user_role) {
@@ -170,11 +173,11 @@ class SolaWiUsersManagementController extends Controller
         }
 
         $data = [
-            'user'          => $user,
-            'rolesEnabled'  => $this->_rolesEnabled,
+            'user' => $user,
+            'rolesEnabled' => $this->rolesEnabled,
         ];
 
-        if ($this->_rolesEnabled) {
+        if ($this->rolesEnabled) {
             $data['roles'] = $roles;
             $data['currentRole'] = $currentRole;
         }
@@ -186,7 +189,7 @@ class SolaWiUsersManagementController extends Controller
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int                      $id
+     * @param int $id
      *
      * @return \Illuminate\Http\Response
      */
@@ -209,7 +212,7 @@ class SolaWiUsersManagementController extends Controller
             $rules['password_confirmation'] = 'required|string|same:password';
         }
 
-        if ($this->_rolesEnabled) {
+        if ($this->rolesEnabled) {
             $rules['role'] = 'required';
         }
 
@@ -229,7 +232,7 @@ class SolaWiUsersManagementController extends Controller
             $user->password = Hash::make($request->input('password'));
         }
 
-        if ($this->_rolesEnabled) {
+        if ($this->rolesEnabled) {
             $user->detachAllRoles();
             $user->attachRole($request->input('role'));
         }
@@ -275,8 +278,8 @@ class SolaWiUsersManagementController extends Controller
         ];
         $searchMessages = [
             'user_search_box.required' => 'Search term is required',
-            'user_search_box.string'   => 'Search term has invalid characters',
-            'user_search_box.max'      => 'Search term has too many characters - 255 allowed',
+            'user_search_box.string' => 'Search term has invalid characters',
+            'user_search_box.max' => 'Search term has too many characters - 255 allowed',
         ];
 
         $validator = Validator::make($request->all(), $searchRules, $searchMessages);
@@ -287,9 +290,9 @@ class SolaWiUsersManagementController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $results = config('laravelusers.defaultUserModel')::where('id', 'like', $searchTerm.'%')
-            ->orWhere('name', 'like', $searchTerm.'%')
-            ->orWhere('email', 'like', $searchTerm.'%')->get();
+        $results = config('laravelusers.defaultUserModel')::where('id', 'like', $searchTerm . '%')
+            ->orWhere('name', 'like', $searchTerm . '%')
+            ->orWhere('email', 'like', $searchTerm . '%')->get();
 
         // Attach roles to results
         foreach ($results as $result) {

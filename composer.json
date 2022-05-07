@@ -11,6 +11,7 @@
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
+        "jeremykenedy/laravel-roles": "^8.1",
         "jeremykenedy/laravel-users": "^4.3",
         "laravel/framework": "^8.40",
         "laravel/jetstream": "^2.4",
@@ -19,7 +20,7 @@
         "livewire/livewire": "^2.5",
         "power-components/livewire-powergrid": "^2.0",
         "spatie/laravel-backup": "^6.16",
-        "spatie/laravel-permission": "^5.4",
+        "spatie/laravel-permission": "^5.5",
         "squizlabs/php_codesniffer": "^3.6",
         "wireui/wireui": "^0.15.0"
     },

@@ -10,15 +10,17 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
+use jeremykenedy\LaravelRoles\Models\Role;
+use jeremykenedy\LaravelRoles\Traits\HasRoleAndPermission;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Traits\HasRoles;
 
 /**
  * @property int $id
@@ -47,7 +49,9 @@ class User extends Authenticatable implements MustVerifyEmail, Participant
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
-    use HasRoles;
+    use HasRoleAndPermission {
+        attachRole as attachRolesOfTrait;
+    }
 
     public const TABLE = 'user';
     public const ROLE_BIDDER_ROUND_PARTICIPANT = 'bidderRoundParticipant';
@@ -165,13 +169,26 @@ class User extends Authenticatable implements MustVerifyEmail, Participant
     public static function bidderRoundWithRelations(int $bidderRoundId): Builder
     {
         return self::query()
-            ->role(Role::findOrCreate(self::ROLE_BIDDER_ROUND_PARTICIPANT))
             ->with(
+                'roles',
+                fn (BelongsToMany $builder) => $builder->where('slug', self::ROLE_BIDDER_ROUND_PARTICIPANT)
+            )->with(
                 'offers',
                 fn (HasMany $offers) => $offers
                     ->where(Offer::COL_FK_BIDDER_ROUND, '=', $bidderRoundId)
                     ->with('bidderRound')
             );
+    }
+
+    public function attachRole($role): ?bool
+    {
+        if (is_string($role)) {
+            // phpcs:ignore
+            /** @var Role $role */
+            $role = Role::query()->updateOrCreate(['name' => $role, 'slug' => Str::lower($role)]);
+        }
+
+        return $this->attachRolesOfTrait($role);
     }
 
     /**
@@ -189,6 +206,9 @@ class User extends Authenticatable implements MustVerifyEmail, Participant
                     ->whereNull(self::COL_EXIT_DATE)
                     ->orWhere(self::COL_EXIT_DATE, '>=', Carbon::now())
             )
-            ->role(Role::findOrCreate(self::ROLE_BIDDER_ROUND_PARTICIPANT));
+            ->whereHas(
+                'roles',
+                fn (Builder $builder) => $builder->where('slug', self::ROLE_BIDDER_ROUND_PARTICIPANT)
+            );
     }
 }
