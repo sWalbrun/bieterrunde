@@ -196,37 +196,19 @@ class User extends Authenticatable implements MustVerifyEmail, Participant
      *
      * Returns all users which are enabled to participate at the next {@link BidderRound}.
      *
-     * @return Collection
+     * @return Builder
      */
-    public static function bidderRoundParticipants(): Collection
+    public static function bidderRoundParticipants(): Builder
     {
-        // This code is actually working perfectly fine as long as you are not working with a sqlite (which is the case
-        // for the remote unit tests)
-//        return self::query()
-//            ->where(
-//                fn (Builder $builder) => $builder
-//                    ->whereNull(self::COL_EXIT_DATE)
-//                    ->orWhere(self::COL_EXIT_DATE, '>=', Carbon::now())
-//            )
-//            ->whereHas(
-//                'roles',
-//                fn (Builder $builder) => $builder->where('slug', self::ROLE_BIDDER_ROUND_PARTICIPANT)
-//            );
-
-        // Therefore, we are using this ugly workaround
-        $participants = self::query()
-            ->with(
-                'roles',
-                fn (BelongsToMany $builder) => $builder->where('slug', '=', self::ROLE_BIDDER_ROUND_PARTICIPANT)
-            )
+        return self::query()
             ->where(
                 fn (Builder $builder) => $builder
                     ->whereNull(self::COL_EXIT_DATE)
                     ->orWhere(self::COL_EXIT_DATE, '>=', Carbon::now())
-            )->get();
-
-        return $participants
-            ->each(fn (User $user) => $user->roles = !isset($user->roles) ? $user->getRelation('roles'): collect())
-            ->filter(fn (User $user) => $user->roles->isNotEmpty());
+            )
+            ->whereHas(
+                'roles',
+                fn (Builder $builder) => $builder->where('slug', self::ROLE_BIDDER_ROUND_PARTICIPANT)
+            );
     }
 }
