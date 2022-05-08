@@ -6,6 +6,7 @@ use App\Models\BidderRound;
 use App\Models\Offer;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\PowerGrid;
@@ -38,7 +39,10 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
             ->showExportOption('download', ['excel', 'csv']);
     }
 
-    public function datasource(): Builder
+    /**
+     * @return Builder|Collection|null
+     */
+    public function datasource()
     {
         if (!$this->isBidderRoundGiven()) {
             return User::bidderRoundParticipants();

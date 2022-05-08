@@ -88,7 +88,6 @@ class IsTargetAmountReached extends Command
 
         if ($groupedByRound->count() <= 0) {
             $message = "No round found for which the the offer count has been reached ($userCount) for bidder round ($bidderRound)";
-            dd($message);
             Log::info($message);
 
             return self::NOT_ALL_OFFERS_GIVEN;
