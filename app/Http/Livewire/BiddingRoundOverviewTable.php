@@ -39,10 +39,7 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
             ->showExportOption('download', ['excel', 'csv']);
     }
 
-    /**
-     * @return Builder|Collection|null
-     */
-    public function datasource()
+    public function datasource(): Builder
     {
         if (!$this->isBidderRoundGiven()) {
             return User::bidderRoundParticipants();

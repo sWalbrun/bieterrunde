@@ -78,7 +78,7 @@ class BidderRound extends BaseModel
      */
     public function participants(): Collection
     {
-        return User::bidderRoundParticipants();
+        return User::bidderRoundParticipants()->get();
     }
 
     /**
@@ -136,7 +136,7 @@ class BidderRound extends BaseModel
 
         $targetAmountPerMonth = $this->targetAmount / 12;
 
-        $participants = User::bidderRoundParticipants();
+        $participants = User::bidderRoundParticipants()->get();
 
         if ($participants->isEmpty()) {
             return trans('Betrag');
