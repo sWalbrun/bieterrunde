@@ -9,7 +9,6 @@ use App\Models\User;
 use App\Notifications\ReminderOfBidderRound;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
-use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 /**

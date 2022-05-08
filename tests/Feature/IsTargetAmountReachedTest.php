@@ -11,7 +11,6 @@ use App\Models\User;
 use Carbon\Carbon;
 use Database\Factories\OfferFactory;
 use Illuminate\Support\Facades\Log;
-use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 /**

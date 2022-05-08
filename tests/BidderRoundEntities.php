@@ -9,7 +9,6 @@ use App\Models\User;
 use Carbon\Carbon;
 use Database\Factories\OfferFactory;
 use Illuminate\Database\Eloquent\Collection;
-use Spatie\Permission\Models\Role;
 
 trait BidderRoundEntities
 {
