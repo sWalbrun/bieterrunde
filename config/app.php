@@ -1,5 +1,9 @@
 <?php
 
+use App\Models\Tenant;
+use App\Providers\TenancyServiceProvider;
+use Stancl\Tenancy\Database\Models\Domain;
+
 return [
 
     /*
@@ -177,6 +181,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\FortifyServiceProvider::class,
         App\Providers\JetstreamServiceProvider::class,
+        TenancyServiceProvider::class,
 
     ],
 
@@ -232,6 +237,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
+        'Tenant' => Tenant::class,
+        'Domain' => Domain::class,
     ],
 
 ];

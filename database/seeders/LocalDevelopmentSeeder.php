@@ -4,11 +4,11 @@ namespace Database\Seeders;
 
 use App\Models\BidderRound;
 use App\Models\Offer;
+use App\Models\Tenant;
 use App\Models\User;
 use Carbon\Carbon;
 use Database\Factories\OfferFactory;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
 
 class LocalDevelopmentSeeder extends Seeder
@@ -23,23 +23,24 @@ class LocalDevelopmentSeeder extends Seeder
      */
     public function run()
     {
-        $this->seedAdmin();
-        if (User::query()->count() > 1) {
+        /** @var Tenant $tenant1 */
+        $tenant1 = Tenant::create(['id' => 'foo']);
+        $tenant1->domains()->create(['domain' => 'foo.localhost']);
 
-            // we do not seed in case there are already users available
-            return;
-        }
-        $this->seedBidderRoundParticipants($this->seedBidderRound());
+        /** @var Tenant $tenant2 */
+        $tenant2 = Tenant::create(['id' => 'bar']);
+        $tenant2->domains()->create(['domain' => 'bar.localhost']);
+        Tenant::all()->runForEach(fn (Tenant $tenant) => $this->seed($tenant));
     }
 
-    private function seedAdmin(): void
+    private function seedAdmin(Tenant $tenant): void
     {
-        $email = 'admin@solawi.de';
+        $email = "admin{$tenant->id}@solawi.de";
         $user = User::query()->where(User::COL_EMAIL, '=', $email)->first();
 
         $user ??= new User();
         $user->email = $email;
-        $user->password = Hash::make('LetMeIn');
+        $user->password = Hash::make('password');
         $user->name = 'Admin';
         $user->email_verified_at = Carbon::now();
         $user->save();
@@ -77,5 +78,16 @@ class LocalDevelopmentSeeder extends Seeder
             BidderRound::COL_TARGET_AMOUNT => 68_000,
             BidderRound::COL_COUNT_OFFERS => 3,
         ]);
+    }
+
+    private function seed(Tenant $tenant): void
+    {
+        $this->seedAdmin($tenant);
+        if (User::query()->count() > 1) {
+
+            // we do not seed in case there are already users available
+            return;
+        }
+        $this->seedBidderRoundParticipants($this->seedBidderRound());
     }
 }

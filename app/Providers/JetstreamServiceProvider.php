@@ -3,7 +3,14 @@
 namespace App\Providers;
 
 use App\Actions\Jetstream\DeleteUser;
+use App\Claims\SetTenantCookie;
+use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Fortify\Actions\AttemptToAuthenticate;
+use Laravel\Fortify\Actions\EnsureLoginIsNotThrottled;
+use Laravel\Fortify\Actions\PrepareAuthenticatedSession;
+use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
+use Laravel\Fortify\Fortify;
 use Laravel\Jetstream\Jetstream;
 
 class JetstreamServiceProvider extends ServiceProvider
@@ -25,6 +32,18 @@ class JetstreamServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->configurePermissions();
+
+        Fortify::authenticateThrough(function (Request $request) {
+            return array_filter([
+                // We have to set the tenant cookie while authenticating
+                SetTenantCookie::class,
+
+                config('fortify.limiters.login') ? null : EnsureLoginIsNotThrottled::class,
+                RedirectIfTwoFactorAuthenticatable::class,
+                AttemptToAuthenticate::class,
+                PrepareAuthenticatedSession::class,
+            ]);
+        });
 
         Jetstream::deleteUsersUsing(DeleteUser::class);
     }

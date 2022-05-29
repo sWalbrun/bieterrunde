@@ -21,6 +21,7 @@ use jeremykenedy\LaravelRoles\Traits\HasRoleAndPermission;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 /**
  * @property int $id
@@ -39,6 +40,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string profile_photo_path
  * @property bool isNewMember
  * @property EnumPaymentInterval paymentInterval
+ * @property string tenant_id
  * @property Carbon $createdAt
  * @property Collection<Offer> offers
  */
@@ -52,6 +54,7 @@ class User extends Authenticatable implements MustVerifyEmail, Participant
     use HasRoleAndPermission {
         attachRole as attachRolesOfTrait;
     }
+    use BelongsToTenant;
 
     public const TABLE = 'user';
     public const ROLE_BIDDER_ROUND_PARTICIPANT = 'bidderRoundParticipant';
@@ -79,6 +82,7 @@ class User extends Authenticatable implements MustVerifyEmail, Participant
     public const COL_COUNT_SHARES = 'countShares';
     public const DYN_IS_NEW_MEMBER = 'isNewMember';
     public const COL_PAYMENT_INTERVAL = 'paymentInterval';
+    public const COL_FK_TENANT = 'tenant_id';
 
     /**
      * The attributes that are mass assignable.

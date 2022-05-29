@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Http\Livewire\BidderRoundForm;
 use App\Models\BidderRound;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Livewire;
 use Tests\TestCase;
 

@@ -2,15 +2,18 @@
 
 namespace Tests;
 
+use App\Claims\SetTenantCookie;
 use App\Enums\EnumContributionGroup;
 use App\Models\BidderRound;
 use App\Models\Offer;
 use App\Models\User;
+use App\Tenancy\InitializeTenancyByCookie;
 use Carbon\Carbon;
 use Database\Factories\OfferFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Stancl\Tenancy\Exceptions\TenantCouldNotBeIdentifiedById;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -28,6 +31,12 @@ abstract class TestCase extends BaseTestCase
             User::COL_CONTRIBUTION_GROUP => EnumContributionGroup::FULL_MEMBER,
             User::COL_COUNT_SHARES => 1,
         ]);
+
+        $this->withoutMiddleware([
+            InitializeTenancyByCookie::class,
+            SetTenantCookie::class,
+        ]);
+
         $user->attachRole(User::ROLE_ADMIN);
         $this->actingAs($user);
 

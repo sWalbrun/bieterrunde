@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 /**
  * @property int id
@@ -19,6 +20,7 @@ use Illuminate\Support\Collection;
  * @property Carbon validTo
  * @property int countOffers
  * @property string note
+ * @property string tenant_id
  * @property Collection<Offer> offers
  * @property BidderRoundReport $bidderRoundReport
  */
@@ -26,6 +28,7 @@ class BidderRound extends BaseModel
 {
     use HasFactory;
     use BidderRoundRelations;
+    use BelongsToTenant;
 
     public const TABLE = 'bidderRound';
     public const AVERAGE_NEW_MEMBER_INCREASE_RATE = 12.5;
@@ -39,6 +42,7 @@ class BidderRound extends BaseModel
     public const COL_VALID_TO = 'validTo';
     public const COL_COUNT_OFFERS = 'countOffers';
     public const COL_NOTE = 'note';
+    public const COL_FK_TENANT = 'tenant_id';
 
     protected $casts = [
         self::COL_START_OF_SUBMISSION => 'date',

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Claims\SetTenantCookie;
 use Illuminate\Cookie\Middleware\EncryptCookies as Middleware;
 
 class EncryptCookies extends Middleware
@@ -11,5 +12,8 @@ class EncryptCookies extends Middleware
      *
      * @var array
      */
-    protected $except = [];
+    protected $except = [
+        // ! - This is a potential security risk since the session can be manipulated currently
+        'solawir_session'
+    ];
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Claims\SetTenantCookie;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\AuthenticateUserManager;
 use App\Http\Middleware\EncryptCookies;
@@ -10,6 +11,7 @@ use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
 use App\Http\Middleware\VerifyCsrfToken;
+use App\Tenancy\InitializeTenancyByCookie;
 use Fruitcake\Cors\HandleCors;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
 use Illuminate\Auth\Middleware\Authorize;
@@ -37,6 +39,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middleware = [
+        InitializeTenancyByCookie::class,
         TrustProxies::class,
         HandleCors::class,
         PreventRequestsDuringMaintenance::class,
