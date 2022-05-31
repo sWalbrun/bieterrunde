@@ -25,7 +25,11 @@ use Stancl\Tenancy\Middleware;
 
 class TenancyServiceProvider extends ServiceProvider
 {
-    // By default, no namespace is used to support the callable array syntax.
+    /**
+     * @var string
+     *
+     * By default, no namespace is used to support the callable array syntax.
+     */
     public static string $controllerNamespace = '';
 
     public function events(): array
@@ -36,12 +40,14 @@ class TenancyServiceProvider extends ServiceProvider
             Events\TenantCreated::class => [
                 JobPipeline::make([
                     // Comment in this jobs for multi database tenancy
-//                    Jobs\CreateDatabase::class,
-//                    Jobs\MigrateDatabase::class,
+                    // Jobs\CreateDatabase::class,
+                    // Jobs\MigrateDatabase::class,
 
                 ])->send(function (Events\TenantCreated $event) {
                     return $event->tenant;
-                })->shouldBeQueued(false), // `false` by default, but you probably want to make this `true` for production.
+                })
+                    // `false` by default, but you probably want to make this `true` for production.
+                    ->shouldBeQueued(false),
             ],
             Events\SavingTenant::class => [],
             Events\TenantSaved::class => [],
@@ -53,7 +59,9 @@ class TenancyServiceProvider extends ServiceProvider
                     Jobs\DeleteDatabase::class,
                 ])->send(function (Events\TenantDeleted $event) {
                     return $event->tenant;
-                })->shouldBeQueued(false), // `false` by default, but you probably want to make this `true` for production.
+                })
+                    // `false` by default, but you probably want to make this `true` for production
+                    ->shouldBeQueued(false),
             ],
 
             // Domain events

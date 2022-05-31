@@ -34,6 +34,7 @@ class InitializeTenancyByCookie extends InitializeTenancyByRequestData
                 $tenantId
             );
 
+            // phpcs:ignore
             /** @var User $user */
             $user = auth()->user();
             if (!isset($user->tenant->id) || $user->tenant->id !== $tenantId) {
@@ -71,4 +72,3 @@ class InitializeTenancyByCookie extends InitializeTenancyByRequestData
         return $tenantId;
     }
 }
-

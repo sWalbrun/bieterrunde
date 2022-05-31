@@ -22,7 +22,10 @@ class SetTenantCookie
      * This method is setting a cookie with the tenant id which simply gets determined by searching the tenant of the
      * user's email.
      *
-     * @throws TenantCouldNotBeIdentifiedById
+     * @param Request $request
+     * @param mixed $next
+     *
+     * @return Response|mixed|null
      */
     public function handle(Request $request, $next)
     {
@@ -30,9 +33,12 @@ class SetTenantCookie
         if (!Str::contains($request->getUri(), '/login') || !isset($request->email)) {
             return $next($request);
         }
+
+        // phpcs:ignore
         /** @var Response $response */
         $response = $next($request);
 
+        // phpcs:ignore
         /** @var User $user */
         $user = User::query()->where(User::COL_EMAIL, '=', $request->email)->first();
         if (!isset($user->tenant->id)) {
