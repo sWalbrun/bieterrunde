@@ -11,9 +11,10 @@ class CreateDomainsTable extends Migration
 {
     public function up(): void
     {
+        Schema::dropIfExists('domains');
         Schema::create('domains', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('domain', 255)->unique();
+            $table->string('domain', 50)->unique();
             $table->string('tenant_id');
             $table->foreign('tenant_id')
                 ->references('id')
