@@ -51,7 +51,7 @@ return [
     'enablePackageBootstapAlerts'   => true,
 
     // Users List Pagination
-    'enablePagination'              => true,
+    'enablePagination'              => false,
     'paginateListSize'              => 25,
 
     // Enable Search Users- Uses jQuery Ajax
