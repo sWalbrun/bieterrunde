@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tenancy;
 
-use App\Claims\SetTenantCookie;
+use App\Jobs\SetTenantCookie;
 use App\Models\User;
 use Closure;
-use Composer\Autoload\AutoloadGenerator;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

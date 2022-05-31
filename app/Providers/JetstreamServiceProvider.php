@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Actions\Jetstream\DeleteUser;
-use App\Claims\SetTenantCookie;
+use App\Jobs\SetTenantCookie;
 use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Fortify\Actions\AttemptToAuthenticate;

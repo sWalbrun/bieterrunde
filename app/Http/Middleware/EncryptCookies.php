@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Claims\SetTenantCookie;
 use Illuminate\Cookie\Middleware\EncryptCookies as Middleware;
 
 class EncryptCookies extends Middleware

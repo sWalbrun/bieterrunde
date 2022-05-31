@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Claims;
+namespace App\Jobs;
 
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Http\Responses\LoginResponse;
 use Stancl\Tenancy\Exceptions\TenantCouldNotBeIdentifiedById;
+use function cookie;
 
 /**
  * This middleware is setting the tenant id as a cookie.

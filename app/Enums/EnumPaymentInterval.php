@@ -42,7 +42,6 @@ final class EnumPaymentInterval extends Enum
             throw new InvalidEnumKeyException($interval, self::class);
         }
 
-        return $foundInterval
-            ->first();
+        return $foundInterval->first();
     }
 }

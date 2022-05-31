@@ -2,8 +2,8 @@
 
 namespace Tests;
 
-use App\Claims\SetTenantCookie;
 use App\Enums\EnumContributionGroup;
+use App\Jobs\SetTenantCookie;
 use App\Models\BidderRound;
 use App\Models\Offer;
 use App\Models\User;
@@ -13,7 +13,6 @@ use Database\Factories\OfferFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use Stancl\Tenancy\Exceptions\TenantCouldNotBeIdentifiedById;
 
 abstract class TestCase extends BaseTestCase
 {

@@ -2,7 +2,6 @@
 
 namespace App\Http;
 
-use App\Claims\SetTenantCookie;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\AuthenticateUserManager;
 use App\Http\Middleware\EncryptCookies;
