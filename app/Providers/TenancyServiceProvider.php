@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Http\Middleware\EncryptCookies;
 use App\Tenancy\InitializeTenancyByCookie;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\Facades\Event;
@@ -131,6 +132,9 @@ class TenancyServiceProvider extends ServiceProvider
             // Even higher priority than the initialization middleware
             Middleware\PreventAccessFromCentralDomains::class,
 
+            // We have to mostly prioritize the encryption to make sure accessing the tenancy by cookie is happening
+            // afterwards.
+            EncryptCookies::class,
             InitializeTenancyByCookie::class,
             Middleware\InitializeTenancyByDomain::class,
             Middleware\InitializeTenancyBySubdomain::class,

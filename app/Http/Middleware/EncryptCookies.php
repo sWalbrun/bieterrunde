@@ -13,7 +13,5 @@ class EncryptCookies extends Middleware
      * @var array
      */
     protected $except = [
-        // ! - This is a potential security risk since the session can be manipulated currently
-        'solawir_session'
     ];
 }
