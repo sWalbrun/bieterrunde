@@ -4,13 +4,15 @@ namespace App\Jobs;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Http\Responses\LoginResponse;
 use Stancl\Tenancy\Exceptions\TenantCouldNotBeIdentifiedById;
 use function cookie;
 
 /**
- * This middleware is setting the tenant id as a cookie.
+ * This middleware is setting the tenant id as a cookie. The current logic is allowing you only to be part of one
+ * and only one tenancy determined by the {@link User::email user's email address}.
  */
 class SetTenantCookie
 {
@@ -24,14 +26,14 @@ class SetTenantCookie
      */
     public function handle(Request $request, $next)
     {
+        // We are only taking care of the login route.
         if (!Str::contains($request->getUri(), '/login') || !isset($request->email)) {
-
-            // We are only taking care of the login route.
             return $next($request);
         }
-        /** @var LoginResponse $response */
+        /** @var Response $response */
         $response = $next($request);
 
+        /** @var User $user */
         $user = User::query()->where(User::COL_EMAIL, '=', $request->email)->first();
         if (!isset($user->tenant->id)) {
             return null;

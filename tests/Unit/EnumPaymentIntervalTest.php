@@ -14,28 +14,8 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Translation\Translator;
 use Tests\TestCase;
 
-/**
- * This test takes care of sending the notifications of {@link RememberTheBidderRound} only to the {@link Participant participants}
- * which did not make the offers yet.
- */
 class EnumPaymentIntervalTest extends TestCase
 {
-    public function validAndInvalidIntervals(): array
-    {
-        return [
-            'all matching' => [
-                false,
-                EnumPaymentInterval::ANNUAL()->value,
-                EnumPaymentInterval::ANNUAL()->key,
-            ],
-            'none matching' => [
-                true,
-                'Kleines Bubu',
-                'Electronic Circus',
-            ]
-        ];
-    }
-
     /**
      * This test makes sure the determination is working fine.
      *
@@ -58,5 +38,21 @@ class EnumPaymentIntervalTest extends TestCase
             EnumPaymentInterval::class,
             EnumPaymentInterval::determine($interval)
         ));
+    }
+
+    public function validAndInvalidIntervals(): array
+    {
+        return [
+            'all matching' => [
+                false,
+                EnumPaymentInterval::ANNUAL()->value,
+                EnumPaymentInterval::ANNUAL()->key,
+            ],
+            'none matching' => [
+                true,
+                'Kleines Bubu',
+                'Electronic Circus',
+            ]
+        ];
     }
 }

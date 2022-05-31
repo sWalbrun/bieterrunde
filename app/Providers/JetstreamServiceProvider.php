@@ -33,18 +33,6 @@ class JetstreamServiceProvider extends ServiceProvider
     {
         $this->configurePermissions();
 
-        Fortify::authenticateThrough(function (Request $request) {
-            return array_filter([
-                // We have to set the tenant cookie while authenticating
-                SetTenantCookie::class,
-
-                config('fortify.limiters.login') ? null : EnsureLoginIsNotThrottled::class,
-                RedirectIfTwoFactorAuthenticatable::class,
-                AttemptToAuthenticate::class,
-                PrepareAuthenticatedSession::class,
-            ]);
-        });
-
         Jetstream::deleteUsersUsing(DeleteUser::class);
     }
 
