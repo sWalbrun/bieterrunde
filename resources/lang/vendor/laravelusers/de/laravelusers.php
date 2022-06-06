@@ -57,6 +57,7 @@ return [
         'lNameRequired'             => 'Nachname ist ein Pflichtfeld',
         'emailRequired'             => 'E-Mail ist ein Pflichtfeld',
         'contributionGroupRequired' => 'Beitragsgruppe ist ein Pflichtfeld',
+        'countSharesRequired'       => 'Anzahl d. Anteile ist ein Pflichtfeld',
         'emailInvalid'              => 'E-Mail is invalid',
         'passwordRequired'          => 'Passwort ist ein Pflichtfeld',
         'PasswordMin'               => 'Das Passwort muss mindestens 6 Zeichen lang sein',

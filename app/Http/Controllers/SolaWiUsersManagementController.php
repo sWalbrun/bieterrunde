@@ -102,6 +102,7 @@ class SolaWiUsersManagementController extends Controller
             'name' => 'required|string|max:255|unique:' . $tableName . '|alpha_dash',
             'email' => 'required|email|max:255|unique:' . $tableName,
             User::COL_CONTRIBUTION_GROUP => ['required', Rule::in(EnumContributionGroup::getValues())],
+            User::COL_COUNT_SHARES => ['required', Rule::in(range(1, 5))],
             'password' => 'required|string|confirmed|min:6',
             'password_confirmation' => 'required|string|same:password',
         ];
@@ -117,6 +118,7 @@ class SolaWiUsersManagementController extends Controller
             'email.required' => trans('laravelusers::laravelusers.messages.emailRequired'),
             'email.email' => trans('laravelusers::laravelusers.messages.emailInvalid'),
             'contributionGroup.required' => trans('laravelusers::laravelusers.messages.contributionGroupRequired'),
+            'countShare.required' => trans('laravelusers::laravelusers.messages.countSharesRequired'),
             'password.required' => trans('laravelusers::laravelusers.messages.passwordRequired'),
             'password.min' => trans('laravelusers::laravelusers.messages.PasswordMin'),
             'password.max' => trans('laravelusers::laravelusers.messages.PasswordMax'),
@@ -133,7 +135,8 @@ class SolaWiUsersManagementController extends Controller
             User::COL_NAME => strip_tags($request->input('name')),
             User::COL_EMAIL => $request->input('email'),
             User::COL_PASSWORD => Hash::make($request->input('password')),
-            User::COL_CONTRIBUTION_GROUP => $request->input('contributionGroup'),
+            User::COL_CONTRIBUTION_GROUP => $request->input(User::COL_CONTRIBUTION_GROUP),
+            User::COL_COUNT_SHARES => $request->input(User::COL_COUNT_SHARES),
 
             // We can verify this email directly since an admin has created the account
             User::COL_EMAIL_VERIFIED_AT => Carbon::now()
@@ -213,6 +216,7 @@ class SolaWiUsersManagementController extends Controller
         $rules = [
             User::COL_NAME => 'required|max:255',
             User::COL_CONTRIBUTION_GROUP => ['required', Rule::in(EnumContributionGroup::getValues())],
+            User::COL_COUNT_SHARES => ['required', Rule::in(range(1,5))],
         ];
 
         if ($emailCheck) {
@@ -250,7 +254,7 @@ class SolaWiUsersManagementController extends Controller
         }
 
         $user->contributionGroup = $request->input(User::COL_CONTRIBUTION_GROUP);
-
+        $user->countShares = $request->input(User::COL_COUNT_SHARES);
         $user->save();
 
         return back()->with('success', trans('laravelusers::laravelusers.messages.update-user-success'));
