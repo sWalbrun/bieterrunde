@@ -1,3 +1,9 @@
+<?php
+use App\Models\User;
+
+/** @var User $user */
+?>
+
 @extends(config('laravelusers.laravelUsersBladeExtended'))
 
 @section('template_title')
@@ -31,7 +37,9 @@
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             {!! trans('laravelusers::laravelusers.showing-user-title', ['name' => $user->name]) !!}
                             <div class="float-right">
-                                <a href="{{ route('users') }}" class="btn btn-light btn-sm float-right" data-toggle="tooltip" data-placement="left" title="{!! trans('laravelusers::laravelusers.tooltips.back-users') !!}">
+                                <a href="{{ route('users') }}" class="btn btn-light btn-sm float-right"
+                                   data-toggle="tooltip" data-placement="left"
+                                   title="{!! trans('laravelusers::laravelusers.tooltips.back-users') !!}">
                                     @if(config('laravelusers.fontAwesomeEnabled'))
                                         <i class="fas fa-fw fa-reply-all" aria-hidden="true"></i>
                                     @endif
@@ -45,7 +53,8 @@
                             {{ $user->name }}
                         </h4>
                         @if($user->email)
-                            <p class="text-center" data-toggle="tooltip" data-placement="top" title="{!! trans('laravelusers::laravelusers.tooltips.email-user', ['user' => $user->email]) !!}">
+                            <p class="text-center" data-toggle="tooltip" data-placement="top"
+                               title="{!! trans('laravelusers::laravelusers.tooltips.email-user', ['user' => $user->email]) !!}">
                                 {{ Html::mailto($user->email, $user->email) }}
                             </p>
                         @endif
@@ -57,8 +66,8 @@
                             </div>
                             <div class="col-3 col-sm-4 col-md-4 col-lg-3">
                                 {!! Form::open(array('url' => 'users/' . $user->id, 'class' => 'form-inline')) !!}
-                                    {!! Form::hidden('_method', 'DELETE') !!}
-                                    {!! Form::button(trans('laravelusers::laravelusers.buttons.delete-user'), array('class' => 'btn btn-danger btn-md btn-block','type' => 'button', 'data-toggle' => 'modal', 'data-target' => '#confirmDelete', 'data-title' => 'Delete User', 'data-message' => 'Are you sure you want to delete this user?')) !!}
+                                {!! Form::hidden('_method', 'DELETE') !!}
+                                {!! Form::button(trans('laravelusers::laravelusers.buttons.delete-user'), array('class' => 'btn btn-danger btn-md btn-block','type' => 'button', 'data-toggle' => 'modal', 'data-target' => '#confirmDelete', 'data-title' => 'Delete User', 'data-message' => 'Are you sure you want to delete this user?')) !!}
                                 {!! Form::close() !!}
                             </div>
                         </div>
@@ -103,6 +112,62 @@
                                     </div>
                                 </li>
                             @endif
+                            @if ($user->contributionGroup)
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-12 col-sm-3">
+                                            <strong>
+                                                {!! trans('laravelusers::laravelusers.show-user.contributionGroup') !!}
+                                            </strong>
+                                        </div>
+                                        <div class="col-12 col-sm-9">
+                                            {{ trans($user->contributionGroup) }}
+                                        </div>
+                                    </div>
+                                </li>
+                            @endif
+                            @if ($user->countShares)
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-12 col-sm-3">
+                                            <strong>
+                                                {!! trans('laravelusers::laravelusers.show-user.countShares') !!}
+                                            </strong>
+                                        </div>
+                                        <div class="col-12 col-sm-9">
+                                            {{ $user->countShares }}
+                                        </div>
+                                    </div>
+                                </li>
+                            @endif
+                            @if ($user->joinDate)
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-12 col-sm-3">
+                                            <strong>
+                                                {!! trans('laravelusers::laravelusers.show-user.joinDate') !!}
+                                            </strong>
+                                        </div>
+                                        <div class="col-12 col-sm-9">
+                                            {{ $user->joinDate->format(config('app.date_format')) }}
+                                        </div>
+                                    </div>
+                                </li>
+                            @endif
+                            @if ($user->exitDate)
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-12 col-sm-3">
+                                            <strong>
+                                                {!! trans('laravelusers::laravelusers.show-user.exitDate') !!}
+                                            </strong>
+                                        </div>
+                                        <div class="col-12 col-sm-9">
+                                            {{ $user->exitDate->format(config('app.date_format')) }}
+                                        </div>
+                                    </div>
+                                </li>
+                            @endif
                             @if(config('laravelusers.rolesEnabled'))
                                 <li class="list-group-item">
                                     <div class="row">
@@ -112,7 +177,7 @@
                                             </strong>
                                         </div>
                                         <div class="col-8 col-sm-9">
-                                            @foreach ($user->roles as $user_role)
+                                            @foreach ($user->getRoles() as $user_role)
                                                 @if ($user_role->name == 'User')
                                                     @php $labelClass = 'primary' @endphp
                                                 @elseif ($user_role->name == 'Admin')
@@ -154,7 +219,7 @@
                                     </div>
                                 </li>
                             @endif
-                            @if ($user->created_at)
+                            @if ($user->createdAt)
                                 <li class="list-group-item">
                                     <div class="row">
                                         <div class="col-4 col-sm-3">
@@ -163,12 +228,12 @@
                                             </strong>
                                         </div>
                                         <div class="col-8 col-sm-9">
-                                            {{ $user->created_at }}
+                                            {{ $user->createdAt->format(config('app.date_format')) }}
                                         </div>
                                     </div>
                                 </li>
                             @endif
-                            @if ($user->updated_at)
+                            @if ($user->updatedAt)
                                 <li class="list-group-item">
                                     <div class="row">
                                         <div class="col-4 col-sm-3">
@@ -177,7 +242,7 @@
                                             </strong>
                                         </div>
                                         <div class="col-8 col-sm-9">
-                                            {{ $user->updated_at }}
+                                            {{ $user->updatedAt->format(config('app.date_format')) }}
                                         </div>
                                     </div>
                                 </li>

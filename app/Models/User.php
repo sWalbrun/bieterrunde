@@ -42,6 +42,7 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
  * @property EnumPaymentInterval paymentInterval
  * @property string tenant_id
  * @property Carbon $createdAt
+ * @property Carbon $updatedAt
  * @property Collection<Offer> offers
  */
 class User extends Authenticatable implements MustVerifyEmail, Participant

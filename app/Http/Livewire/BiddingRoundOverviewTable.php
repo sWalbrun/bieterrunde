@@ -112,12 +112,12 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
                 ->searchable()
                 ->sortable(),
             Column::add()
-                ->title(trans('Beitragsgruppe'))
+                ->title(trans('laravelusers::laravelusers.show-user.contributionGroup'))
                 ->field(User::COL_CONTRIBUTION_GROUP)
                 ->searchable()
                 ->sortable(),
             Column::add()
-                ->title(trans('Anzahl d. Anteile'))
+                ->title(trans('laravelusers::laravelusers.show-user.countShares'))
                 ->field(User::COL_COUNT_SHARES),
             Column::add()
                 ->title(trans('Zahlungsintervall'))

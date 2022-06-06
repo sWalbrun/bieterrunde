@@ -3,7 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use jeremykenedy\laravelusers\App\Http\Controllers\SolaWiUsersManagementController;
+use App\Http\Controllers\SolaWiUsersManagementController;
+use jeremykenedy\laravelusers\App\Http\Controllers\UsersManagementController;
 
 /**
  * <p>This provider is necessary since laravel-users is having a bug which disables using other table names than 'users'.
@@ -33,16 +34,15 @@ class LaravelUsersServiceProvider extends ServiceProvider
     public function register()
     {
         $basePath = $this->getBasePath();
-        $this->loadRoutesFrom($basePath . '/routes/web.php');
         $this->loadViewsFrom($basePath . '/resources/views/', $this->packageTag);
         $this->loadTranslationsFrom($basePath . '/resources/lang/vendor/', $this->packageTag);
         $this->mergeConfigFrom($basePath . '/config/' . $this->packageTag . '.php', $this->packageTag);
         $this->publishFiles();
-        $this->app->make('jeremykenedy\laravelusers\App\Http\Controllers\UsersManagementController');
-        $controllerClass = jeremykenedy\laravelusers\App\Http\Controllers\UsersManagementController\UsersManagementController::class;
-        $this->app->singleton(
+        $controllerClass = UsersManagementController::class;
+        $this->app->make($controllerClass);
+        $this->app->extend(
             $controllerClass,
-            fn() => new SolaWiUsersManagementController()
+            fn () => new SolaWiUsersManagementController()
         );
         $this->app->alias($controllerClass, 'laravelusers');
     }

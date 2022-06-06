@@ -99,6 +99,8 @@ return [
 
     'fallback_locale' => 'en',
 
+    'date_format' => env('DATE_FORMAT', 'd.m.Y'),
+
     /*
     |--------------------------------------------------------------------------
     | Faker Locale

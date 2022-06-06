@@ -1,12 +1,16 @@
 <?php
 
-namespace jeremykenedy\laravelusers\App\Http\Controllers;
+namespace App\Http\Controllers;
 
+use App\Enums\EnumContributionGroup;
+use App\Models\User;
 use Auth;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Validator;
 
 class SolaWiUsersManagementController extends Controller
@@ -43,7 +47,7 @@ class SolaWiUsersManagementController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -66,7 +70,7 @@ class SolaWiUsersManagementController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -87,9 +91,9 @@ class SolaWiUsersManagementController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -97,6 +101,7 @@ class SolaWiUsersManagementController extends Controller
         $rules = [
             'name' => 'required|string|max:255|unique:' . $tableName . '|alpha_dash',
             'email' => 'required|email|max:255|unique:' . $tableName,
+            User::COL_CONTRIBUTION_GROUP => ['required', Rule::in(EnumContributionGroup::getValues())],
             'password' => 'required|string|confirmed|min:6',
             'password_confirmation' => 'required|string|same:password',
         ];
@@ -111,6 +116,7 @@ class SolaWiUsersManagementController extends Controller
             'name' => trans('laravelusers::laravelusers.messages.userNameInvalid'),
             'email.required' => trans('laravelusers::laravelusers.messages.emailRequired'),
             'email.email' => trans('laravelusers::laravelusers.messages.emailInvalid'),
+            'contributionGroup.required' => trans('laravelusers::laravelusers.messages.contributionGroupRequired'),
             'password.required' => trans('laravelusers::laravelusers.messages.passwordRequired'),
             'password.min' => trans('laravelusers::laravelusers.messages.PasswordMin'),
             'password.max' => trans('laravelusers::laravelusers.messages.PasswordMax'),
@@ -124,9 +130,13 @@ class SolaWiUsersManagementController extends Controller
         }
 
         $user = config('laravelusers.defaultUserModel')::create([
-            'name' => strip_tags($request->input('name')),
-            'email' => $request->input('email'),
-            'password' => Hash::make($request->input('password')),
+            User::COL_NAME => strip_tags($request->input('name')),
+            User::COL_EMAIL => $request->input('email'),
+            User::COL_PASSWORD => Hash::make($request->input('password')),
+            User::COL_CONTRIBUTION_GROUP => $request->input('contributionGroup'),
+
+            // We can verify this email directly since an admin has created the account
+            User::COL_EMAIL_VERIFIED_AT => Carbon::now()
         ]);
 
         if ($this->rolesEnabled) {
@@ -142,7 +152,7 @@ class SolaWiUsersManagementController extends Controller
      *
      * @param int $id
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
@@ -156,7 +166,7 @@ class SolaWiUsersManagementController extends Controller
      *
      * @param int $id
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -188,19 +198,21 @@ class SolaWiUsersManagementController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @param int $id
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
+        /** @var User $user */
         $user = config('laravelusers.defaultUserModel')::find($id);
         $emailCheck = ($request->input('email') != '') && ($request->input('email') != $user->email);
         $passwordCheck = $request->input('password') != null;
 
         $rules = [
-            'name' => 'required|max:255',
+            User::COL_NAME => 'required|max:255',
+            User::COL_CONTRIBUTION_GROUP => ['required', Rule::in(EnumContributionGroup::getValues())],
         ];
 
         if ($emailCheck) {
@@ -237,6 +249,8 @@ class SolaWiUsersManagementController extends Controller
             $user->attachRole($request->input('role'));
         }
 
+        $user->contributionGroup = $request->input(User::COL_CONTRIBUTION_GROUP);
+
         $user->save();
 
         return back()->with('success', trans('laravelusers::laravelusers.messages.update-user-success'));
@@ -247,7 +261,7 @@ class SolaWiUsersManagementController extends Controller
      *
      * @param int $id
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {
@@ -268,7 +282,7 @@ class SolaWiUsersManagementController extends Controller
      *
      * @param Request $request
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function search(Request $request)
     {

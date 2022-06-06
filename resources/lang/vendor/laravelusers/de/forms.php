@@ -16,6 +16,8 @@ return [
     'create_user_ph_email'              => 'E-Mail',
     'create_user_icon_email'            => 'fa-envelope',
 
+    'create_user_icon_contribution_group'            => 'fa-user-group',
+
     'create_user_label_username'        => 'Benutzername',
     'create_user_ph_username'           => 'Benutzername',
     'create_user_icon_username'         => 'fa-user',
