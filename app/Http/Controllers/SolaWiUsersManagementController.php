@@ -214,6 +214,7 @@ class SolaWiUsersManagementController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // phpcs:ignore
         /** @var User $user */
         $user = config('laravelusers.defaultUserModel')::find($id);
         $emailCheck = ($request->input('email') != '') && ($request->input('email') != $user->email);

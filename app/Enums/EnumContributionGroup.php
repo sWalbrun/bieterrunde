@@ -23,7 +23,8 @@ final class EnumContributionGroup extends Enum
     /**
      * @return array a mapping where the key is the original value and the value the translated one
      */
-    public static function translated(): array {
+    public static function translated(): array
+    {
         return collect(self::getValues())->mapWithKeys(fn (string $group) => [$group => trans($group)])->toArray();
     }
 }
