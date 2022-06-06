@@ -103,6 +103,8 @@ class SolaWiUsersManagementController extends Controller
             'email' => 'required|email|max:255|unique:' . $tableName,
             User::COL_CONTRIBUTION_GROUP => ['required', Rule::in(EnumContributionGroup::getValues())],
             User::COL_COUNT_SHARES => ['required', Rule::in(range(1, 5))],
+            User::COL_JOIN_DATE => ['required', 'date_format:' . config('app.date_format')],
+            User::COL_EXIT_DATE => ['nullable', 'date_format:' . config('app.date_format')],
             'password' => 'required|string|confirmed|min:6',
             'password_confirmation' => 'required|string|same:password',
         ];
@@ -137,6 +139,10 @@ class SolaWiUsersManagementController extends Controller
             User::COL_PASSWORD => Hash::make($request->input('password')),
             User::COL_CONTRIBUTION_GROUP => $request->input(User::COL_CONTRIBUTION_GROUP),
             User::COL_COUNT_SHARES => $request->input(User::COL_COUNT_SHARES),
+            User::COL_JOIN_DATE => Carbon::createFromFormat(config('app.date_format'), $request->input(User::COL_JOIN_DATE)),
+            User::COL_EXIT_DATE => $request->input(User::COL_EXIT_DATE) !== null
+                ? Carbon::createFromFormat(config('app.date_format'), $request->input(User::COL_EXIT_DATE))
+                : null,
 
             // We can verify this email directly since an admin has created the account
             User::COL_EMAIL_VERIFIED_AT => Carbon::now()
@@ -216,7 +222,9 @@ class SolaWiUsersManagementController extends Controller
         $rules = [
             User::COL_NAME => 'required|max:255',
             User::COL_CONTRIBUTION_GROUP => ['required', Rule::in(EnumContributionGroup::getValues())],
-            User::COL_COUNT_SHARES => ['required', Rule::in(range(1,5))],
+            User::COL_COUNT_SHARES => ['required', Rule::in(range(1, 5))],
+            User::COL_JOIN_DATE => ['required', 'date_format:' . config('app.date_format')],
+            User::COL_EXIT_DATE => ['nullable', 'date_format:' . config('app.date_format')],
         ];
 
         if ($emailCheck) {
@@ -255,6 +263,10 @@ class SolaWiUsersManagementController extends Controller
 
         $user->contributionGroup = $request->input(User::COL_CONTRIBUTION_GROUP);
         $user->countShares = $request->input(User::COL_COUNT_SHARES);
+        $user->joinDate = Carbon::createFromFormat(config('app.date_format'), $request->input(User::COL_JOIN_DATE));
+        $user->exitDate = $request->input(User::COL_EXIT_DATE) !== null
+            ? Carbon::createFromFormat(config('app.date_format'), $request->input(User::COL_EXIT_DATE))
+            : null;
         $user->save();
 
         return back()->with('success', trans('laravelusers::laravelusers.messages.update-user-success'));

@@ -70,7 +70,7 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="form-group has-feedback row {{ $errors->has('contributionGroup') ? ' has-error ' : '' }}">
+                        <div class="form-group has-feedback row {{ $errors->has('name') ? ' has-error ' : '' }}">
                             @if(config('laravelusers.fontAwesomeEnabled'))
                                 {!! Form::label('name', trans('laravelusers::forms.create_user_label_username'), array('class' => 'col-md-3 control-label')); !!}
                             @endif
@@ -160,6 +160,56 @@
                                 @if ($errors->has('countShares'))
                                     <span class="help-block">
                                             <strong>{{ $errors->first('countShares') }}</strong>
+                                        </span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="form-group has-feedback row {{ $errors->has('joinDate') ? ' has-error ' : '' }}">
+                            @if(config('laravelusers.fontAwesomeEnabled'))
+                                {!! Form::label('joinDate', trans('laravelusers::laravelusers.show-user.joinDate'), array('class' => 'col-md-3 control-label')); !!}
+                            @endif
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    {!! Form::text('joinDate', NULL, array('id' => 'contributionGroup', 'class' => 'form-control', 'placeholder' => \Carbon\Carbon::now()->format(config('app.date_format')))) !!}
+                                    <div class="input-group-append">
+                                        <label class="input-group-text" for="joinDate">
+                                            @if(config('laravelusers.fontAwesomeEnabled'))
+                                                <i class="fa fa-fw {!! trans('laravelusers::laravelusers.show-user.joinDate') !!}"
+                                                   aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M160 32V64H288V32C288 14.33 302.3 0 320 0C337.7 0 352 14.33 352 32V64H400C426.5 64 448 85.49 448 112V160H0V112C0 85.49 21.49 64 48 64H96V32C96 14.33 110.3 0 128 0C145.7 0 160 14.33 160 32zM0 192H448V464C448 490.5 426.5 512 400 512H48C21.49 512 0 490.5 0 464V192zM80 256C71.16 256 64 263.2 64 272V368C64 376.8 71.16 384 80 384H176C184.8 384 192 376.8 192 368V272C192 263.2 184.8 256 176 256H80z"/></svg></i>
+                                            @else
+                                                {!! trans('laravelusers::laravelusers.show-user.joinDate') !!}
+                                            @endif
+                                        </label>
+                                    </div>
+                                </div>
+                                @if ($errors->has('joinDate'))
+                                    <span class="help-block">
+                                            <strong>{{ $errors->first('joinDate') }}</strong>
+                                        </span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="form-group has-feedback row {{ $errors->has('exitDate') ? ' has-error ' : '' }}">
+                            @if(config('laravelusers.fontAwesomeEnabled'))
+                                {!! Form::label('exitDate', trans('laravelusers::laravelusers.show-user.exitDate'), array('class' => 'col-md-3 control-label')); !!}
+                            @endif
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    {!! Form::text('exitDate', NULL, array('id' => 'contributionGroup', 'class' => 'form-control', 'placeholder' => trans('laravelusers::laravelusers.show-user.exitDate'))) !!}
+                                    <div class="input-group-append">
+                                        <label class="input-group-text" for="exitDate">
+                                            @if(config('laravelusers.fontAwesomeEnabled'))
+                                                <i class="fa fa-fw {!! trans('laravelusers::laravelusers.show-user.exitDate') !!}"
+                                                   aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M160 32V64H288V32C288 14.33 302.3 0 320 0C337.7 0 352 14.33 352 32V64H400C426.5 64 448 85.49 448 112V160H0V112C0 85.49 21.49 64 48 64H96V32C96 14.33 110.3 0 128 0C145.7 0 160 14.33 160 32zM0 192H448V464C448 490.5 426.5 512 400 512H48C21.49 512 0 490.5 0 464V192zM80 256C71.16 256 64 263.2 64 272V368C64 376.8 71.16 384 80 384H176C184.8 384 192 376.8 192 368V272C192 263.2 184.8 256 176 256H80z"/></svg></i>
+                                            @else
+                                                {!! trans('laravelusers::laravelusers.show-user.exitDate') !!}
+                                            @endif
+                                        </label>
+                                    </div>
+                                </div>
+                                @if ($errors->has('exitDate'))
+                                    <span class="help-block">
+                                            <strong>{{ $errors->first('exitDate') }}</strong>
                                         </span>
                                 @endif
                             </div>
