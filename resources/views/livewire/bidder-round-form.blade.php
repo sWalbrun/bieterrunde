@@ -141,4 +141,4 @@ use App\Models\BidderRound;
     @endif
 </div>
 
-@livewire('bidder-round-overview', ['bidderRound' => $bidderRound]);
+@livewire('bidder-round-overview', ['bidderRound' => $bidderRound])
