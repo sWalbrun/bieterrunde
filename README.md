@@ -2,7 +2,6 @@
 
 <p align="center">
 <a href="https://github.com/sWalbrun/solawi/actions/workflows/ci.yml"><img src="https://github.com/sWalbrun/solawi/actions/workflows/ci.yml/badge.svg?branch=develop" alt="CI"></a>
-<a href="https://github.styleci.io/repos/442431085"><img src="https://github.styleci.io/repos/442431085/shield?style=plastic" alt="Style CI"></a>
 </p>
 
 # SolaWi|Bieterrunde
@@ -53,7 +52,7 @@ Sobald alle Gebote abgeben werden konnten, wird die passende Runde ermittelt. Im
 Mitglieder versandt:
 ![BerechnungDerZielrunde](https://user-images.githubusercontent.com/38902857/150683700-cd46a8f4-0203-4f5a-a97f-9975228de9f0.gif)
 
-Es sind außerdem noch weitere, kleine Feature implementiert, wie der Versand eine Erinnerungsmail an alle Mitglieder, die während des Gebotzeitraums noch kein Gebot abgegeben haben.
+Es sind außerdem noch weitere, kleine Features implementiert, wie der Versand eine Erinnerungsmail an alle Mitglieder, die während des Gebotzeitraums noch kein Gebot abgegeben haben.
 ![grafik](https://user-images.githubusercontent.com/38902857/173244163-44b577a2-6aa1-4ee8-8713-0a910162f2b5.png)
 
 ## Benutzermanagement
