@@ -27,3 +27,5 @@ Route::middleware([
         Route::get('/bidderRounds/{bidderRound}', BidderRoundForm::class);
     });
 });
+
+require('admin.php');

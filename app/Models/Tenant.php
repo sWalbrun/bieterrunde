@@ -17,4 +17,6 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     public const TABLE = 'tenant';
 
     protected $table = 'tenant';
+
+    public const COL_ID = 'id';
 }

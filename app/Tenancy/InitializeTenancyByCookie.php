@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace App\Tenancy;
 
 use App\Jobs\SetTenantCookie;
+use App\Models\Tenant;
 use App\Models\User;
 use Closure;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Stancl\Tenancy\Middleware\InitializeTenancyByRequestData;
 
@@ -23,7 +25,8 @@ class InitializeTenancyByCookie extends InitializeTenancyByRequestData
     {
         if ($request->method() !== 'OPTIONS' && !Str::contains($request->getUri(), '/login')) {
             $tenantId = $this->getTenantId($request);
-            if (!isset($tenantId)) {
+            if (!isset($tenantId) || Tenant::query()->where(Tenant::COL_ID, $tenantId)->doesntExist()) {
+                Log::info("There is no tenant existing for the given id ($tenantId)");
                 Auth::logout();
                 return redirect('login');
             }

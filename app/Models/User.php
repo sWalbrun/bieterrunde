@@ -44,6 +44,7 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
  * @property Carbon $createdAt
  * @property Carbon $updatedAt
  * @property Collection<Offer> offers
+ * @property Tenant $tenant
  */
 class User extends Authenticatable implements MustVerifyEmail, Participant
 {
