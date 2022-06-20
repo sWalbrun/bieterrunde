@@ -13,14 +13,15 @@
         <!-- Styles -->
         <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 
-        @livewireStyles
-        @wireUiScripts
         @powerGridScripts
+        <wireui:scripts />
         <script src="//unpkg.com/alpinejs" defer></script>
+        @livewireStyles
         <script src="//unpkg.com/@themesberg/flowbite@1.3.0/dist/flowbite.bundle.js"></script>
     </head>
 
     <body>
+        @livewireScripts
         <div x-data="{ sidebarIsOpened: false }" class="min-h-full">
             <!-- Off-canvas menu for mobile, show/hide based on off-canvas menu state. -->
             <div x-show="sidebarIsOpened" class="fixed inset-0 flex z-40 lg:hidden" role="dialog" aria-modal="true">
@@ -30,8 +31,5 @@
                 </div>
             </div>
         </div>
-
-        @livewireScripts
-
     </body>
 </html>

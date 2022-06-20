@@ -26,6 +26,11 @@
                 'csrfToken' => csrf_token(),
             ]) !!};
         </script>
+        @livewireStyles
+        @powerGridScripts
+        <wireui:scripts />
+        <script src="//unpkg.com/alpinejs" defer></script>
+        <script src="//unpkg.com/@themesberg/flowbite@1.3.0/dist/flowbite.bundle.js"></script>
     </head>
     <body>
         <div id="app">

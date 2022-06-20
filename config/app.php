@@ -184,7 +184,6 @@ return [
         App\Providers\FortifyServiceProvider::class,
         App\Providers\JetstreamServiceProvider::class,
         TenancyServiceProvider::class,
-
     ],
 
     /*
