@@ -16,6 +16,7 @@ Es gibt zwei Möglichkeiten für das Hosting:
     <ul>
         <li><code>cp .env.example .env</code></li>
         <li><code>docker-compose up</code></li>
+        <li><code>docker exec solawir_php_app composer i</code></li>
         <li><code>docker exec solawir_php_app php artisan key:generate</code></li>
         <li><code>docker exec solawir_php_app php artisan migrate --seed</code></li>
     </ul>
@@ -26,6 +27,7 @@ Es gibt zwei Möglichkeiten für das Hosting:
             <li><b>PHP >7.4, ein MySql Server sowie Nginx müssen installiert sein</b></li>
             <li><code>cp .env.example .env</code></li>
             <li>.env anpassen auf die Datenbankanbindung</li>
+            <li><code>composer i</code></li>
             <li><code>php artisan key:generate</code></li>
             <li><code>php artisan migrate --seed</code></li>
             <li><code>php artisan serve</code></li>
