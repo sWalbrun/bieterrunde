@@ -38,7 +38,6 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middleware = [
-        InitializeTenancyByCookie::class,
         TrustProxies::class,
         HandleCors::class,
         PreventRequestsDuringMaintenance::class,
@@ -54,6 +53,7 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
+            InitializeTenancyByCookie::class,
             EncryptCookies::class,
             AddQueuedCookiesToResponse::class,
             StartSession::class,
@@ -64,6 +64,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
+            InitializeTenancyByCookie::class,
             'throttle:api',
             SubstituteBindings::class,
         ],

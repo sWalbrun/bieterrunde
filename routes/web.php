@@ -16,4 +16,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-require __DIR__.'/admin.php';
+Route::get('/assets/{path?}', 'Stancl\Tenancy\Controllers\TenantAssetsController@asset')
+    ->where('path', '(.*)')
+    ->name('stancl.tenancy.asset');

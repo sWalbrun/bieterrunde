@@ -13,9 +13,11 @@
         <!-- Styles -->
         <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 
-        @powerGridScripts
         <wireui:scripts />
-        <script src="//unpkg.com/alpinejs" defer></script>
+
+        {{--We add all ressources like e. g. alpine js--}}
+        <script src="{{ global_asset('js/app.js') }}" defer></script>
+        @powerGridScripts
         @livewireStyles
         <script src="//unpkg.com/@themesberg/flowbite@1.3.0/dist/flowbite.bundle.js"></script>
     </head>

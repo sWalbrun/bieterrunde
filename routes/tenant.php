@@ -5,12 +5,14 @@ declare(strict_types=1);
 use App\Http\Livewire\BidderRoundForm;
 use App\Http\Livewire\OfferForm;
 use App\Http\Middleware\CanManipulateBidderRound;
+use App\Tenancy\InitializeTenancyByCookie;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware([
     'auth',
     'verified',
     'web',
+    InitializeTenancyByCookie::class,
 ])->group(function () {
     Route::get('/', function () {
         return redirect('/dashboard');

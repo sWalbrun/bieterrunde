@@ -31,7 +31,7 @@ class RegistrationTest extends TestCase
 
         $response = $this->get('/register');
 
-        $response->assertStatus(302);
+        $response->assertStatus(404);
     }
 
     public function test_new_users_can_register()

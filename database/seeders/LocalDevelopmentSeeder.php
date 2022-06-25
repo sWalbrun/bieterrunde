@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\EnumContributionGroup;
 use App\Models\BidderRound;
 use App\Models\Offer;
 use App\Models\Tenant;
@@ -23,13 +24,8 @@ class LocalDevelopmentSeeder extends Seeder
      */
     public function run()
     {
-        /** @var Tenant $tenant1 */
-        $tenant1 = Tenant::create(['id' => 'foo']);
-        $tenant1->domains()->create(['domain' => 'foo.localhost']);
-
-        /** @var Tenant $tenant2 */
-        $tenant2 = Tenant::create(['id' => 'bar']);
-        $tenant2->domains()->create(['domain' => 'bar.localhost']);
+        Tenant::create(['id' => 'foo']);
+        Tenant::create(['id' => 'bar']);
         Tenant::all()->runForEach(fn (Tenant $tenant) => $this->seed($tenant));
     }
 
@@ -43,6 +39,8 @@ class LocalDevelopmentSeeder extends Seeder
         $user->password = Hash::make('password');
         $user->name = 'Admin';
         $user->email_verified_at = Carbon::now();
+        $user->contributionGroup = EnumContributionGroup::FULL_MEMBER();
+        $user->countShares = 1;
         $user->save();
         $user->attachRole(User::ROLE_ADMIN);
         $user->attachRole(User::ROLE_BIDDER_ROUND_PARTICIPANT);

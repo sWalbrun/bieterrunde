@@ -69,7 +69,8 @@ use App\Models\BidderRound;
             </div>
 
             <div class="w-3/4">
-                <x-input
+                <x-inputs.maskable
+                    mask="##.###"
                     label="{{trans('Zu erreichender Betrag')}}"
                     placeholder="{{__('Betrag')}}"
                     wire:model.defer="bidderRound.targetAmount"

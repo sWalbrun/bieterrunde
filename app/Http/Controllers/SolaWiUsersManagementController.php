@@ -229,7 +229,7 @@ class SolaWiUsersManagementController extends Controller
         ];
 
         if ($emailCheck) {
-            $rules['email'] = 'required|email|max:255|unique:users';
+            $rules['email'] = 'required|email|max:255|unique:' . User::TABLE;
         }
 
         if ($passwordCheck) {
