@@ -107,14 +107,19 @@ class IsTargetAmountReached extends Command
         }
 
         if (!isset($reachedAmount) || !isset($roundWon)) {
-            Log::info("No round found which may has enough money in sum ({$sumOfRounds->first()}) to reach the target amount ($bidderRound->targetAmount) for bidder round ($bidderRound)");
+            Log::info(sprintf(
+                'No round found which may has enough money in sum (%s) to reach the target amount (%s) for bidder round (%s)',
+                $sumOfRounds->first(),
+                $bidderRound->targetAmount,
+                $bidderRound
+            ));
 
             return self::NOT_ENOUGH_MONEY;
         }
 
         $this->createReport($reachedAmount, $roundWon, $userCount, $bidderRound);
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 
     private function createReport(float $sumAmount, int $roundWon, int $countParticipants, BidderRound $bidderRound)

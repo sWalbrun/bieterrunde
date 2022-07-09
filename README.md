@@ -81,9 +81,18 @@ aber dann auch beliebig viele weitere SolaWis die gleiche Instanz nutzen können
 ihre eigenen Informationen.<br>
 Das Anlegen eines Mandats geschieht über die CLI.
 
+### Anlegen und Löschen eines Mandanten
+Für diese Features werden CLI Befehle bereitgestellt.
+![TenantCreationAndDeletion](https://user-images.githubusercontent.com/38902857/178099026-ac2d3560-33e7-43d1-9a29-bbc944de06f3.gif)
+#### Anlegen
+<code>php artisan tenancy:create &lt;tenantId&gt; </code><br>
+Wenn keine Id gegeben wurde, wird danach gefragt.
+### Löschen
+<code>php artisan tenancy:delete &lt;tenantId&gt; </code><br>
+Wenn keine Id gegeben wurde, wird danach gefragt.
+
 ## Kommende Features
 
 <ul>
-<li>Anlegen eines Mandats über einen benutzerfreundliche CLI Command</li>
 <li>Excel Ex- und Import von Benutzern</li>
 </ul>
