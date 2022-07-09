@@ -8,10 +8,8 @@ use App\Jobs\SetTenantCookie;
 use App\Models\Tenant;
 use App\Models\User;
 use Closure;
-use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Stancl\Tenancy\Middleware\InitializeTenancyByRequestData;
@@ -21,9 +19,20 @@ use Stancl\Tenancy\Middleware\InitializeTenancyByRequestData;
  */
 class InitializeTenancyByCookie extends InitializeTenancyByRequestData
 {
+    /**
+     * You have to extend this list of routes in case there are some, for which the tenant cannot be identified
+     * using the jwt token since it is not present yet.
+     *
+     * @var array|string[]
+     */
+    public static array $whiteListRoutes = [
+        '/login',
+        '/forgot-password',
+    ];
+
     public function handle($request, Closure $next)
     {
-        if ($request->method() !== 'OPTIONS' && !Str::contains($request->getUri(), ['/login'])) {
+        if ($request->method() !== 'OPTIONS' && !$this->isWhiteListed($request)) {
             $tenantId = $request->cookie(SetTenantCookie::TENANT_ID);
             if (!isset($tenantId) || Tenant::query()->where(Tenant::COL_ID, $tenantId)->doesntExist()) {
                 Log::info("There is no tenant existing for the given id ($tenantId)");
@@ -51,5 +60,10 @@ class InitializeTenancyByCookie extends InitializeTenancyByRequestData
         }
 
         return $next($request);
+    }
+
+    protected function isWhiteListed(Request $request): bool
+    {
+        return Str::contains($request->getUri(), static::$whiteListRoutes);
     }
 }
