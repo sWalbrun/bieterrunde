@@ -1,5 +1,6 @@
 <?php
 
+use App\Import\Providers\ImportServiceProvider;
 use App\Models\Tenant;
 use App\Providers\TenancyServiceProvider;
 use Stancl\Tenancy\Database\Models\Domain;
@@ -184,6 +185,7 @@ return [
         App\Providers\FortifyServiceProvider::class,
         App\Providers\JetstreamServiceProvider::class,
         TenancyServiceProvider::class,
+        ImportServiceProvider::class,
     ],
 
     /*
