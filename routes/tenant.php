@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Livewire\BidderRoundForm;
+use App\Http\Livewire\ImportComponent;
 use App\Http\Livewire\OfferForm;
 use App\Http\Middleware\CanManipulateBidderRound;
 use App\Tenancy\InitializeTenancyByCookie;
@@ -28,6 +29,8 @@ Route::middleware([
         Route::get('/bidderRounds/create', BidderRoundForm::class);
         Route::get('/bidderRounds/{bidderRound}', BidderRoundForm::class);
     });
+
+    Route::get('/import', ImportComponent::class);
 });
 
 require('admin.php');

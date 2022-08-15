@@ -13,6 +13,7 @@ class ImportServiceProvider extends ServiceProvider
     {
         $this->app->singleton(MappingRegister::class);
 
+        // phpcs:ignore
         /** @var MappingRegister $register */
         $register = resolve(MappingRegister::class);
         $register

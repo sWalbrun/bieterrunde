@@ -96,12 +96,10 @@ class ImportTest extends TestCase
         $postMock->shouldReceive('save')->andReturn(true);
         $postMock->shouldReceive('newInstance')->andReturn($postMock);
         $postMock->shouldReceive('getAttributes')->passthru();
+        $postMock->fillable(['property']);
         $postBuilderMock = Mockery::mock(Builder::class);
-        $postBuilderMock->shouldReceive('updateOrCreate')->andReturn($postMock);
-        $postMock->shouldReceive('newQuery')
-            ->andReturn(
-                $postBuilderMock
-            );
+        $postBuilderMock->shouldReceive('firstOrNew')->andReturn($postMock);
+        $postMock->shouldReceive('newQuery')->andReturn($postBuilderMock);
 
         $register->register(new ModelMappingBlog($blogMock))
             ->register(new ModelMappingPost($postMock));
@@ -165,7 +163,7 @@ class ImportTest extends TestCase
     {
         return new UploadedFile(
             base_path('tests/assets/' . $fileName),
-            'UserImport.xlsx',
+            $fileName,
             null,
             null,
             true

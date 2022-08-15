@@ -19,4 +19,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post(ImportController::ROUTE_IMPORT, [ImportController::class, 'import']);
+Route::post(ImportController::ROUTE_IMPORT, [ImportController::class, 'import'])
+    ->name('import');

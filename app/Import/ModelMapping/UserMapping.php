@@ -3,7 +3,10 @@
 namespace App\Import\ModelMapping;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use jeremykenedy\LaravelRoles\Models\Role;
 
 class UserMapping extends ModelMapping
@@ -35,7 +38,20 @@ class UserMapping extends ModelMapping
     public function associationHooks(): array
     {
         return [
-            Role::class => fn (User $user, Role $role) => $user->attachRole($role)
+            Role::class => fn (User $user, Role $role) => $user->attachRole($role),
         ];
+    }
+
+    public function preSaveHook(Model $user): void
+    {
+        if (!$user instanceof User) {
+            // Should never happen
+            return;
+        }
+
+        if (!$user->exists) {
+            // Since this is a new user, we set a random password to make sure the admin does not know the password
+            $user->password = Hash::make(Str::random(10));
+        }
     }
 }

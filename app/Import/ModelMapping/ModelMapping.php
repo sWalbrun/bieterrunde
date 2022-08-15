@@ -11,6 +11,7 @@ use Illuminate\Support\Collection;
 abstract class ModelMapping
 {
     protected bool $associate;
+
     public Model $model;
 
     /**
@@ -32,6 +33,7 @@ abstract class ModelMapping
 
     /**
      * In case the model is having unique columns (combined), those get used for fetching existing models.
+     *
      * @return array
      */
     abstract public function uniqueColumns(): array;
@@ -46,10 +48,22 @@ abstract class ModelMapping
      *   ]
      * </code>
      * The key is the model which has to be found (additional to $this model) to trigger the value's callback.
+     *
      * @return array
      */
     public function associationHooks(): array
     {
         return [];
+    }
+
+    /**
+     * You can overwrite this hook in case you want to make some manipulations before the model gets saved.
+     *
+     * @param Model $model
+     *
+     * @return void
+     */
+    public function preSaveHook(Model $model): void
+    {
     }
 }

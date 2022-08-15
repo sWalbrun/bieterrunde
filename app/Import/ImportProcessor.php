@@ -19,10 +19,14 @@ use Maatwebsite\Excel\Row;
 class ImportProcessor implements OnEachRow
 {
     private MappingRegister $register;
+
     private bool $firstRow = true;
+
     private Collection $nonMatchingHeadingCells;
 
-    /** @var Collection<string, ColumnMapping> */
+    /**
+     * @var Collection<string, ColumnMapping>
+     */
     private Collection $headingToColumnMapping;
 
     public function __construct(MappingRegister $register)
@@ -33,6 +37,10 @@ class ImportProcessor implements OnEachRow
     }
 
     /**
+     * @param Row $row
+     *
+     * @return void
+     *
      * @throws Exception
      */
     public function onRow(Row $row)
@@ -48,6 +56,10 @@ class ImportProcessor implements OnEachRow
     }
 
     /**
+     * @param Collection $row
+     *
+     * @return void
+     *
      * @throws Exception
      */
     private function determineHeader(Collection $row): void
@@ -72,11 +84,12 @@ class ImportProcessor implements OnEachRow
 
                     if ($this->headingToColumnMapping->has($index)) {
                         // Several tables have overlapping regular expressions
+                        // phpcs:ignore
                         /** @var ColumnMapping $mapping */
                         $mapping = $this->headingToColumnMapping->get($index);
                         $this->throwOverlappingException(collect([
                             $mapping->originalRegEx,
-                            $matchingColumns->first()
+                            $matchingColumns->first(),
                         ])->implode(', '), $cell);
                     }
                     $this->headingToColumnMapping->put(
@@ -108,6 +121,7 @@ class ImportProcessor implements OnEachRow
     private function setAttributes(Collection $row): void
     {
         $row->each(function (?string $cell, int $index) {
+            // phpcs:ignore
             /** @var ColumnMapping $columnValue */
             $columnValue = $this->headingToColumnMapping->get($index);
             if (!isset($columnValue)) {
@@ -141,24 +155,33 @@ class ImportProcessor implements OnEachRow
     {
         $this->headingToColumnMapping
             ->unique(fn (ColumnMapping $columnValue) => $columnValue->mapping)
-            ->each(function (ColumnMapping $columnValue) {
-                if (count($columnValue->mapping->uniqueColumns()) >= 0) {
-                    $model = $columnValue->mapping->model;
-                    $columnValue->mapping->model = $model->newQuery()
-                    ->updateOrCreate(
-                        collect($model->getAttributes())->filter(
-                            fn ($value, string $column) => in_array($column, $columnValue->mapping->uniqueColumns())
-                        )->toArray(),
-                        $model->getAttributes()
+            ->each(function (ColumnMapping $columnMapping) {
+                if (count($columnMapping->mapping->uniqueColumns()) >= 0) {
+                    $model = $columnMapping->mapping->model;
+                    $uniqueColumns = collect($model->getAttributes())->filter(
+                        fn ($value, string $column) => in_array($column, $columnMapping->mapping->uniqueColumns())
                     );
+
+                    $builder = $model->newQuery();
+                    $uniqueColumns->each(fn ($value, string $column) => $builder->where($column, '=', $value));
+                    $modelToPersist = $builder->firstOrNew();
+                    $modelToPersist->fill($model->getAttributes());
+                    $columnMapping->mapping->preSaveHook($modelToPersist);
+                    $modelToPersist->save();
+                    $columnMapping->mapping->model = $modelToPersist;
 
                     return;
                 }
-                $columnValue->mapping->model->save();
+                $columnMapping->mapping->model->save();
             });
     }
 
     /**
+     * @param string $implode
+     * @param string $cell
+     *
+     * @return mixed
+     *
      * @throws Exception
      */
     private function throwOverlappingException(string $implode, string $cell)

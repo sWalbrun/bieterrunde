@@ -11,7 +11,9 @@ use App\Import\ModelMapping\ModelMapping;
 class ColumnMapping
 {
     public ModelMapping $mapping;
+
     public string $column;
+
     public string $originalRegEx;
 
     public function __construct(ModelMapping $parent, string $column, string $originalRegEx)
