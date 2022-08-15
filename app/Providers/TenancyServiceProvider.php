@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Http\Middleware\EncryptCookies;
+use App\Jobs\CreateStorageDirectories;
 use App\Jobs\SetTenantCookie;
 use App\Tenancy\InitializeTenancyByCookie;
 use Illuminate\Contracts\Http\Kernel;
@@ -39,9 +40,10 @@ class TenancyServiceProvider extends ServiceProvider
             Events\CreatingTenant::class => [],
             Events\TenantCreated::class => [
                 JobPipeline::make([
-                    // Comment in this jobs for multi database tenancy
+                    // Comment in those jobs for multi database tenancy
                     // Jobs\CreateDatabase::class,
                     // Jobs\MigrateDatabase::class,
+                    CreateStorageDirectories::class
 
                 ])->send(function (Events\TenantCreated $event) {
                     return $event->tenant;

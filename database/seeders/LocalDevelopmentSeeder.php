@@ -24,8 +24,8 @@ class LocalDevelopmentSeeder extends Seeder
      */
     public function run()
     {
-        Tenant::create(['id' => 'foo']);
-        Tenant::create(['id' => 'bar']);
+        Tenant::query()->create(['id' => 'foo']);
+        Tenant::query()->create(['id' => 'bar']);
         Tenant::all()->runForEach(fn (Tenant $tenant) => $this->seed($tenant));
     }
 
