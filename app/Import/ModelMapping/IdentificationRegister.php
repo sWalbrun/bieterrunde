@@ -5,9 +5,9 @@ namespace App\Import\ModelMapping;
 use Illuminate\Support\Collection;
 
 /**
- * Use this register to register your {@link ModelMapping} (one mapping per model).
+ * Use this register to register your {@link IdentificationOf} (one mapping per model).
  */
-class MappingRegister
+class IdentificationRegister
 {
     private Collection $mappings;
 
@@ -16,9 +16,9 @@ class MappingRegister
         $this->mappings = $mappings;
     }
 
-    public function register(ModelMapping $mapping): self
+    public function register(IdentificationOf $mapping): self
     {
-        if (!$this->mappings->contains(fn (ModelMapping $existingMapping) => $existingMapping === $mapping)) {
+        if (!$this->mappings->contains(fn (IdentificationOf $existingMapping) => $existingMapping === $mapping)) {
             $this->mappings->push($mapping);
         }
 
@@ -26,7 +26,7 @@ class MappingRegister
     }
 
     /**
-     * @return Collection<ModelMapping>
+     * @return Collection<IdentificationOf>
      */
     public function getMappings(): Collection
     {

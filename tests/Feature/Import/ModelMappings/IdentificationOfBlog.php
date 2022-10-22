@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Import\ModelMappings;
 
-use App\Import\ModelMapping\ModelMapping;
+use App\Import\ModelMapping\IdentificationOf;
 use Illuminate\Support\Collection;
 
-class ModelMappingBlog extends ModelMapping
+class IdentificationOfBlog extends IdentificationOf
 {
 
     public function propertyMapping(): Collection

@@ -2,23 +2,29 @@
 
 namespace App\Import;
 
-use App\Import\ModelMapping\MappingRegister;
-use App\Import\ModelMapping\ModelMapping;
+use App\Import\ModelMapping\AssociationRegister;
+use App\Import\ModelMapping\IdentificationRegister;
+use App\Import\ModelMapping\IdentificationOf;
 use Closure;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\OnEachRow;
 use Maatwebsite\Excel\Row;
+use ReflectionFunction;
+use ReflectionMethod;
+use ReflectionParameter;
 
 /**
- * This processor is trying to create models using the {@link ModelMapping::propertyMapping()} taking care of
- * {@link ModelMapping::uniqueColumns() unique columns} making sure the import can be idempotent.<br>
- * Associations get also set in case {@link ModelMapping::associationHooks() hooks} are set.
+ * This processor is trying to create models using the {@link IdentificationOf::propertyMapping()} taking care of
+ * {@link IdentificationOf::uniqueColumns() unique columns} making sure the import can be idempotent.<br>
+ * Associations get also set in case {@link IdentificationOf::associationHooks() hooks} are set.
  */
 class ImportProcessor implements OnEachRow
 {
-    private MappingRegister $register;
+    private IdentificationRegister $identificationRegister;
+
+    private AssociationRegister $associationRegister;
 
     private bool $firstRow = true;
 
@@ -29,9 +35,10 @@ class ImportProcessor implements OnEachRow
      */
     private Collection $headingToColumnMapping;
 
-    public function __construct(MappingRegister $register)
+    public function __construct(IdentificationRegister $identificationRegister, AssociationRegister $associationRegister)
     {
-        $this->register = $register;
+        $this->identificationRegister = $identificationRegister;
+        $this->associationRegister = $associationRegister;
         $this->nonMatchingHeadingCells = collect();
         $this->headingToColumnMapping = collect();
     }
@@ -69,9 +76,9 @@ class ImportProcessor implements OnEachRow
                 // Since the cell is not having a heading row, we cannot process it since it gets used as regEx subject
                 return;
             }
-            $this->register
+            $this->identificationRegister
                 ->getMappings()
-                ->each(function (ModelMapping $mapping) use ($index, $cell) {
+                ->each(function (IdentificationOf $mapping) use ($index, $cell) {
                     $matchingColumns = $mapping->propertyMapping()
                         ->filter(fn (string $regEx, string $column) => preg_match($regEx, $cell) || $column === $cell);
                     if ($matchingColumns->count() > 1) {
@@ -113,9 +120,12 @@ class ImportProcessor implements OnEachRow
 
     private function reset()
     {
-        $this->headingToColumnMapping->each(
-            fn (ColumnMapping $columnValue) => $columnValue->mapping->model = $columnValue->mapping->model->newInstance()
-        );
+        $this->headingToColumnMapping
+            ->each(
+                fn (
+                    ColumnMapping $columnValue
+                ) => $columnValue->identificationOf->model = $columnValue->identificationOf->model->newInstance()
+            );
     }
 
     private function setAttributes(Collection $row): void
@@ -129,50 +139,57 @@ class ImportProcessor implements OnEachRow
                 return;
             }
 
-            $columnValue->mapping->model->{$columnValue->column} = $cell;
+            $columnValue->identificationOf->model->{$columnValue->column} = $cell;
         });
     }
 
     private function setRelations()
     {
-        $allModels = $this->headingToColumnMapping->map(fn (ColumnMapping $columnValue) => $columnValue->mapping->model);
-        $this->headingToColumnMapping->map(function (ColumnMapping $columnValue) {
-            return $columnValue->mapping;
-        })->unique()
-        ->each(function (ModelMapping $mapping) use ($allModels) {
-            collect($mapping->associationHooks())
-                ->each(function (Closure $callback, string $relatedClass) use ($mapping, $allModels) {
-                    $modelToRelate = $allModels->first(fn (Model $model) => get_class($model) === $relatedClass);
-                    if (!isset($modelToRelate)) {
-                        return;
-                    }
-                    $callback($mapping->model, $modelToRelate);
-                });
-        });
+        $allModels = $this->headingToColumnMapping
+            ->map(fn (ColumnMapping $columnValue) => $columnValue->identificationOf->model)
+            ->unique();
+        $this->associationRegister->getClosures()
+            ->map(function (Closure $callback) use ($allModels) {
+                $reflectionMethod = new ReflectionFunction($callback);
+                // We have to remember the position within the method declaration to make sure the closure
+                // always get called correctly
+                $requiredModelClasses = collect($reflectionMethod->getParameters())
+                    ->mapWithKeys(fn (ReflectionParameter $parameter) => [$parameter->getPosition() => $parameter->getType()->getName()]);
+
+                $requiredModels = $allModels
+                    ->mapWithKeys(fn (Model $model) => [$requiredModelClasses->search(get_class($model)) => $model]);
+                if ($requiredModelClasses->count() !== $requiredModels->count()) {
+                    return;
+                }
+
+                // Seems like all required models for this callback has been identified
+                $callback->__invoke(...$requiredModels->sortKeys());
+            });
     }
 
     private function persistAllModels(): void
     {
         $this->headingToColumnMapping
-            ->unique(fn (ColumnMapping $columnValue) => $columnValue->mapping)
+            ->unique(fn (ColumnMapping $columnValue) => $columnValue->identificationOf)
             ->each(function (ColumnMapping $columnMapping) {
-                if (count($columnMapping->mapping->uniqueColumns()) >= 0) {
-                    $model = $columnMapping->mapping->model;
+                if (count($columnMapping->identificationOf->uniqueColumns()) >= 0) {
+                    $model = $columnMapping->identificationOf->model;
                     $uniqueColumns = collect($model->getAttributes())->filter(
-                        fn ($value, string $column) => in_array($column, $columnMapping->mapping->uniqueColumns())
+                        fn ($value, string $column) => in_array($column, $columnMapping->identificationOf->uniqueColumns())
                     );
 
                     $builder = $model->newQuery();
                     $uniqueColumns->each(fn ($value, string $column) => $builder->where($column, '=', $value));
                     $modelToPersist = $builder->firstOrNew();
                     $modelToPersist->fill($model->getAttributes());
-                    $columnMapping->mapping->preSaveHook($modelToPersist);
+                    $columnMapping->identificationOf->saving($modelToPersist);
                     $modelToPersist->save();
-                    $columnMapping->mapping->model = $modelToPersist;
+                    $columnMapping->identificationOf->saved($modelToPersist);
+                    $columnMapping->identificationOf->model = $modelToPersist;
 
                     return;
                 }
-                $columnMapping->mapping->model->save();
+                $columnMapping->identificationOf->model->save();
             });
     }
 

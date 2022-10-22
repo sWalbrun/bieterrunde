@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use jeremykenedy\LaravelRoles\Models\Role;
 
-class UserMapping extends ModelMapping
+class IdentificationOfUser extends IdentificationOf implements AssociationOf
 {
     public function __construct()
     {
@@ -35,14 +35,7 @@ class UserMapping extends ModelMapping
         ]);
     }
 
-    public function associationHooks(): array
-    {
-        return [
-            Role::class => fn (User $user, Role $role) => $user->attachRole($role),
-        ];
-    }
-
-    public function preSaveHook(Model $user): void
+    public function saving(Model $user): void
     {
         if (!$user instanceof User) {
             // Should never happen
@@ -53,5 +46,12 @@ class UserMapping extends ModelMapping
             // Since this is a new user, we set a random password to make sure the admin does not know the password
             $user->password = Hash::make(Str::random(10));
         }
+    }
+
+    public function associationOfClosures(): Collection
+    {
+        return collect([
+            fn (User $user, Role $role) => $user->attachRole($role),
+        ]);
     }
 }

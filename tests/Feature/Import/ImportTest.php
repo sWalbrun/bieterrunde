@@ -4,8 +4,9 @@ namespace Tests\Feature\Import;
 
 use App\Http\Controllers\ImportController;
 use App\Http\Requests\CsvImportRequest;
-use App\Import\ModelMapping\MappingRegister;
-use App\Import\ModelMapping\ModelMapping;
+use App\Import\ModelMapping\AssociationRegister;
+use App\Import\ModelMapping\IdentificationRegister;
+use App\Import\ModelMapping\IdentificationOf;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -13,8 +14,8 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Mockery;
-use Tests\Feature\Import\ModelMappings\ModelMappingBlog;
-use Tests\Feature\Import\ModelMappings\ModelMappingPost;
+use Tests\Feature\Import\ModelMappings\IdentificationOfBlog;
+use Tests\Feature\Import\ModelMappings\IdentificationOfPost;
 use Tests\TestCase;
 
 class ImportTest extends TestCase
@@ -52,15 +53,15 @@ class ImportTest extends TestCase
      * regex.
      *
      * @dataProvider modelMappingProvider
-     * @param ModelMapping $modelMapping
+     * @param IdentificationOf $modelMapping
      * @return void
      */
-    public function testOverlappingRegex(ModelMapping $modelMapping): void
+    public function testOverlappingRegex(IdentificationOf $modelMapping): void
     {
         $this->createAndActAsUser();
 
-        /** @var MappingRegister $register */
-        $register = resolve(MappingRegister::class);
+        /** @var IdentificationRegister $register */
+        $register = resolve(IdentificationRegister::class);
         $register->register($modelMapping);
 
         $response = $this->postJson(
@@ -78,8 +79,8 @@ class ImportTest extends TestCase
     {
         $this->createAndActAsUser();
 
-        /** @var MappingRegister $register */
-        $register = resolve(MappingRegister::class);
+        /** @var IdentificationRegister $identificationRegister */
+        $identificationRegister = resolve(IdentificationRegister::class);
 
         $blogMock = Mockery::mock(Model::class)->makePartial();
         $blogMock->shouldReceive('save')->andReturn(true);
@@ -101,22 +102,29 @@ class ImportTest extends TestCase
         $postBuilderMock->shouldReceive('firstOrNew')->andReturn($postMock);
         $postMock->shouldReceive('newQuery')->andReturn($postBuilderMock);
 
-        $register->register(new ModelMappingBlog($blogMock))
-            ->register(new ModelMappingPost($postMock));
+        $identificationRegister
+            ->register(new IdentificationOfBlog($blogMock))
+            ->register(new IdentificationOfPost($postMock));
+
+        /** @var AssociationRegister $associationRegister */
+        $associationRegister = resolve(AssociationRegister::class);
+        $associationRegister->registerClosure(
+            fn (self $post, IdentificationOfBlog $blog) => IdentificationOfPost::$hasHookBeenCalled = true
+        );
 
         $this->postJson(
             self::ROUTE_IMPORT,
             [CsvImportRequest::FILE => $this->getDefaultXlsx('PropertyImport.xlsx')],
         )->assertSuccessful();
 
-        $this->assertFalse(ModelMappingPost::$hasHookBeenCalled);
+        $this->assertFalse(IdentificationOfPost::$hasHookBeenCalled);
     }
 
     public function modelMappingProvider(): array
     {
         return [
             'regex matching between two models' => [
-                new class extends ModelMapping {
+                new class extends IdentificationOf {
                     public function __construct()
                     {
                         parent::__construct(new User());
@@ -136,7 +144,7 @@ class ImportTest extends TestCase
                 }
             ],
             'regex matching within same model' => [
-                new class extends ModelMapping {
+                new class extends IdentificationOf {
                     public function __construct()
                     {
                         parent::__construct(new User());

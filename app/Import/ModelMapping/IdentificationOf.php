@@ -7,11 +7,10 @@ use Illuminate\Support\Collection;
 
 /**
  * You have to extend this mapping to make it possible to import a {@link __construct() model} via the import.
+ * Furthermore, make sure your {@link Model::$fillable model's attributes are fillable}.
  */
-abstract class ModelMapping
+abstract class IdentificationOf
 {
-    protected bool $associate;
-
     public Model $model;
 
     /**
@@ -39,21 +38,14 @@ abstract class ModelMapping
     abstract public function uniqueColumns(): array;
 
     /**
-     * You can register hooks here for associating models with each other or in case you want to know if there has
-     * been $this model found and also another one.
-     * For example, registration is possible:<br>
-     * <code>
-     * return [
-     *     Foo::class => fn (self $modelA, Foo $foo) => $modelA->associate($foo)->save()
-     *   ]
-     * </code>
-     * The key is the model which has to be found (additional to $this model) to trigger the value's callback.
+     * You can overwrite this hook in case you want to make some manipulations before the model gets saved.
      *
-     * @return array
+     * @param Model $model
+     *
+     * @return void
      */
-    public function associationHooks(): array
+    public function saving(Model $model): void
     {
-        return [];
     }
 
     /**
@@ -63,7 +55,7 @@ abstract class ModelMapping
      *
      * @return void
      */
-    public function preSaveHook(Model $model): void
+    public function saved(Model $model): void
     {
     }
 }

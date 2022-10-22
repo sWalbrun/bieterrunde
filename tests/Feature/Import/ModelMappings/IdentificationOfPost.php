@@ -2,10 +2,11 @@
 
 namespace Tests\Feature\Import\ModelMappings;
 
-use App\Import\ModelMapping\ModelMapping;
+use App\Import\ModelMapping\AssociationOf;
+use App\Import\ModelMapping\IdentificationOf;
 use Illuminate\Support\Collection;
 
-class ModelMappingPost extends ModelMapping
+class IdentificationOfPost extends IdentificationOf
 {
     public static $hasHookBeenCalled = false;
 
@@ -26,7 +27,7 @@ class ModelMappingPost extends ModelMapping
     public function associationHooks(): array
     {
         return [
-           ModelMappingBlog::class => fn (self $post, ModelMappingBlog $blog) => static::$hasHookBeenCalled = true
+
         ];
     }
 }

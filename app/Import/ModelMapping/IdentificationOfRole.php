@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use jeremykenedy\LaravelRoles\Models\Role;
 
-class RoleMapping extends ModelMapping
+class IdentificationOfRole extends IdentificationOf
 {
     public function __construct()
     {
@@ -28,7 +28,7 @@ class RoleMapping extends ModelMapping
         ]);
     }
 
-    public function preSaveHook(Model $role): void
+    public function saving(Model $role): void
     {
         if (!$role instanceof Role) {
             // Should never happen
