@@ -46,7 +46,7 @@ services:
 
   mysql-ut:
     image: 'mysql:8.0'
-    container_name: solawi_ut
+    container_name: '${DB_HOST}'
     ports:
       - '3308:3306'
     environment:
