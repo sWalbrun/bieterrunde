@@ -15,7 +15,8 @@ jobs:
       mysql:
         image: mysql:5.7
         env:
-          MYSQL_ROOT_PASSWORD: secret
+          MYSQL_PASSWORD: secret
+          MYSQL_USER: solawi_ut
           MYSQL_DATABASE: solawi_ut
         ports:
           - 33306:3306
