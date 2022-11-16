@@ -24,14 +24,25 @@ class LocalDevelopmentSeeder extends Seeder
      */
     public function run()
     {
-        Tenant::query()->create(['id' => 'foo']);
-        Tenant::query()->create(['id' => 'bar']);
-        Tenant::all()->runForEach(fn (Tenant $tenant) => $this->seed($tenant));
+        if (tenant() === null) {
+            Tenant::query()->updateOrCreate(['id' => 'foo']);
+            Tenant::query()->updateOrCreate(['id' => 'bar']);
+            return;
+        }
+
+        $this->seedAdmin();
+        if (User::query()->count() > 1) {
+
+            // we do not seed in case there are already users available
+            return;
+        }
+        $this->seedBidderRoundParticipants($this->seedBidderRound());
     }
 
-    private function seedAdmin(Tenant $tenant): void
+    private function seedAdmin(): void
     {
-        $email = "admin{$tenant->id}@solawi.de";
+
+        $email = sprintf("admin%s@solawi.de", tenant()->id);
         $user = User::query()->where(User::COL_EMAIL, '=', $email)->first();
 
         $user ??= new User();
@@ -78,14 +89,4 @@ class LocalDevelopmentSeeder extends Seeder
         ]);
     }
 
-    private function seed(Tenant $tenant): void
-    {
-        $this->seedAdmin($tenant);
-        if (User::query()->count() > 1) {
-
-            // we do not seed in case there are already users available
-            return;
-        }
-        $this->seedBidderRoundParticipants($this->seedBidderRound());
-    }
 }

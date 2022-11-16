@@ -1,0 +1,12 @@
+#!/bin/sh
+./vendor/bin/phpcs --standard=ruleset.xml app -n -q;
+
+if [ $? != 0 ]; then
+	echo "There are some errors. You have to resolve those before committing!";
+	echo "Run";
+	echo "  ./vendor/bin/phpcbf app";
+	echo "for automatic fix or fix it manually.";
+	exit 1;
+fi;
+
+exit $?;
