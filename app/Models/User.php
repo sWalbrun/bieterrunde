@@ -150,6 +150,16 @@ class User extends Authenticatable implements MustVerifyEmail, Participant
         return self::TABLE;
     }
 
+    public function bidderRounds(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            BidderRound::class,
+            UserBidderRound::TABLE,
+            UserBidderRound::COL_FK_USER,
+            UserBidderRound::COL_FK_BIDDER_ROUND
+        );
+    }
+
     public function getIsNewMemberAttribute(): bool
     {
         return isset($this->joinDate) && $this->joinDate->isCurrentYear();

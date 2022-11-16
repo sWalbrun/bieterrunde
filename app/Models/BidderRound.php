@@ -3,13 +3,18 @@
 namespace App\Models;
 
 use App\BidderRound\Participant;
+use App\Console\Commands\IsTargetAmountReached;
 use App\Enums\EnumContributionGroup;
 use Carbon\Carbon;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Artisan;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
+use Symfony\Component\Console\Command\Command;
 
 /**
  * @property int id
@@ -75,6 +80,16 @@ class BidderRound extends BaseModel
     public function offerFor(User $user): HasMany
     {
         return $this->offers()->whereBelongsTo($user, $user->identifier());
+    }
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            User::class,
+            UserBidderRound::TABLE,
+            UserBidderRound::COL_FK_BIDDER_ROUND,
+            UserBidderRound::COL_FK_USER,
+        );
     }
 
     /**
@@ -175,6 +190,52 @@ class BidderRound extends BaseModel
         }
 
         return trans('z. B. ') . $this->formatAmount($referenceAmountForFullMember + $roundIndex * 2);
+    }
+
+    public function calculateBidderRound()
+    {
+        $result = Artisan::call('bidderRound:targetAmountReached', ['bidderRoundId' => $this->id]);
+
+        $round = $this->bidderRoundReport?->roundWon;
+        $amount = $this->bidderRoundReport?->sumAmountFormatted;
+
+        switch ($result) {
+            case Command::SUCCESS:
+                Notification::make()
+                    ->title(trans('Es konnte eine Runde ermittelt werden!'))
+                    ->body(trans("Bieterrunde $round mit dem Betrag {$amount}€ deckt die Kosten"))
+                    ->success()
+                    ->send();
+
+                break;
+
+            case IsTargetAmountReached::ROUND_ALREADY_PROCESSED:
+                Notification::make()
+                    ->title(trans('Die Runde wurde bereits ermittelt!'))
+                    ->body(trans("Bieterrunde $round mit dem Betrag {$amount}€ deckt die Kosten"))
+                    ->success();
+                break;
+
+            case IsTargetAmountReached::NOT_ALL_OFFERS_GIVEN:
+                Notification::make()
+                    ->title(trans('Es wurden noch nicht alle Gebote abgegeben!'))
+                    ->warning()
+                    ->send();
+                break;
+
+            case IsTargetAmountReached::NOT_ENOUGH_MONEY:
+                Notification::make()
+                    ->title(trans('Leider konnte mit keiner einzigen Runde der Zielbetrag ermittelt werden.'))
+                    ->danger()
+                    ->send();
+                break;
+            default:
+                Notification::make()
+                    ->title(trans('Es ist ein unerwarteter Fehler aufgetreten'))
+                    ->danger()
+                    ->send();
+                break;
+        }
     }
 
     public function __toString()

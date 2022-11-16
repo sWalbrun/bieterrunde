@@ -71,6 +71,7 @@ class LocalDevelopmentSeeder extends Seeder
                     ->count(self::OFFER_COUNT)
                     ->create()
                     ->each(function (Offer $offer) use ($user, $bidderRound) {
+                        $user->bidderRounds()->syncWithoutDetaching($bidderRound);
                         $offer->bidderRound()->associate($bidderRound);
                         $offer->user()->associate($user)->save();
                     });

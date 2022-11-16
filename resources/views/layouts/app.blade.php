@@ -2,34 +2,23 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <meta name="application-name" content="{{ config('app.name') }}">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>{{ config('app.name', 'SolaWi') }}</title>
+        <title>{{ config('app.name') }}</title>
 
-        <!-- Fonts -->
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
-
-        <!-- Styles -->
-        <link rel="stylesheet" href="{{ mix('css/app.css') }}">
-
-        <wireui:scripts />
-        <script src="//unpkg.com/alpinejs" defer></script>
-        @powerGridScripts
+        <style>[x-cloak] { display: none !important; }</style>
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
-        <script src="//unpkg.com/@themesberg/flowbite@1.3.0/dist/flowbite.bundle.js"></script>
+        @livewireScripts
+        @stack('scripts')
     </head>
 
-    <body>
-        @livewireScripts
-        <div x-data="{ sidebarIsOpened: false }" class="min-h-full">
-            <!-- Off-canvas menu for mobile, show/hide based on off-canvas menu state. -->
-            <div x-show="sidebarIsOpened" class="fixed inset-0 flex z-40 lg:hidden" role="dialog" aria-modal="true">
-                @livewire('navigation-menu')
-                <div class="content-wrapper">
-                    {{ $slot }}
-                </div>
-            </div>
-        </div>
+    <body class="antialiased">
+        {{ $slot }}
+
+        @livewire('notifications')
     </body>
 </html>
