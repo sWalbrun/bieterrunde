@@ -206,7 +206,6 @@ class BidderRound extends BaseModel
                     ->body(trans("Bieterrunde $round mit dem Betrag {$amount}€ deckt die Kosten"))
                     ->success()
                     ->send();
-
                 break;
 
             case IsTargetAmountReached::ROUND_ALREADY_PROCESSED:
@@ -229,6 +228,7 @@ class BidderRound extends BaseModel
                     ->danger()
                     ->send();
                 break;
+
             default:
                 Notification::make()
                     ->title(trans('Es ist ein unerwarteter Fehler aufgetreten'))

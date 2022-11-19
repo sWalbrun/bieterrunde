@@ -2,6 +2,8 @@
 
 use App\Import\Providers\ImportServiceProvider;
 use App\Models\Tenant;
+use App\Providers\FortifyServiceProvider;
+use App\Providers\JetstreamServiceProvider;
 use App\Providers\TenancyServiceProvider;
 use Stancl\Tenancy\Database\Models\Domain;
 
@@ -177,14 +179,12 @@ return [
          * Application Service Providers...
          */
         App\Providers\SolarWirServiceProvider::class,
-        \App\Providers\LaravelUsersServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        App\Providers\FortifyServiceProvider::class,
-        App\Providers\JetstreamServiceProvider::class,
         TenancyServiceProvider::class,
+        FortifyServiceProvider::class,
+        JetstreamServiceProvider::class,
         ImportServiceProvider::class,
     ],
 

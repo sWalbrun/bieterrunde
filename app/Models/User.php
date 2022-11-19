@@ -5,6 +5,7 @@ namespace App\Models;
 use App\BidderRound\Participant;
 use App\Enums\EnumContributionGroup;
 use App\Enums\EnumPaymentInterval;
+use BezhanSalleh\FilamentShield\Traits\HasFilamentShield;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,12 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
-use jeremykenedy\LaravelRoles\Models\Role;
-use jeremykenedy\LaravelRoles\Traits\HasRoleAndPermission;
-use Laravel\Fortify\TwoFactorAuthenticatable;
-use Laravel\Jetstream\HasProfilePhoto;
-use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 /**
@@ -48,14 +44,9 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
  */
 class User extends Authenticatable implements MustVerifyEmail, Participant
 {
-    use HasApiTokens;
+    use HasFilamentShield;
     use HasFactory;
-    use HasProfilePhoto;
     use Notifiable;
-    use TwoFactorAuthenticatable;
-    use HasRoleAndPermission {
-        attachRole as attachRolesOfTrait;
-    }
     use BelongsToTenant;
 
     public const TABLE = 'user';
@@ -194,17 +185,6 @@ class User extends Authenticatable implements MustVerifyEmail, Participant
                     ->where(Offer::COL_FK_BIDDER_ROUND, '=', $bidderRoundId)
                     ->with('bidderRound')
             );
-    }
-
-    public function attachRole($role): ?bool
-    {
-        if (is_string($role)) {
-            // phpcs:ignore
-            /** @var Role $role */
-            $role = Role::query()->updateOrCreate(['name' => $role, 'slug' => Str::lower($role)]);
-        }
-
-        return $this->attachRolesOfTrait($role);
     }
 
     /**

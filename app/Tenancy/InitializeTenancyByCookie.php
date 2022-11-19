@@ -8,10 +8,14 @@ use App\Jobs\SetTenantCookie;
 use App\Models\Tenant;
 use App\Models\User;
 use Closure;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Stancl\Tenancy\Exceptions\TenantCouldNotBeIdentifiedById;
 use Stancl\Tenancy\Middleware\InitializeTenancyByRequestData;
 
 /**
@@ -27,17 +31,31 @@ class InitializeTenancyByCookie extends InitializeTenancyByRequestData
      */
     public static array $whiteListRoutes = [
         '/login',
+        'filament.core.auth.login',
         '/forgot-password',
+        'assets',
     ];
 
+    /**
+     * @param Request $request
+     * @param Closure $next
+     *
+     * @return Application|RedirectResponse|Redirector|mixed
+     *
+     * @throws TenantCouldNotBeIdentifiedById
+     */
     public function handle($request, Closure $next)
     {
         if ($request->method() !== 'OPTIONS' && !$this->isWhiteListed($request)) {
             $tenantId = $request->cookie(SetTenantCookie::TENANT_ID);
-            if (!isset($tenantId) || Tenant::query()->where(Tenant::COL_ID, $tenantId)->doesntExist()) {
+
+            if (!isset($tenantId)) {
+                return redirect('login');
+            }
+            if (Tenant::query()->where(Tenant::COL_ID, $tenantId)->doesntExist()) {
                 Log::info("There is no tenant existing for the given id ($tenantId)");
                 Auth::logout();
-                return redirect('login');
+                throw new TenantCouldNotBeIdentifiedById($tenantId ?? 'null');
             }
 
             $response = $this->initializeTenancy(
@@ -53,7 +71,7 @@ class InitializeTenancyByCookie extends InitializeTenancyByRequestData
                 && (!isset($user->tenant->id) || $user->tenant->id !== $tenantId)
             ) {
                 Auth::logout();
-                return redirect('login');
+                throw new TenantCouldNotBeIdentifiedById('null');
             }
 
             return $response;

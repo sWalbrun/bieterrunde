@@ -9,6 +9,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 /**
@@ -55,7 +56,7 @@ class UserTest extends TestCase
     public function testBidderRoundWithRelations()
     {
         $user = $this->createAndActAsUser();
-        $user->attachRole(User::ROLE_BIDDER_ROUND_PARTICIPANT);
+        $user->assignRole(Role::findOrCreate(User::ROLE_BIDDER_ROUND_PARTICIPANT));
 
         /** @var BidderRound $bidderRound */
         $bidderRound = BidderRound::factory()->create()->first();

@@ -2,20 +2,15 @@
 
 namespace App\Filament\Resources;
 
-use App\Console\Commands\IsTargetAmountReached;
 use App\Filament\Resources\BidderRoundResource\Pages;
-use App\Filament\Resources\BidderRoundResource\RelationManagers;
 use App\Filament\Resources\UserResource\RelationManagers\UsersRelationManager;
 use App\Models\BidderRound;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
-use Filament\Notifications\Notification;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
-use Illuminate\Support\Facades\Artisan;
-use Symfony\Component\Console\Command\Command;
 
 class BidderRoundResource extends Resource
 {
@@ -34,17 +29,17 @@ class BidderRoundResource extends Resource
                 TextInput::make(BidderRound::COL_TARGET_AMOUNT)
                     ->numeric()
                     ->required()
-                    ->mask(fn(TextInput\Mask $mask) => $mask
-                        ->numeric()
-                        ->decimalPlaces(2)
-                        ->decimalSeparator(',')
-                        ->minValue(1)
-                        ->maxValue(150_000)
-                        ->normalizeZeros()
-                        ->padFractionalZeros()
-                        ->thousandsSeparator('.'),
-                    )
-                    ->suffix('€')
+                    ->mask(
+                        fn(TextInput\Mask $mask) => $mask
+                            ->numeric()
+                            ->decimalPlaces(2)
+                            ->decimalSeparator(',')
+                            ->minValue(1)
+                            ->maxValue(150_000)
+                            ->normalizeZeros()
+                            ->padFractionalZeros()
+                            ->thousandsSeparator('.')
+                    )->suffix('€'),
             ]);
     }
 
@@ -69,16 +64,12 @@ class BidderRoundResource extends Resource
                 Tables\Columns\TextColumn::make(BidderRound::COL_COUNT_OFFERS),
                 Tables\Columns\TextColumn::make(BidderRound::COL_NOTE),
             ])
-            ->filters([
-            ])
-            ->actions([
+            ->filters([])->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('calculateBidderRound')
-                ->action(fn (BidderRound $bidderRound) => $bidderRound->calculateBidderRound())
-                ->icon('heroicon-o-calculator')
-
-            ])
-            ->bulkActions([
+                    ->action(fn(BidderRound $bidderRound) => $bidderRound->calculateBidderRound())
+                    ->icon('heroicon-o-calculator'),
+            ])->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }

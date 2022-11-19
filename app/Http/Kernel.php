@@ -26,8 +26,6 @@ use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Routing\Middleware\ValidateSignature;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use jeremykenedy\LaravelRoles\App\Http\Middleware\VerifyRole;
-use Laravel\Jetstream\Http\Middleware\AuthenticateSession;
 
 class Kernel extends HttpKernel
 {
@@ -44,6 +42,7 @@ class Kernel extends HttpKernel
         ValidatePostSize::class,
         TrimStrings::class,
         ConvertEmptyStringsToNull::class,
+        InitializeTenancyByCookie::class,
     ];
 
     /**
@@ -53,18 +52,15 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
-            InitializeTenancyByCookie::class,
             EncryptCookies::class,
             AddQueuedCookiesToResponse::class,
             StartSession::class,
-            AuthenticateSession::class,
             ShareErrorsFromSession::class,
             VerifyCsrfToken::class,
             SubstituteBindings::class,
         ],
 
         'api' => [
-            InitializeTenancyByCookie::class,
             'throttle:api',
             SubstituteBindings::class,
         ],
@@ -87,7 +83,6 @@ class Kernel extends HttpKernel
         'signed' => ValidateSignature::class,
         'throttle' => ThrottleRequests::class,
         'verified' => EnsureEmailIsVerified::class,
-        'role' => VerifyRole::class,
         'admin' => AuthenticateUserManager::class
     ];
 }

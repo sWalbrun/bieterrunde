@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Jobs\SetTenantCookie;
 use Illuminate\Cookie\Middleware\EncryptCookies as Middleware;
 
 class EncryptCookies extends Middleware
@@ -11,5 +12,5 @@ class EncryptCookies extends Middleware
      *
      * @var array
      */
-    protected $except = [];
+    protected $except = [SetTenantCookie::TENANT_ID];
 }

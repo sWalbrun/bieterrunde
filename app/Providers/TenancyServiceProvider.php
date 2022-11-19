@@ -109,10 +109,6 @@ class TenancyServiceProvider extends ServiceProvider
         ];
     }
 
-    public function register()
-    {
-    }
-
     public function boot()
     {
         $this->bootEvents();
@@ -149,9 +145,6 @@ class TenancyServiceProvider extends ServiceProvider
             // Even higher priority than the initialization middleware
             Middleware\PreventAccessFromCentralDomains::class,
 
-            // We have to mostly prioritize the encryption to make sure accessing the tenancy by cookie is happening
-            // afterwards.
-            EncryptCookies::class,
             InitializeTenancyByCookie::class,
             Middleware\InitializeTenancyByDomain::class,
             Middleware\InitializeTenancyBySubdomain::class,

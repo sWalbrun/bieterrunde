@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Database\Factories\OfferFactory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class LocalDevelopmentSeeder extends Seeder
 {
@@ -53,8 +54,8 @@ class LocalDevelopmentSeeder extends Seeder
         $user->contributionGroup = EnumContributionGroup::FULL_MEMBER();
         $user->countShares = 1;
         $user->save();
-        $user->attachRole(User::ROLE_ADMIN);
-        $user->attachRole(User::ROLE_BIDDER_ROUND_PARTICIPANT);
+        $user->assignRole(Role::findOrCreate(User::ROLE_ADMIN));
+        $user->assignRole(Role::findOrCreate(User::ROLE_BIDDER_ROUND_PARTICIPANT));
         $user->save();
     }
 
@@ -64,7 +65,7 @@ class LocalDevelopmentSeeder extends Seeder
             ->count(self::USER_COUNT)
             ->create()
             ->each(function (User $user) use ($bidderRound) {
-                $user->attachRole(User::ROLE_BIDDER_ROUND_PARTICIPANT);
+                $user->assignRole(Role::findOrCreate(User::ROLE_BIDDER_ROUND_PARTICIPANT));
                 OfferFactory::reset();
                 OfferFactory::randomize();
                 Offer::factory()

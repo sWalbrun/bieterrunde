@@ -2,10 +2,8 @@
 
 namespace App\Import\ModelMapping;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
-use jeremykenedy\LaravelRoles\Models\Role;
+use Spatie\Permission\Models\Role;
 
 class IdentificationOfRole extends IdentificationOf
 {
@@ -26,14 +24,5 @@ class IdentificationOfRole extends IdentificationOf
         return collect([
             'name' => '/^Rolle$/i',
         ]);
-    }
-
-    public function saving(Model $role): void
-    {
-        if (!$role instanceof Role) {
-            // Should never happen
-            return;
-        }
-        $role->slug = Str::slug($role->name);
     }
 }

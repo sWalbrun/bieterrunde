@@ -51,7 +51,7 @@ class IdentificationOfUser extends IdentificationOf implements AssociationOf
     public function associationOfClosures(): Collection
     {
         return collect([
-            fn (User $user, Role $role) => $user->attachRole($role),
+            fn (User $user, Role $role) => $user->assignRole($role),
         ]);
     }
 }

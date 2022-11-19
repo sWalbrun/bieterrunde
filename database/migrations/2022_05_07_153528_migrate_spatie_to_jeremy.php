@@ -23,12 +23,12 @@ class MigrateSpatieToJeremy extends Migration
                 'model_id',
                 PermissionRegistrar::$pivotRole
             )->pluck('name')->each(function (string $roleName) use ($user) {
-                /** @var Role $role */
+                /** @var \Spatie\Permission\Models\Role $role */
                 $role = Role::query()->updateOrCreate([
                     'name' => $roleName,
                     'slug' => Str::lower($roleName),
                 ]);
-                $user->attachRole($role);
+                $user->assignRole($role);
             });
         });
     }

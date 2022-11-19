@@ -13,6 +13,7 @@ use Database\Factories\OfferFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Spatie\Permission\Models\Role;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -36,7 +37,7 @@ abstract class TestCase extends BaseTestCase
             SetTenantCookie::class,
         ]);
 
-        $user->attachRole(User::ROLE_ADMIN);
+        $user->assignRole(Role::findOrCreate(User::ROLE_ADMIN));
         $this->actingAs($user);
 
         return $user;

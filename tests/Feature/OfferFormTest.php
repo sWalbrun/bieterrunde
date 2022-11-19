@@ -10,6 +10,7 @@ use App\Models\Offer;
 use App\Models\User;
 use Carbon\Carbon;
 use Livewire\Livewire;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 /**
@@ -119,7 +120,7 @@ class OfferFormTest extends TestCase
         Livewire::test(OfferForm::class, ['bidderRound' => $bidderRound->fresh()])
             ->assertSee('Betrag');
 
-        $user->attachRole(User::ROLE_BIDDER_ROUND_PARTICIPANT);
+        $user->assignRole(Role::findOrCreate(User::ROLE_BIDDER_ROUND_PARTICIPANT));
         Livewire::test(OfferForm::class, ['bidderRound' => $bidderRound->fresh()])
             ->assertSee('z. B. '
                 . number_format(ceil(TestCase::TARGET_AMOUNT / 12), 2, ',', '.')
@@ -141,7 +142,7 @@ class OfferFormTest extends TestCase
         Livewire::test(OfferForm::class, ['bidderRound' => $bidderRound->fresh()])
             ->assertSee('Betrag');
 
-        $user->attachRole(User::ROLE_BIDDER_ROUND_PARTICIPANT);
+        $user->assignRole(Role::findOrCreate(User::ROLE_BIDDER_ROUND_PARTICIPANT));
         Livewire::test(OfferForm::class, ['bidderRound' => $bidderRound->fresh()])
             ->assertSee('z. B. ' . number_format(ceil(TestCase::TARGET_AMOUNT / 12), 2, ',', '.')
             );
