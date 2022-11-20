@@ -117,15 +117,6 @@ class User extends Authenticatable implements MustVerifyEmail, Participant
         self::COL_EXIT_DATE => 'datetime',
     ];
 
-    /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array
-     */
-    protected $appends = [
-        'profile_photo_url',
-    ];
-
     public function name(): string
     {
         return $this->name ?? '';

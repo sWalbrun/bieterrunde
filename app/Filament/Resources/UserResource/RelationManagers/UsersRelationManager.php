@@ -34,17 +34,16 @@ class UsersRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('email'),
+                Tables\Columns\TextColumn::make(User::COL_NAME),
+                Tables\Columns\TextColumn::make(User::COL_EMAIL),
             ])
             ->filters([])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
-                Tables\Actions\AttachAction::make(),
+                Tables\Actions\AttachAction::make()->preloadRecordSelect(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DetachAction::make(),
-                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\DetachBulkAction::make(),
