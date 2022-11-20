@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.4|^8.0",
+        "3x1io/filament-user": "^1.1",
         "bensampo/laravel-enum": "^6.1",
         "bezhansalleh/filament-shield": "^2.3",
         "fideloper/proxy": "^4.4",

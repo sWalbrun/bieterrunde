@@ -4,8 +4,69 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a04345498816f50cc1e022bf6c82095f",
+    "content-hash": "b7b5496b72225e994d325e732717cd89",
     "packages": [
+        {
+            "name": "3x1io/filament-user",
+            "version": "v1.1.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/3x1io/filament-user.git",
+                "reference": "a353309c4d8fab75d83988a362a51df4cf924755"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/3x1io/filament-user/zipball/a353309c4d8fab75d83988a362a51df4cf924755",
+                "reference": "a353309c4d8fab75d83988a362a51df4cf924755",
+                "shasum": ""
+            },
+            "require": {
+                "bezhansalleh/filament-shield": "^2.1",
+                "filament/filament": "^2.9",
+                "php": "^8.0",
+                "spatie/laravel-package-tools": "^1.12",
+                "stechstudio/filament-impersonate": "^2.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "io3x1\\FilamentUser\\FilamentUserProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "io3x1\\FilamentUser\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "3x1",
+                    "email": "info@3x1.io",
+                    "role": "CEO"
+                }
+            ],
+            "description": "User Manager Resource For Filament Admin",
+            "homepage": "https://3x1.io",
+            "keywords": [
+                "cli",
+                "filament",
+                "laravel",
+                "resource",
+                "ui",
+                "user"
+            ],
+            "support": {
+                "issues": "https://github.com/3x1io/filament-user/issues",
+                "source": "https://github.com/3x1io/filament-user/tree/v1.1.6"
+            },
+            "time": "2022-08-01T08:14:03+00:00"
+        },
         {
             "name": "akaunting/laravel-money",
             "version": "3.1.2",
@@ -2641,6 +2702,74 @@
                 }
             ],
             "time": "2020-06-13T08:05:20+00:00"
+        },
+        {
+            "name": "lab404/laravel-impersonate",
+            "version": "1.7.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/404labfr/laravel-impersonate.git",
+                "reference": "7c1f9c5cefd40247993f52f4b7724fd8b580084f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/404labfr/laravel-impersonate/zipball/7c1f9c5cefd40247993f52f4b7724fd8b580084f",
+                "reference": "7c1f9c5cefd40247993f52f4b7724fd8b580084f",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "^6.0 | ^7.0 | ^8.0 | ^9.0",
+                "php": "^7.2 | ^8.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.3.3",
+                "orchestra/database": "^4.0 | ^5.0 | ^6.0 | ^7.0",
+                "orchestra/testbench": "^4.0 | ^5.0 | ^6.0 | ^7.0",
+                "phpunit/phpunit": "^7.5 | ^8.0 | ^9.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Lab404\\Impersonate\\ImpersonateServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/helpers.php"
+                ],
+                "psr-4": {
+                    "Lab404\\Impersonate\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Marceau Casals",
+                    "email": "marceau@casals.fr"
+                }
+            ],
+            "description": "Laravel Impersonate is a plugin that allows to you to authenticate as your users.",
+            "keywords": [
+                "auth",
+                "impersonate",
+                "impersonation",
+                "laravel",
+                "laravel-package",
+                "laravel-plugin",
+                "package",
+                "plugin",
+                "user"
+            ],
+            "support": {
+                "issues": "https://github.com/404labfr/laravel-impersonate/issues",
+                "source": "https://github.com/404labfr/laravel-impersonate/tree/1.7.3"
+            },
+            "time": "2022-01-15T13:39:35+00:00"
         },
         {
             "name": "laminas/laminas-code",
@@ -6349,6 +6478,50 @@
                 "source": "https://github.com/archtechx/virtualcolumn/tree/v1.3.0"
             },
             "time": "2022-10-21T12:09:30+00:00"
+        },
+        {
+            "name": "stechstudio/filament-impersonate",
+            "version": "2.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stechstudio/filament-impersonate.git",
+                "reference": "f0b9b743931c53f54075d3c9a2fcf5889ba8919b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/stechstudio/filament-impersonate/zipball/f0b9b743931c53f54075d3c9a2fcf5889ba8919b",
+                "reference": "f0b9b743931c53f54075d3c9a2fcf5889ba8919b",
+                "shasum": ""
+            },
+            "require": {
+                "lab404/laravel-impersonate": "^1.7"
+            },
+            "require-dev": {
+                "filament/filament": "^2.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "STS\\FilamentImpersonate\\FilamentImpersonateServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "STS\\FilamentImpersonate\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A Filament record action that allows you to impersonate your users.",
+            "support": {
+                "issues": "https://github.com/stechstudio/filament-impersonate/issues",
+                "source": "https://github.com/stechstudio/filament-impersonate/tree/2.8"
+            },
+            "time": "2022-11-07T20:08:14+00:00"
         },
         {
             "name": "symfony/console",
