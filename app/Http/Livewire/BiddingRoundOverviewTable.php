@@ -31,7 +31,7 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
 
     public function setUp(): array
     {
-        $this->showCheckBox()
+        return $this->showCheckBox()
             ->showSearchInput()
             ->showRecordCount()
             ->showPerPage()
@@ -62,11 +62,11 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
      *
      * @return PowerGridEloquent|null
      */
-    public function addColumns(): ?PowerGridEloquent
+    public function addColumns(): PowerGridEloquent
     {
-        if (!isset($this->bidderRoundId) || $this->bidderRoundId <= 0) {
-            return null;
-        }
+//        if (!isset($this->bidderRoundId) || $this->bidderRoundId <= 0) {
+//            return null;
+//        }
 
         $columns = PowerGrid::eloquent()
             ->addColumn(self::USER_ID, fn(User $user) => $user->id)
