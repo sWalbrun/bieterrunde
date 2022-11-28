@@ -18,14 +18,19 @@ class BidderRoundResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
 
+    public static function getPluralLabel(): ?string
+    {
+        return trans('Bidder Rounds');
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                DatePicker::make(BidderRound::COL_VALID_FROM)->required(),
-                DatePicker::make(BidderRound::COL_VALID_TO)->required(),
-                DatePicker::make(BidderRound::COL_START_OF_SUBMISSION)->required(),
-                DatePicker::make(BidderRound::COL_END_OF_SUBMISSION)->required(),
+                DatePicker::make(BidderRound::COL_VALID_FROM)->required()->label(trans('Valid from')),
+                DatePicker::make(BidderRound::COL_VALID_TO)->required()->label(trans('Valid to')),
+                DatePicker::make(BidderRound::COL_START_OF_SUBMISSION)->required()->label(trans('Start of submission')),
+                DatePicker::make(BidderRound::COL_END_OF_SUBMISSION)->required()->label(trans('End of submission')),
                 TextInput::make(BidderRound::COL_TARGET_AMOUNT)
                     ->numeric()
                     ->required()
@@ -35,11 +40,12 @@ class BidderRoundResource extends Resource
                             ->decimalPlaces(2)
                             ->decimalSeparator(',')
                             ->minValue(1)
-                            ->maxValue(150_000)
+                            ->maxValue(250_000)
                             ->normalizeZeros()
                             ->padFractionalZeros()
                             ->thousandsSeparator('.')
-                    )->suffix('€'),
+                    )->suffix('€')
+                    ->label(trans('Target amount')),
             ]);
     }
 

@@ -626,5 +626,17 @@
     "CONFIRM_REPORT_DELETION": "Wenn du das Ergebnis löschst ist es wieder möglich Gebote zu ändern. Sobald ein neues Ergebnis feststeht, wird ein weiteres Mal eine E-Mail an die Teilnehmer übermittelt",
     "FULL_MEMBER": "Ordentliches Mitglied",
     "SUSTAINING_MEMBER": "Fördermitglied",
-    "NEW_MEMBER": "Neumitglied"
+    "NEW_MEMBER": "Neumitglied",
+    "Full users": "Ordentliche Mitglieder",
+    "Sustaining members": "Fördermitglieder",
+    "Former members": "Ehemalige Mitglieder",
+    "Future members": "Zukünftige Mitglieder",
+    "Rounds carried out": "Durchgeführte Bieterrunden",
+    "Bidder Rounds": "Bieterrunden",
+    "Valid from": "Beginn des Jahres",
+    "Valid to": "Ende des Jahres",
+    "Start of submission":  "Beginn der Abstimmung",
+    "End of submission": "Ende der Abstimmung",
+    "Target amount":  "Zielbetrag",
+    "Users": "Benutzer"
 }

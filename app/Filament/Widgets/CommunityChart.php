@@ -14,7 +14,7 @@ class CommunityChart extends DoughnutChartWidget
         return [
             'labels' => [
                 trans('Full users'),
-                trans('Sustaining users'),
+                trans('Sustaining members'),
                 trans('Former members'),
                 trans('Future members'),
             ],
