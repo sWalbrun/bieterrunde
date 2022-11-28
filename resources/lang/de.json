@@ -638,5 +638,8 @@
     "Start of submission":  "Beginn der Abstimmung",
     "End of submission": "Ende der Abstimmung",
     "Target amount":  "Zielbetrag",
-    "Users": "Benutzer"
+    "Users": "Benutzer",
+    "Round": "Runde",
+    "Offer": "Gebot",
+    "Offers given": "Abgegebene Gebote"
 }

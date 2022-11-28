@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\BidderRoundResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers\UsersRelationManager;
 use App\Models\BidderRound;
+use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
@@ -35,7 +36,7 @@ class BidderRoundResource extends Resource
                     ->numeric()
                     ->required()
                     ->mask(
-                        fn(TextInput\Mask $mask) => $mask
+                        fn (TextInput\Mask $mask) => $mask
                             ->numeric()
                             ->decimalPlaces(2)
                             ->decimalSeparator(',')
@@ -46,6 +47,16 @@ class BidderRoundResource extends Resource
                             ->thousandsSeparator('.')
                     )->suffix('€')
                     ->label(trans('Target amount')),
+                Card::make()->schema([
+                    TextInput::make('offersGiven')
+                        ->label(trans('Offers given'))
+                        ->disabled()
+                        ->afterStateHydrated(
+                            fn (TextInput $component, BidderRound $record) => $component->state(
+                                $record->groupedByRound()->first()->count() . '/' . $record->users()->count()
+                            )
+                        )
+                ]),
             ]);
     }
 

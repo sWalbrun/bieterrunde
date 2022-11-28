@@ -31,6 +31,8 @@ class Offer extends BaseModel
         self::COL_ID,
         self::COL_AMOUNT,
         self::COL_ROUND,
+        self::COL_FK_USER,
+        self::COL_FK_BIDDER_ROUND,
     ];
 
     public function user(): BelongsTo
