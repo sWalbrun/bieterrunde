@@ -22,7 +22,7 @@ class Vegetable extends BaseModel
 
     protected $fillable = [
         'name',
-        'unit'
+        'unit',
     ];
 
     public function pickUps(): BelongsToMany

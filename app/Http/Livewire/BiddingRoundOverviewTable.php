@@ -64,27 +64,23 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
      */
     public function addColumns(): PowerGridEloquent
     {
-//        if (!isset($this->bidderRoundId) || $this->bidderRoundId <= 0) {
-//            return null;
-//        }
-
         $columns = PowerGrid::eloquent()
-            ->addColumn(self::USER_ID, fn(User $user) => $user->id)
-            ->addColumn(User::COL_EMAIL, fn(User $user) => $user->email)
-            ->addColumn(User::COL_NAME, fn(User $user) => $user->name)
-            ->addColumn(User::COL_CONTRIBUTION_GROUP, fn(User $user) => trans()->get($user->contributionGroup))
-            ->addColumn(User::COL_COUNT_SHARES, fn(User $user) => $user->countShares)
-            ->addColumn(User::COL_PAYMENT_INTERVAL, fn(User $user) => trans()->get($user->paymentInterval ?? trans('nicht gegeben')));
+            ->addColumn(self::USER_ID, fn (User $user) => $user->id)
+            ->addColumn(User::COL_EMAIL, fn (User $user) => $user->email)
+            ->addColumn(User::COL_NAME, fn (User $user) => $user->name)
+            ->addColumn(User::COL_CONTRIBUTION_GROUP, fn (User $user) => trans()->get($user->contributionGroup))
+            ->addColumn(User::COL_COUNT_SHARES, fn (User $user) => $user->countShares)
+            ->addColumn(User::COL_PAYMENT_INTERVAL, fn (User $user) => trans()->get($user->paymentInterval ?? trans('nicht gegeben')));
 
         $this->bidderRound ??= BidderRound::query()->find($this->bidderRoundId);
 
         for ($round = 1; $round <= $this->bidderRound->countOffers; $round++) {
             $columns->addColumn(
                 $this->getRoundIdentifier($round),
-                fn(User $user) => $user
+                fn (User $user) => $user
                     ->offers
-                    ->filter(fn(Offer $offer) => $offer->round === $round)
-                    ->map(fn(Offer $offer) => $offer->amount)
+                    ->filter(fn (Offer $offer) => $offer->round === $round)
+                    ->map(fn (Offer $offer) => $offer->amount)
                     ->first(null, '0')
             );
         }
@@ -173,7 +169,7 @@ final class BiddingRoundOverviewTable extends PowerGridComponent
         //** @var Offer $offer */
         $offer = $user->offersForRound($this->bidderRound)
             ->get()
-            ->first(fn(Offer $offer) => $this->getRoundIdentifier($offer->round) === $data['field']);
+            ->first(fn (Offer $offer) => $this->getRoundIdentifier($offer->round) === $data['field']);
 
         if (!isset($offer)) {
             $offer = new Offer();

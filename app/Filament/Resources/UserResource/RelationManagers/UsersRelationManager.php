@@ -86,8 +86,7 @@ class UsersRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make(User::COL_NAME)->searchable(),
                 Tables\Columns\TextColumn::make(User::COL_EMAIL)->searchable(),
             ])
-            ->filters([
-            ])
+            ->filters([])
             ->headerActions([
                 Tables\Actions\AttachAction::make()->preloadRecordSelect(),
             ])
