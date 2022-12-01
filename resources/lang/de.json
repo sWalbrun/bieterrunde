@@ -642,5 +642,6 @@
     "Round": "Runde",
     "Offer": "Gebot",
     "Offers given": "Abgegebene Gebote",
-    "Count offers": "Anzahl der Runden"
+    "Count offers": "Anzahl der Runden",
+    "Only without all offers given": "Nur mit fehlenden Geboten"
 }

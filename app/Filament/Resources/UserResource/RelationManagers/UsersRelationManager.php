@@ -5,13 +5,15 @@ namespace App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\BidderRound;
 use App\Models\Offer;
 use App\Models\User;
-use Closure;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class UsersRelationManager extends RelationManager
 {
@@ -85,8 +87,30 @@ class UsersRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make(User::COL_NAME)->searchable(),
                 Tables\Columns\TextColumn::make(User::COL_EMAIL)->searchable(),
+                Tables\Columns\BadgeColumn::make('offersGiven')
+                    ->getStateUsing(
+                        fn (User $record, self $livewire) => $record->offersForRound($livewire->ownerRecord)->count()
+                    )
+                    ->color(
+                        fn (int $state, self $livewire) => $state === $livewire->ownerRecord->countOffers
+                            ? 'success'
+                            : 'secondary'
+                    )
             ])
-            ->filters([])
+            ->filters([
+                Filter::make('offersGiven')
+                    ->form(
+                        [
+                            Forms\Components\Checkbox::make('onlyWithoutOffersGiven')->label(trans('Only without all offers given'))
+                        ]
+                    )->query(fn (array $data, Builder $query, self $livewire) => $query->when(
+                        $data['onlyWithoutOffersGiven'],
+                        fn (Builder $query) => $query->where(Offer::query()
+                            ->where(Offer::COL_FK_BIDDER_ROUND, '=', $livewire->ownerRecord->id)
+                            ->where(Offer::COL_FK_USER, '=', DB::raw('user.id'))
+                            ->selectRaw('COUNT(*)'), '<', $livewire->ownerRecord->countOffers)
+                    ))
+            ])
             ->headerActions([
                 Tables\Actions\AttachAction::make()->preloadRecordSelect(),
             ])
