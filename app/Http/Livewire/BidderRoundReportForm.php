@@ -58,7 +58,8 @@ class BidderRoundReportForm extends Component
     public function notifyUsers(): void
     {
         $notification = new BidderRoundFound($this->bidderRoundReport);
-        $this->bidderRoundReport->bidderRound->participants()
+        $this->bidderRoundReport->bidderRound->users()
+            ->get()
             ->filter(fn (Participant $participant) => method_exists($participant, 'notify'))
             ->each(function (Participant $user) use ($notification) {
                 Log::info("Notifying user ({$user->email()}) about report");

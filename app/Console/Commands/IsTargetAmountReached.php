@@ -82,7 +82,7 @@ class IsTargetAmountReached extends Command
         }
 
         $groupedByRound = $bidderRound->groupedByRound();
-        $userCount = User::bidderRoundParticipants()->count();
+        $userCount = $bidderRound->users()->count();
         // Filter all rounds in which not all offers have been made
         $groupedByRound = $groupedByRound->filter(fn (Collection $offersOfOneRound) => $offersOfOneRound->count() === $userCount);
 

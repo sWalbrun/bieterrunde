@@ -155,7 +155,7 @@ class BidderRound extends BaseModel
 
         $targetAmountPerMonth = $this->targetAmount / 12;
 
-        $participants = User::bidderRoundParticipants()->get();
+        $participants = $this->users()->get();
 
         if ($participants->isEmpty()) {
             return trans('Betrag');

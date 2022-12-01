@@ -28,7 +28,8 @@ class RememberTheBidderRound implements ShouldQueue
 
     public function handle()
     {
-        $this->round->participants()
+        $this->round->users()
+            ->get()
             ->filter(fn (Participant $participant) => $participant->offersForRound($this->round)->doesntExist())
             ->filter(fn (Participant $participant) => method_exists($participant, 'notify'))
             ->each(function (Participant $participant) {
