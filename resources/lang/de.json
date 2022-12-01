@@ -641,5 +641,6 @@
     "Users": "Benutzer",
     "Round": "Runde",
     "Offer": "Gebot",
-    "Offers given": "Abgegebene Gebote"
+    "Offers given": "Abgegebene Gebote",
+    "Count offers": "Anzahl der Runden"
 }

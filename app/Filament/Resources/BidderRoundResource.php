@@ -32,6 +32,7 @@ class BidderRoundResource extends Resource
                 DatePicker::make(BidderRound::COL_VALID_TO)->required()->label(trans('Valid to')),
                 DatePicker::make(BidderRound::COL_START_OF_SUBMISSION)->required()->label(trans('Start of submission')),
                 DatePicker::make(BidderRound::COL_END_OF_SUBMISSION)->required()->label(trans('End of submission')),
+                TextInput::make(BidderRound::COL_COUNT_OFFERS)->required()->label(trans('Count offers')),
                 TextInput::make(BidderRound::COL_TARGET_AMOUNT)
                     ->numeric()
                     ->required()

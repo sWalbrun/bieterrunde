@@ -52,10 +52,12 @@ class UsersRelationManager extends RelationManager
             ->schema([
                 Forms\Components\TextInput::make(User::COL_EMAIL)
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->disabled(),
                 Forms\Components\TextInput::make(User::COL_NAME)
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->disabled(),
                 Forms\Components\KeyValue::make('offers')
                     ->keyLabel(trans('Round'))
                     ->valueLabel(trans('Offer'))

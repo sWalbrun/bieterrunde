@@ -20,6 +20,11 @@ class Vegetable extends BaseModel
 
     protected $table = self::TABLE;
 
+    protected $fillable = [
+        'name',
+        'unit'
+    ];
+
     public function pickUps(): BelongsToMany
     {
         return $this->belongsToMany(
