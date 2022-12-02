@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use App\BidderRound\Participant;
 use App\Console\Commands\IsTargetAmountReached;
+use App\Notifications\BidderRoundFound;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Log;
 
 /**
  * This model is the result of the {@link IsTargetAmountReached} and holds all interesting information of the {@link BidderRound}.
@@ -45,5 +48,18 @@ class BidderRoundReport extends BaseModel
     public function getSumAmountFormattedAttribute(): string
     {
         return number_format($this->sumAmount, 2, ',', '.');
+    }
+
+    public function notifyUsers(): void
+    {
+        $notification = new BidderRoundFound($this);
+        $this->bidderRound->users()
+            ->get()
+            ->filter(fn (Participant $participant) => method_exists($participant, 'notify'))
+            ->each(function (Participant $user) use ($notification) {
+                Log::info("Notifying user ({$user->email()}) about report");
+                $user->notify($notification);
+                Log::info('User has been notified');
+            });
     }
 }

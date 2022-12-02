@@ -3,7 +3,8 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\BidderRoundResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers\UsersRelationManager;
+use App\Filament\Resources\BidderRoundResource\RelationManagers\BidderRoundReportRelationManager;
+use App\Filament\Resources\BidderRoundResource\RelationManagers\UsersRelationManager;
 use App\Models\BidderRound;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
@@ -53,9 +54,14 @@ class BidderRoundResource extends Resource
                         ->label(trans('Offers given'))
                         ->disabled()
                         ->afterStateHydrated(
-                            fn (TextInput $component, BidderRound $record) => $component->state(
-                                $record->groupedByRound()->first()->count() . '/' . $record->users()->count()
-                            )
+                            function (TextInput $component, BidderRound|null $record) {
+                                if (!isset($record) || $record->groupedByRound()->isEmpty()) {
+                                    return;
+                                }
+                                $component->state(
+                                    $record->groupedByRound()->first()->count() . '/' . $record->users()->count()
+                                );
+                            }
                         )
                 ]),
             ]);
@@ -67,7 +73,7 @@ class BidderRoundResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make(BidderRound::COL_TARGET_AMOUNT)
                     ->formatStateUsing(
-                        fn($state) => number_format($state, 2, ',', '.') . ' €'
+                        fn ($state) => number_format($state, 2, ',', '.') . ' €'
                     ),
                 Tables\Columns\TextColumn::make(BidderRound::COL_START_OF_SUBMISSION)
                     ->date('d.m.Y')
@@ -82,11 +88,9 @@ class BidderRoundResource extends Resource
                 Tables\Columns\TextColumn::make(BidderRound::COL_COUNT_OFFERS),
                 Tables\Columns\TextColumn::make(BidderRound::COL_NOTE),
             ])
-            ->filters([])->actions([
+            ->filters([])
+            ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\Action::make('calculateBidderRound')
-                    ->action(fn(BidderRound $bidderRound) => $bidderRound->calculateBidderRound())
-                    ->icon('heroicon-o-calculator'),
             ])->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
@@ -96,6 +100,7 @@ class BidderRoundResource extends Resource
     {
         return [
             UsersRelationManager::class,
+            BidderRoundReportRelationManager::class,
         ];
     }
 

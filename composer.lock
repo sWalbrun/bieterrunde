@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b7b5496b72225e994d325e732717cd89",
+    "content-hash": "dc6ac24b01b725c064dc9d6168890eb4",
     "packages": [
         {
             "name": "3x1io/filament-user",
@@ -570,6 +570,78 @@
                 }
             ],
             "time": "2022-08-10T22:54:19+00:00"
+        },
+        {
+            "name": "codeat3/blade-codicons",
+            "version": "1.27.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/codeat3/blade-codicons.git",
+                "reference": "2a55928593c408ec89fbc8c2e30f384268adcb83"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/codeat3/blade-codicons/zipball/2a55928593c408ec89fbc8c2e30f384268adcb83",
+                "reference": "2a55928593c408ec89fbc8c2e30f384268adcb83",
+                "shasum": ""
+            },
+            "require": {
+                "blade-ui-kit/blade-icons": "^1.1.1",
+                "illuminate/support": "^8.0|^9.0",
+                "php": "^7.4|^8.0"
+            },
+            "require-dev": {
+                "codeat3/blade-icon-generation-helpers": "^0.1",
+                "codeat3/phpcs-styles": "^1.0",
+                "ext-dom": "*",
+                "orchestra/testbench": "^6.0|^7.0",
+                "phpunit/phpunit": "^9.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Codeat3\\BladeCodicons\\BladeCodiconsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Codeat3\\BladeCodicons\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Swapnil Sarwe",
+                    "homepage": "https://swapnilsarwe.com"
+                },
+                {
+                    "name": "Dries Vints",
+                    "homepage": "https://driesvints.com"
+                }
+            ],
+            "description": "A package to easily make use of \"VSCode Codicons\" in your Laravel Blade views.",
+            "homepage": "https://github.com/codeat3/blade-codicons",
+            "keywords": [
+                "blade",
+                "codicons",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/codeat3/blade-codicons/issues",
+                "source": "https://github.com/codeat3/blade-codicons/tree/1.27.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/swapnilsarwe",
+                    "type": "github"
+                }
+            ],
+            "time": "2022-10-10T13:58:46+00:00"
         },
         {
             "name": "composer/class-map-generator",
@@ -13079,7 +13151,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.4|^8.0"
+        "php": "^8.1"
     },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"

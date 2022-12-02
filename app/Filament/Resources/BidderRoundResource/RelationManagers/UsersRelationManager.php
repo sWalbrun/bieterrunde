@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\UserResource\RelationManagers;
+namespace App\Filament\Resources\BidderRoundResource\RelationManagers;
 
 use App\Models\BidderRound;
 use App\Models\Offer;
@@ -28,7 +28,7 @@ class UsersRelationManager extends RelationManager
 
     public static function getPluralRecordLabel(): string
     {
-        return trans('Users');
+        return trans('Participants');
     }
 
     private function getOffers(User $record): array

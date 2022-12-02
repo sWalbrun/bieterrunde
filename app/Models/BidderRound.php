@@ -65,6 +65,16 @@ class BidderRound extends BaseModel
         self::COL_COUNT_OFFERS,
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+        static::saved(
+            // Since it is quite elaborate to associate all the users, we simply associate all active ones
+            // and the admin can dissociate afterwards the ones, which should not be part of this round
+            fn (self $bidderRound) => $bidderRound->users()->saveMany(User::currentlyActive()->get())
+        );
+    }
+
     public function offers(): HasMany
     {
         return $this->hasMany(Offer::class, Offer::COL_FK_BIDDER_ROUND);

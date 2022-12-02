@@ -643,5 +643,13 @@
     "Offer": "Gebot",
     "Offers given": "Abgegebene Gebote",
     "Count offers": "Anzahl der Runden",
-    "Only without all offers given": "Nur mit fehlenden Geboten"
+    "Only without all offers given": "Nur mit fehlenden Geboten",
+    "Bidder round report" :  "Bieterrundenausgang",
+    "Round with enough turnover" :  "Runde mit genügend Umsatz",
+    "Number of offers": "Anzahl der Anteile",
+    "Number of configured rounds": "Anzahl der konfigurierten Runden",
+    "Sum": "Summe",
+    "Participants": "Teilnehmer",
+    "Calculate bidder round": "Runde ermitteln",
+    "Inform participants": "Teilnehmer informieren"
 }

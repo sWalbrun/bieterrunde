@@ -164,6 +164,17 @@ class User extends Authenticatable implements MustVerifyEmail, Participant
         return $this->belongsTo(PickUpGroup::class, 'fkPickUpGroup');
     }
 
+    public static function currentlyActive(): Builder
+    {
+        return User::query()
+            ->where(fn (Builder $builder) => $builder
+                ->whereNull(User::COL_JOIN_DATE)
+                ->orWhere(User::COL_JOIN_DATE, '<=', now()))
+            ->where(fn (Builder $builder) => $builder
+                ->whereNull(User::COL_EXIT_DATE)
+                ->orWhere(User::COL_EXIT_DATE, '>=', now()));
+    }
+
     public static function bidderRoundWithRelations(int $bidderRoundId): Builder
     {
         return self::query()
