@@ -50,19 +50,39 @@ class BidderRoundResource extends Resource
                     )->suffix('€')
                     ->label(trans('Target amount')),
                 Card::make()->schema([
+                    TextInput::make('currentStatus')
+                        ->label(trans('Current Status'))
+                        ->afterStateHydrated(function (TextInput $component, BidderRound|null $record) {
+                            $state = match (true) {
+                                $record?->bidderRoundReport()->exists() => trans('Die Bieterrunde wurde erfolgreich abgeschlossen'),
+                                $record?->bidderRoundBetweenNow() => trans('Die Bieterrunde läuft gerade'),
+                                $record?->startOfSubmission->gt(now()) => trans('Die Bieterrunde hat noch nicht begonnen'),
+                                default => null,
+                            };
+                            if (isset($state)) {
+                                $component->state($state);
+                                $component->hidden(false);
+                            }
+                        })
+                        ->disabled()
+                        ->hidden()
+                        ->reactive(),
                     TextInput::make('offersGiven')
                         ->label(trans('Offers given'))
                         ->disabled()
+                        ->hidden()
                         ->afterStateHydrated(
                             function (TextInput $component, BidderRound|null $record) {
-                                if (!isset($record) || $record->groupedByRound()->isEmpty()) {
+                                if (!isset($record)) {
                                     return;
                                 }
+                                $component->hidden(false);
                                 $component->state(
-                                    $record->groupedByRound()->first()->count() . '/' . $record->users()->count()
+                                    ($record->groupedByRound()->first()?->count() ?? 0) . '/' . $record->users()->count()
                                 );
                             }
                         )
+                        ->reactive()
                 ]),
             ]);
     }

@@ -59,6 +59,6 @@ class Offer extends BaseModel
 
     public function getAmountFormattedAttribute(): string
     {
-        return number_format($this->amount, 2, ',', '.');
+        return number_format($this->amount, 2, ',', '.') . '€';
     }
 }

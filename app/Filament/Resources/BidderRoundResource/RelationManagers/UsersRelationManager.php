@@ -5,6 +5,7 @@ namespace App\Filament\Resources\BidderRoundResource\RelationManagers;
 use App\Models\BidderRound;
 use App\Models\Offer;
 use App\Models\User;
+use App\Notifications\ReminderOfBidderRound;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -12,8 +13,10 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class UsersRelationManager extends RelationManager
 {
@@ -119,6 +122,18 @@ class UsersRelationManager extends RelationManager
                 Tables\Actions\DetachAction::make(),
             ])
             ->bulkActions([
+                Tables\Actions\BulkAction::make('RemindParticipants')
+                    ->label(trans('Remind Participants'))
+                    ->icon('iconpark-remind-o')
+                    ->action(
+                        fn (Collection $records, self $livewire) => $records->each(
+                            function (User $participant) use ($livewire) {
+                                Log::info("Remind user ({$participant->email()}) about bidder round");
+                                $participant->notify(new ReminderOfBidderRound($livewire->ownerRecord, $participant));
+                                Log::info('User has been reminded');
+                            }
+                        )
+                    ),
                 Tables\Actions\DetachBulkAction::make(),
                 Tables\Actions\DeleteBulkAction::make(),
             ]);

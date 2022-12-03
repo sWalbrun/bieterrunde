@@ -651,5 +651,7 @@
     "Sum": "Summe",
     "Participants": "Teilnehmer",
     "Calculate bidder round": "Runde ermitteln",
-    "Inform participants": "Teilnehmer informieren"
+    "Inform participants": "Teilnehmer informieren",
+    "Current Status": "Aktueller Status",
+    "Remind participant about pending offer": "Teilnehmer über ausstehendes Gebots erinnern"
 }

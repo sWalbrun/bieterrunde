@@ -61,7 +61,7 @@ class BidderRoundFound extends Notification implements ShouldQueue
         return (new MailMessage)
             ->greeting(trans('Servus'))
             ->line(trans('Es ist soweit! Die Runde :round wurde als ausreichende Runde ermittelt!', ['round' => $offer->round ?? '_']))
-            ->line(trans('Damit liegt dein monatlicher Beitrag bei :amount €', ['amount' => $offer->amountFormatted ?? '_']))
+            ->line(trans('Damit liegt dein monatlicher Beitrag bei :amount', ['amount' => $offer->amountFormatted ?? '_']))
             ->action(
                 trans('Gebote ansehen'),
                 BidderRoundForm::getUrlForRound($this->report->bidderRound)

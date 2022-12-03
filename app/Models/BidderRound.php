@@ -68,7 +68,7 @@ class BidderRound extends BaseModel
     protected static function boot()
     {
         parent::boot();
-        static::saved(
+        static::created(
             // Since it is quite elaborate to associate all the users, we simply associate all active ones
             // and the admin can dissociate afterwards the ones, which should not be part of this round
             fn (self $bidderRound) => $bidderRound->users()->saveMany(User::currentlyActive()->get())

@@ -13,6 +13,7 @@
         "bensampo/laravel-enum": "^6.1",
         "bezhansalleh/filament-shield": "^2.3",
         "codeat3/blade-codicons": "^1.27",
+        "codeat3/blade-iconpark": "^1.4",
         "fideloper/proxy": "^4.4",
         "filament/filament": "^2.0",
         "fruitcake/laravel-cors": "^3.0",
