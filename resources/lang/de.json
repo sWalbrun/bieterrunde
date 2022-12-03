@@ -650,8 +650,16 @@
     "Number of configured rounds": "Anzahl der konfigurierten Runden",
     "Sum": "Summe",
     "Participants": "Teilnehmer",
+    "Participant": "Teilnehmer",
+    "User": "Benutzer",
     "Calculate bidder round": "Runde ermitteln",
     "Inform participants": "Teilnehmer informieren",
     "Current Status": "Aktueller Status",
-    "Remind participant about pending offer": "Teilnehmer über ausstehendes Gebots erinnern"
+    "Remind participant about pending offer": "Teilnehmer über ausstehendes Gebots erinnern",
+    "Roles": "Rollen",
+    "E-Mail": "E-Mail",
+    "Contribution group": "Beitragsgruppe",
+    "Join date": "Beitrittsdatum",
+    "Exit date": "Austrittsdatum",
+    "Count shares": "Anzahl d. Anteile"
 }

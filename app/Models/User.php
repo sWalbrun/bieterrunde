@@ -115,6 +115,7 @@ class User extends Authenticatable implements MustVerifyEmail, Participant
         self::COL_EMAIL_VERIFIED_AT => 'datetime',
         self::COL_JOIN_DATE => 'datetime',
         self::COL_EXIT_DATE => 'datetime',
+        self::COL_CONTRIBUTION_GROUP => EnumContributionGroup::class,
     ];
 
     public function name(): string
