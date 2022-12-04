@@ -123,7 +123,7 @@ class UsersRelationManager extends RelationManager
             ])
             ->bulkActions([
                 Tables\Actions\BulkAction::make('RemindParticipants')
-                    ->label(trans('Remind Participants'))
+                    ->label(trans('Remind participants'))
                     ->icon('iconpark-remind-o')
                     ->action(
                         fn (Collection $records, self $livewire) => $records->each(

@@ -65,7 +65,7 @@ class IsTargetAmountReached extends Command
                 fn (Builder $builder) => $builder->where('id', '=', $this->getBidderRound())
             )->get();
 
-        return $rounds->map(fn (BidderRound $round) => DB::transaction(fn () => $this->handleRound($round)))->max();
+        return $rounds->map(fn (BidderRound $round) => DB::transaction(fn () => $this->handleRound($round)))->min();
     }
 
     public function getBidderRound(): ?int
