@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Filament\Forms\Components\DatePicker;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
@@ -24,5 +25,6 @@ class SolarWirServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(125);
+        DatePicker::configureUsing(fn (DatePicker $picker) => $picker->displayFormat(config('app.date_format')));
     }
 }

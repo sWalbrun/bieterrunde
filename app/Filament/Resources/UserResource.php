@@ -5,17 +5,19 @@ namespace App\Filament\Resources;
 use App\Enums\EnumContributionGroup;
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use PHPMD\TextUI\Command;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
 
     public static function getPluralModelLabel(): string
     {
@@ -58,7 +60,16 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make(User::COL_NAME)->label(trans('Name')),
+                Tables\Columns\TextColumn::make(User::COL_EMAIL)->label(trans('E-Mail')),
+                Tables\Columns\TextColumn::make(User::COL_CONTRIBUTION_GROUP)
+                    ->label(trans('Name'))
+                    ->formatStateUsing(fn (EnumContributionGroup|null $state) => isset($state) ? trans($state->value) : null),
+                Tables\Columns\BadgeColumn::make(User::COL_COUNT_SHARES)->label(trans('Count shares')),
+                Tables\Columns\TextColumn::make(User::COL_JOIN_DATE)->label(trans('Join date'))
+                    ->formatStateUsing(fn (Carbon|null $state) => $state?->format('d.m.Y')),
+                Tables\Columns\TextColumn::make(User::COL_EXIT_DATE)->label(trans('Exit date'))
+                    ->formatStateUsing(fn (Carbon|null $state) => $state?->format('d.m.Y')),
             ])
             ->filters([
                 //

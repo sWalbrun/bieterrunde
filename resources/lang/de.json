@@ -661,5 +661,9 @@
     "Contribution group": "Beitragsgruppe",
     "Join date": "Beitrittsdatum",
     "Exit date": "Austrittsdatum",
-    "Count shares": "Anzahl d. Anteile"
+    "Count shares": "Anzahl d. Anteile",
+    "Import": "Importieren",
+    "Templates": "Vorlagen",
+    "Files": "Dateien",
+    "User template": "Benutzervorlage"
 }

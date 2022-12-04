@@ -18,7 +18,7 @@ class BidderRoundResource extends Resource
 {
     protected static ?string $model = BidderRound::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-currency-euro';
 
     public static function getPluralLabel(): ?string
     {
