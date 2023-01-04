@@ -20,7 +20,7 @@ class EditBidderRound extends EditRecord
             Actions\DeleteAction::make(),
             Actions\Action::make('calculateBidderRound')
                 ->label(trans('Calculate bidder round'))
-                ->action(fn (BidderRound $bidderRound) => $bidderRound->calculateBidderRound())
+                ->action(fn () => $this->record->calculateBidderRound())
                 ->icon('heroicon-o-calculator')
                 ->disabled(fn () => $this->record->bidderRoundReport()->exists())
         ];
