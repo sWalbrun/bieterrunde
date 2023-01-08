@@ -10,49 +10,40 @@ Dieser Standalone-Webserver bietet umfangreiche Funktionen für die Abwicklung e
 
 # Requirements|Installation
 
-Es gibt zwei Möglichkeiten für das Hosting:
-<ol>
-    <li>Docker Compose</li>
-    <ul>
-        <li><code>cp .env.example .env</code></li>
-        <li><code>docker-compose up</code></li>
-        <li><code>docker exec solawir_php_app composer i</code></li>
-        <li><code>docker exec solawir_php_app php artisan key:generate</code></li>
-        <li><code>docker exec solawir_php_app php artisan migrate --seed</code></li>
-    </ul>
-    Ab diesem Zeitpunkt steht unter http://localhost der Webserver zur Verfügung mit den Standardbenutzern
-    <i>adminfoo@solawi.de</i> und <i>adminbar@solawi.de</i> mit Passwort <i>password</i>. Die Admin-Benutzer sind dabei über ihr Mandat getrennt.
-    <li>Nativ mit Php, Mysql und Nginx (nicht empfohlen)</li>
-        <ul>
-            <li><b>PHP >7.4, ein MySql Server sowie Nginx müssen installiert sein</b></li>
-            <li><code>cp .env.example .env</code></li>
-            <li>.env anpassen auf die Datenbankanbindung</li>
-            <li><code>composer i</code></li>
-            <li><code>php artisan key:generate</code></li>
-            <li><code>php artisan migrate --seed</code></li>
-            <li><code>php artisan serve</code></li>
-            <li>Ab diesem Zeitpunkt steht unter http://localhost:8000 der Webserver zur Verfügung</li>
-        </ul>
-</ol>
+docker sowie docker-compose müssen installiert sein.
+
+Mit dem Befehl
+<code>./serve.sh --fresh</code>
+werden alle Abhängigkeiten bezogen und die Datenbank wird erstellt sowie initial befüllt mit Testdaten.
+Sobal der Command fertig ist, steht unter http://localhost der Webserver zur Verfügung mit den <b>Standardbenutzern
+<i>adminfoo@solawi.de</i> und <i>adminbar@solawi.de</i> mit Passwort <i>password</i></b>. Die Admin-Benutzer sind dabei über ihr Mandat getrennt.
+
+Die Admin-Benutzer sind zu diesem Zeitpunkt allerdings noch keine Admin-Benutzer. Mit dem Befehl
+
+<code>vendor/bin/sail artisan shield:super-admin</code>
+
+können beliebige Accounts noch zu Admins gemacht werden.
 
 ## Features
 
 ## Verwaltung eine Bieterrunde
 
 Für ein Gartenjahr kann eine Bieterrunde organisiert werden. Dabei wird vom Admin eine neue Bieterrunde angelegt:
-![BieterrundeAnlegen](https://user-images.githubusercontent.com/38902857/150683392-f7a978e2-3713-411f-89dd-b056e1988679.png)
+![2023-01-08 16_38_57-Bidder Round bearbeiten - Bieterrunde – Mozilla Firefox](https://user-images.githubusercontent.com/38902857/211205521-e2668fb5-bcb9-4f36-ac53-9540d2fbfb7b.png)
 
 Zusätzlich gibt es für die Verwaltung noch einen Übersichtsdialog über alle abgegeben Gebote (hier können außerdem
 manuel Gebote eingetragen werden):
-![grafik](https://user-images.githubusercontent.com/38902857/173243791-2453387b-403c-409c-b842-8592067cc774.png)
+![2023-01-08 16_39_50-Bidder Round bearbeiten - Bieterrunde – Mozilla Firefox](https://user-images.githubusercontent.com/38902857/211205552-29ef40d6-7ddf-476e-a1ef-779d16d06ee2.png)
+![2023-01-08 16_40_22-Bidder Round bearbeiten - Bieterrunde – Mozilla Firefox](https://user-images.githubusercontent.com/38902857/211205584-9fdac683-8297-4475-b70c-4f334a1d785a.png)
+
 
 Mitglieder können über einen weiteren Dialog ihre Gebote abgeben. Dabei können sie ausschließlich ihre eigenen Gebote
 einsehen. Dabei wird ein Gebotsvorschlag berechnet, der sich aus Mitgliederzahl und Zielbetrag über eine Mittlung berechnet:
-![grafik](https://user-images.githubusercontent.com/38902857/173243823-2481837f-bd83-4ed8-b580-3ef5468927f7.png)
+![2023-01-08 16_42_32-Offer Page - Bieterrunde – Mozilla Firefox](https://user-images.githubusercontent.com/38902857/211205688-bdace1a5-7987-458d-9cc8-30075e778f8a.png)
 
 Sobald alle Gebote abgeben werden konnten, wird die passende Runde ermittelt. Im gleichen Zug werden E-Mails an alle
 Mitglieder versandt:
-![BerechnungDerZielrunde](https://user-images.githubusercontent.com/38902857/150683700-cd46a8f4-0203-4f5a-a97f-9975228de9f0.gif)
+![2023-01-08 16_43_57-Bidder Round bearbeiten - Bieterrunde – Mozilla Firefox](https://user-images.githubusercontent.com/38902857/211205768-b439496d-6485-40bb-b502-70fafa4af0ac.png)
 
 Es sind außerdem noch weitere, kleine Features implementiert, wie der Versand eine Erinnerungsmail an alle Mitglieder, die während des Gebotzeitraums noch kein Gebot abgegeben haben.
 ![grafik](https://user-images.githubusercontent.com/38902857/173244163-44b577a2-6aa1-4ee8-8713-0a910162f2b5.png)
@@ -62,17 +53,11 @@ Es sind außerdem noch weitere, kleine Features implementiert, wie der Versand e
 Die Software verfügt über einen Benutzermanagementbereich mit den üblichen CRUD-Funktionalitäten. Ein Rollenmanagement
 ist ebenfalls implementiert.
 
-### Benutzerlistung
+## Import von Benutzern
 
-![grafik](https://user-images.githubusercontent.com/38902857/173243657-cd81ab68-a52c-4760-ab20-22026153bc94.png)
-
-### Benutzeransicht
-
-![grafik](https://user-images.githubusercontent.com/38902857/173243691-1c4d8132-771d-45ba-b5d1-03a62ac79604.png)
-
-### Bearbeitung eines Benutzers
-
-![grafik](https://user-images.githubusercontent.com/38902857/173243711-536dd2cc-4698-4284-9489-ae6a598bc97f.png)
+Es ist möglich Benutzer via Excel oder CSV zu importieren.
+Dafür muss in einem ersten Schritt die Vorlage vom System heruntergeladen werden und dann mit den Mitgliedern befüllt werden.
+Über den Import werden dann alle Benutzer in einem Zug angelegt.
 
 ## Multimandantenfähigkeit
 
@@ -90,9 +75,3 @@ Wenn keine Id gegeben wurde, wird danach gefragt.
 ### Löschen
 <code>php artisan tenancy:delete &lt;tenantId&gt; </code><br>
 Wenn keine Id gegeben wurde, wird danach gefragt.
-
-## Kommende Features
-
-<ul>
-<li>Excel Ex- und Import von Benutzern</li>
-</ul>
