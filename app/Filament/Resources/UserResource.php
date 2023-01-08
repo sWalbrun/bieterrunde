@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Enums\EnumContributionGroup;
+use App\Filament\EnumNavigationGroups;
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
 use Carbon\Carbon;
@@ -11,7 +12,6 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
-use PHPMD\TextUI\Command;
 
 class UserResource extends Resource
 {
@@ -27,6 +27,11 @@ class UserResource extends Resource
     public static function getModelLabel(): string
     {
         return trans('User');
+    }
+
+    protected static function getNavigationGroup(): ?string
+    {
+        return trans(EnumNavigationGroups::ADMINISTRATION);
     }
 
     public static function form(Form $form): Form
@@ -60,8 +65,12 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make(User::COL_NAME)->label(trans('Name')),
-                Tables\Columns\TextColumn::make(User::COL_EMAIL)->label(trans('E-Mail')),
+                Tables\Columns\TextColumn::make(User::COL_NAME)
+                    ->label(trans('Name'))
+                    ->copyable(),
+                Tables\Columns\TextColumn::make(User::COL_EMAIL)
+                    ->label(trans('E-Mail'))
+                    ->copyable(),
                 Tables\Columns\TextColumn::make(User::COL_CONTRIBUTION_GROUP)
                     ->label(trans('Name'))
                     ->formatStateUsing(fn (EnumContributionGroup|null $state) => isset($state) ? trans($state->value) : null),

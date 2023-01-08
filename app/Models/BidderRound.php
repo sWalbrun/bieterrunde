@@ -4,9 +4,9 @@ namespace App\Models;
 
 use App\BidderRound\Participant;
 use App\Console\Commands\IsTargetAmountReached;
-use App\Enums\EnumContributionGroup;
 use Carbon\Carbon;
 use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -25,6 +25,7 @@ use Symfony\Component\Console\Command\Command;
  * @property Carbon validTo
  * @property int countOffers
  * @property string note
+ * @property self|Builder started
  * @property string tenant_id
  * @property Collection<Offer> offers
  * @property BidderRoundReport $bidderRoundReport
@@ -36,7 +37,6 @@ class BidderRound extends BaseModel
     use BelongsToTenant;
 
     public const TABLE = 'bidderRound';
-    public const AVERAGE_NEW_MEMBER_INCREASE_RATE = 12.5;
 
     protected $table = self::TABLE;
 
@@ -147,6 +147,16 @@ class BidderRound extends BaseModel
             ->get();
     }
 
+    public static function scopeStarted(Builder $builder): Builder
+    {
+        return $builder
+            ->where(
+                self::COL_START_OF_SUBMISSION,
+                '<=',
+                now()->startOfDay()
+            );
+    }
+
     public function bidderRoundReport(): HasOne
     {
         return $this->hasOne(BidderRoundReport::class, BidderRoundReport::COL_FK_BIDDER_ROUND);
@@ -155,51 +165,6 @@ class BidderRound extends BaseModel
     public function bidderRoundBetweenNow(): bool
     {
         return Carbon::now()->isBetween($this->startOfSubmission->startOfDay(), $this->endOfSubmission->endOfDay());
-    }
-
-    public function getReferenceAmountFor(User $user, int $roundIndex): ?string
-    {
-        if ($user->contributionGroup === EnumContributionGroup::SUSTAINING_MEMBER) {
-            return '>= ' . $this->formatAmount(1 + ($roundIndex * 2));
-        }
-
-        $targetAmountPerMonth = $this->targetAmount / 12;
-
-        $participants = $this->users()->get();
-
-        if ($participants->isEmpty()) {
-            return trans('Betrag');
-        }
-
-        $countNew = $participants
-            ->filter(fn (User $user) => $user->isNewMember && $user->contributionGroup === EnumContributionGroup::FULL_MEMBER)
-            ->map(fn (User $user) => $user->countShares)
-            ->sum();
-        $countOld = $participants
-            ->filter(fn (User $user) => !$user->isNewMember && $user->contributionGroup === EnumContributionGroup::FULL_MEMBER)
-            ->map(fn (User $user) => $user->countShares)
-            ->sum();
-
-        $countSustainingMember = $participants
-            ->filter(fn (User $user) => $user->contributionGroup === EnumContributionGroup::SUSTAINING_MEMBER)
-            ->count();
-
-        if (($countNew + $countOld) === 0) {
-            $referenceAmountForFullMember = 0;
-        }
-
-        $referenceAmountForFullMember ??= (-self::AVERAGE_NEW_MEMBER_INCREASE_RATE * $countNew + $targetAmountPerMonth - $countSustainingMember) / ($countNew + $countOld);
-        if ($user->isNewMember) {
-            return trans('z. B. ')
-                . $this->formatAmount($referenceAmountForFullMember + self::AVERAGE_NEW_MEMBER_INCREASE_RATE + $roundIndex * 3)
-                . ' ('
-                . $this->formatAmount($referenceAmountForFullMember + $roundIndex * 3)
-                . ' + '
-                . $this->formatAmount(self::AVERAGE_NEW_MEMBER_INCREASE_RATE)
-                . ')';
-        }
-
-        return trans('z. B. ') . $this->formatAmount($referenceAmountForFullMember + $roundIndex * 2);
     }
 
     public function calculateBidderRound()
@@ -251,10 +216,5 @@ class BidderRound extends BaseModel
     public function __toString()
     {
         return trans('Bieterrunde ') . ($this->validFrom ? $this->validFrom->format('Y') : '');
-    }
-
-    private function formatAmount(string $referenceAmountForFullMember): string
-    {
-        return number_format(ceil($referenceAmountForFullMember), 2, ',', '.');
     }
 }

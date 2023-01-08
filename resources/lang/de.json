@@ -645,7 +645,7 @@
     "Count offers": "Anzahl der Runden",
     "Only without all offers given": "Nur mit fehlenden Geboten",
     "Bidder round report" :  "Bieterrundenausgang",
-    "Round with enough turnover" :  "Runde mit genügend Umsatz",
+    "Round with enough turnover" : "Runde mit genügend Umsatz",
     "Number of offers": "Anzahl der Anteile",
     "Number of configured rounds": "Anzahl der konfigurierten Runden",
     "Sum": "Summe",
@@ -666,5 +666,12 @@
     "Templates": "Vorlagen",
     "Files": "Dateien",
     "User template": "Benutzervorlage",
-    "Remind participants": "Teilnehmer erinnern"
+    "Remind participants": "Teilnehmer erinnern",
+    "Currently no open round": "Derzeit gibt es keine offene Bieterrunde",
+    "Offer :numberOfRound": "Gebot :numberOfRound",
+    "Offers": "Gebote",
+    "Payment interval": "Zahlungsintervall",
+    "Your offers": "Deine Gebote",
+    "Administration": "Verwaltung",
+    "Round=Amount": "Runde=Betrag"
 }

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\BidderRound\BidderRoundService;
 use App\Enums\EnumContributionGroup;
 use App\Enums\EnumPaymentInterval;
 use App\Http\Livewire\OfferForm;
@@ -127,7 +128,7 @@ class OfferFormTest extends TestCase
                 . ' ('
                 . '5.655,00'
                 . ' + '
-                . number_format(ceil(BidderRound::AVERAGE_NEW_MEMBER_INCREASE_RATE), 2, ',', '.')
+                . number_format(ceil(BidderRoundService::AVERAGE_NEW_MEMBER_INCREASE_RATE_IN_PERCENTAGE), 2, ',', '.')
                 . ')'
             );
     }

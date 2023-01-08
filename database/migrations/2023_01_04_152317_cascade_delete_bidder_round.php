@@ -19,7 +19,10 @@ return new class extends Migration
             $table->dropForeign('offer_fkbidderround_foreign');
         });
         Schema::table(Offer::TABLE, function(Blueprint $table) {
-            $table->foreignId(BidderRound::class, Offer::COL_FK_BIDDER_ROUND)->onDelete('cascade');
+            $table->foreign( Offer::COL_FK_BIDDER_ROUND)
+                ->references('id')
+                ->on(BidderRound::TABLE)
+                ->onDelete('cascade');
         });
     }
 };

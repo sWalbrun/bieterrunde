@@ -36,6 +36,7 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
  * @property string profile_photo_path
  * @property bool isNewMember
  * @property EnumPaymentInterval paymentInterval
+ * @property string offersAsString
  * @property string tenant_id
  * @property Carbon $createdAt
  * @property Carbon $updatedAt
@@ -153,6 +154,17 @@ class User extends Authenticatable implements MustVerifyEmail, Participant
         return $this
             ->hasMany(Offer::class, Offer::COL_FK_USER)
             ->orderBy(Offer::COL_ROUND, 'ASC');
+    }
+
+    /**
+     * @param BidderRound $bidderRound
+     *
+     * @return string round=amountFormatted, round2=amountFormatted2
+     */
+    public function offersAsStringFor(BidderRound $bidderRound): string
+    {
+        return $this->offersForRound($bidderRound)
+            ->chunkMap(fn (Offer $offer) => "$offer->round=$offer->amountFormatted")->implode(', ');
     }
 
     public function offersForRound(BidderRound $round): HasMany

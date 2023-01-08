@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\EnumNavigationGroups;
 use App\Filament\Resources\BidderRoundResource\Pages;
 use App\Filament\Resources\BidderRoundResource\RelationManagers\BidderRoundReportRelationManager;
 use App\Filament\Resources\BidderRoundResource\RelationManagers\UsersRelationManager;
@@ -23,6 +24,11 @@ class BidderRoundResource extends Resource
     public static function getPluralLabel(): ?string
     {
         return trans('Bidder Rounds');
+    }
+
+    protected static function getNavigationGroup(): ?string
+    {
+        return trans(EnumNavigationGroups::ADMINISTRATION);
     }
 
     public static function form(Form $form): Form

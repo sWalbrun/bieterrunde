@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\BidderRoundResource\RelationManagers;
 
+use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
+use App\BidderRound\BidderRoundService;
 use App\Models\BidderRound;
 use App\Models\Offer;
 use App\Models\User;
@@ -34,23 +36,6 @@ class UsersRelationManager extends RelationManager
         return trans('Participants');
     }
 
-    private function getOffers(User $record): array
-    {
-        // First we have to check for all offers, which have already been given
-        $offers = $record->offersForRound(
-            $this->ownerRecord
-        )->get()->mapWithKeys(fn (Offer $offer) => [$offer->round => $offer->amountFormatted]);
-
-        // Now we have to fill up the missing ones with null values, to disallow the admin to create offers which
-        // are not matching with config of the bidder round created beforehand
-        $startIndexOfMissingOffers = $offers->keys()->max() + 1 ?? 1;
-        for ($i = $startIndexOfMissingOffers; $i <= $this->ownerRecord->countOffers; $i++) {
-            $offers->put($i, null);
-        }
-
-        return $offers->sortKeys()->toArray();
-    }
-
     public static function form(Form $form): Form
     {
         return $form
@@ -71,7 +56,10 @@ class UsersRelationManager extends RelationManager
                             self                      $livewire,
                             Forms\Components\KeyValue $component,
                             User                      $record,
-                        ) => $component->state($livewire->getOffers($record))
+                        ) => $component->state(
+                            BidderRoundService::getOffers($livewire->ownerRecord, $record)
+                                ->map(fn (Offer|null $offer) => $offer?->amount)
+                        )
                     )
                     ->afterStateUpdated(fn (
                         self                      $livewire,
@@ -90,7 +78,8 @@ class UsersRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make(User::COL_NAME)->searchable(),
                 Tables\Columns\TextColumn::make(User::COL_EMAIL)->searchable(),
-                Tables\Columns\BadgeColumn::make('offersGiven')
+                Tables\Columns\BadgeColumn::make('Offers given')
+                    ->translateLabel()
                     ->getStateUsing(
                         fn (User $record, self $livewire) => $record->offersForRound($livewire->ownerRecord)->count()
                     )
@@ -98,13 +87,20 @@ class UsersRelationManager extends RelationManager
                         fn (int $state, self $livewire) => $state === $livewire->ownerRecord->countOffers
                             ? 'success'
                             : 'secondary'
+                    ),
+                Tables\Columns\TextColumn::make('Round=Amount')
+                    ->getStateUsing(
+                        fn (User $record, self $livewire) => $record->offersAsStringFor($livewire->ownerRecord)
                     )
+                    ->label(trans('Round=Amount'))
             ])
             ->filters([
-                Filter::make('offersGiven')
+                Filter::make('Offers given')
+                    ->translateLabel()
                     ->form(
                         [
-                            Forms\Components\Checkbox::make('onlyWithoutOffersGiven')->label(trans('Only without all offers given'))
+                            Forms\Components\Checkbox::make('onlyWithoutOffersGiven')
+                                ->label(trans('Only without all offers given'))
                         ]
                     )->query(fn (array $data, Builder $query, self $livewire) => $query->when(
                         $data['onlyWithoutOffersGiven'],
@@ -122,6 +118,7 @@ class UsersRelationManager extends RelationManager
                 Tables\Actions\DetachAction::make(),
             ])
             ->bulkActions([
+                FilamentExportBulkAction::make('Export'),
                 Tables\Actions\BulkAction::make('RemindParticipants')
                     ->label(trans('Remind participants'))
                     ->icon('iconpark-remind-o')

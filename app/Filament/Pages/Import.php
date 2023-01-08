@@ -2,7 +2,9 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\EnumNavigationGroups;
 use App\Import\ImportProcessor;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Pages\Actions\Action;
@@ -15,6 +17,7 @@ class Import extends Page
 {
     use WithFileUploads;
     use InteractsWithForms;
+    use HasPageShield;
 
     /**
      * Needed for the file upload input to work properly.
@@ -26,6 +29,11 @@ class Import extends Page
     protected static ?string $navigationIcon = 'bi-filetype-xlsx';
 
     protected static string $view = 'filament.pages.import';
+
+    protected static function getNavigationGroup(): ?string
+    {
+        return trans(EnumNavigationGroups::ADMINISTRATION);
+    }
 
     public function getActions(): array
     {

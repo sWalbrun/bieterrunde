@@ -13,8 +13,9 @@ Route::middleware([
     'verified',
     'web',
 ])->group(function () {
+    // TODO delete all routes
     Route::get('/', function () {
-        return redirect('/dashboard');
+        return redirect('/main/login');
     });
     Route::get('/dashboard', function () {
         return view('dashboard');
