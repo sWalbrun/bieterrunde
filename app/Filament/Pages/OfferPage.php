@@ -51,6 +51,11 @@ class OfferPage extends Page
 
     protected static string $view = 'filament.pages.offer-page';
 
+    public static function url(): string
+    {
+        return url('/main/offer-page');
+    }
+
     public function getHeading(): string | Htmlable
     {
         return static::getNavigationLabel();

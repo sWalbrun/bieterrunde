@@ -3,7 +3,7 @@
 namespace App\Notifications;
 
 use App\BidderRound\Participant;
-use App\Http\Livewire\BidderRoundForm;
+use App\Filament\Pages\OfferPage;
 use App\Models\BidderRound;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -42,7 +42,7 @@ class ReminderOfBidderRound extends Notification
             ->line(trans('Bitte trage dein Gebot noch ein.'))
             ->action(
                 trans('Gebote abgeben'),
-                BidderRoundForm::getUrlForRound($this->round)
+                OfferPage::url(),
             )
             ->line(trans('Danke fürs Mitmachen!'));
     }
