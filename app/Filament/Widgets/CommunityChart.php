@@ -48,7 +48,7 @@ class CommunityChart extends DoughnutChartWidget
                             ->count(),
                     ],
                     'backgroundColor' => [
-                        'rgb(34,139,34)',
+                        'rgb(51,102,0)',
                         'rgb(0,128,0)',
                         'rgb(220,220,220)',
                         'rgb(255,255,224)',
