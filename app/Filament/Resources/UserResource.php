@@ -57,7 +57,7 @@ class UserResource extends Resource
                 Forms\Components\Select::make('roles')
                     ->multiple()
                     ->relationship('roles', 'name')
-                    ->label(trans('Roles'))
+                    ->label(trans('Roles')),
             ]);
     }
 
@@ -80,9 +80,7 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make(User::COL_EXIT_DATE)->label(trans('Exit date'))
                     ->formatStateUsing(fn (Carbon|null $state) => $state?->format('d.m.Y')),
             ])
-            ->filters([
-                //
-            ])
+            ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
@@ -93,9 +91,7 @@ class UserResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array

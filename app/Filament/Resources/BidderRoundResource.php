@@ -58,18 +58,20 @@ class BidderRoundResource extends Resource
                 Card::make()->schema([
                     TextInput::make('currentStatus')
                         ->label(trans('Current Status'))
-                        ->afterStateHydrated(function (TextInput $component, BidderRound|null $record) {
-                            $state = match (true) {
-                                $record?->bidderRoundReport()->exists() => trans('Die Bieterrunde wurde erfolgreich abgeschlossen'),
-                                $record?->bidderRoundBetweenNow() => trans('Die Bieterrunde läuft gerade'),
-                                $record?->startOfSubmission->gt(now()) => trans('Die Bieterrunde hat noch nicht begonnen'),
-                                default => null,
-                            };
-                            if (isset($state)) {
-                                $component->state($state);
-                                $component->hidden(false);
+                        ->afterStateHydrated(
+                            function (TextInput $component, BidderRound|null $record) {
+                                $state = match (true) {
+                                    $record?->bidderRoundReport()->exists() => trans('Die Bieterrunde wurde erfolgreich abgeschlossen'),
+                                    $record?->bidderRoundBetweenNow() => trans('Die Bieterrunde läuft gerade'),
+                                    $record?->startOfSubmission->gt(now()) => trans('Die Bieterrunde hat noch nicht begonnen'),
+                                    default => null,
+                                };
+                                if (isset($state)) {
+                                    $component->state($state);
+                                    $component->hidden(false);
+                                }
                             }
-                        })
+                        )
                         ->disabled()
                         ->hidden()
                         ->reactive(),
@@ -88,7 +90,7 @@ class BidderRoundResource extends Resource
                                 );
                             }
                         )
-                        ->reactive()
+                        ->reactive(),
                 ]),
             ]);
     }

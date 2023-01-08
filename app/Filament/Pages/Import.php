@@ -46,7 +46,7 @@ class Import extends Page
                         fn () => Storage::disk('local')->download('/assets/UserImportTemplate.xlsx')
                     )
                 )
-            ->icon('heroicon-o-users')
+                ->icon('heroicon-o-users')
         ];
     }
 

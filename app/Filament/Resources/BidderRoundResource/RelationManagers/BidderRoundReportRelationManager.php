@@ -22,8 +22,7 @@ class BidderRoundReportRelationManager extends RelationManager
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-            ]);
+            ->schema([]);
     }
 
     public static function table(Table $table): Table
@@ -45,14 +44,13 @@ class BidderRoundReportRelationManager extends RelationManager
                     ->suffix('€')
                     ->disabled(),
             ])
-            ->filters([
-            ])
+            ->filters([])
             ->actions([
                 Tables\Actions\DeleteAction::make(),
                 Tables\Actions\Action::make('informParticipants')
                     ->label(trans('Inform participants'))
                     ->action(fn (BidderRoundReport $record) => $record->notifyUsers())
-                    ->icon('codicon-broadcast')
+                    ->icon('codicon-broadcast'),
             ]);
     }
 }

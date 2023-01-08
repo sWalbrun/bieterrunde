@@ -33,10 +33,14 @@ class OfferPage extends Page
     private const USER_CONTRIBUTION_GROUP = 'userContributionGroup';
     private const USER_PAYMENT_INTERVAL = 'userPaymentInterval';
 
-    /** @var Collection<int, float> round to amount mapping */
+    /**
+     * @var Collection<int, float> round to amount mapping
+     */
     public Collection $roundToAmountMapping;
 
-    /** @var Collection<int, Offer> round to amount mapping */
+    /**
+     * @var Collection<int, Offer> round to amount mapping
+     */
     public Collection $roundToOfferMapping;
 
     public User|null $user = null;
@@ -148,10 +152,10 @@ class OfferPage extends Page
                                 : null
                         )->hintColor('success')
                         ->placeholder(BidderRoundService::getReferenceAmountFor($record, $this->user, $numberOfRound))
-                        ->suffix("€")
+                        ->suffix('€')
                         ->required()
-                )->toArray()
-            ])->disabled(!$this->getFormModel()?->isOfferStillPossible())
+                )->toArray(),
+            ])->disabled(!$this->getFormModel()?->isOfferStillPossible()),
         ];
     }
 
@@ -160,6 +164,7 @@ class OfferPage extends Page
         $this->validate();
         $atLeastOneChange = false;
         collect($this->roundToAmountMapping)->each(function (string|null $amountOfRound, $numberOfRound) use (&$atLeastOneChange) {
+            // phpcs:ignore
             /** @var Offer $offer */
             $offer = $this->user->offers()->where(Offer::COL_ROUND, '=', $numberOfRound)->first() ?? new Offer();
             $offer->round = $numberOfRound;

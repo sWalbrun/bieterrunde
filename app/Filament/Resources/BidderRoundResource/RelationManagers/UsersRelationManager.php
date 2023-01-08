@@ -92,7 +92,7 @@ class UsersRelationManager extends RelationManager
                     ->getStateUsing(
                         fn (User $record, self $livewire) => $record->offersAsStringFor($livewire->ownerRecord)
                     )
-                    ->label(trans('Round=Amount'))
+                    ->label(trans('Round=Amount')),
             ])
             ->filters([
                 Filter::make('Offers given')
@@ -104,10 +104,14 @@ class UsersRelationManager extends RelationManager
                         ]
                     )->query(fn (array $data, Builder $query, self $livewire) => $query->when(
                         $data['onlyWithoutOffersGiven'],
-                        fn (Builder $query) => $query->where(Offer::query()
-                            ->where(Offer::COL_FK_BIDDER_ROUND, '=', $livewire->ownerRecord->id)
-                            ->where(Offer::COL_FK_USER, '=', DB::raw('user.id'))
-                            ->selectRaw('COUNT(*)'), '<', $livewire->ownerRecord->countOffers)
+                        fn (Builder $query) => $query->where(
+                            Offer::query()
+                                ->where(Offer::COL_FK_BIDDER_ROUND, '=', $livewire->ownerRecord->id)
+                                ->where(Offer::COL_FK_USER, '=', DB::raw('user.id'))
+                                ->selectRaw('COUNT(*)'),
+                            '<',
+                            $livewire->ownerRecord->countOffers
+                        )
                     ))
             ])
             ->headerActions([

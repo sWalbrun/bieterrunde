@@ -9,7 +9,9 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditBidderRound extends EditRecord
 {
-    /** @var BidderRound */
+    /**
+     * @var BidderRound
+     */
     public $record;
 
     protected static string $resource = BidderRoundResource::class;
@@ -22,7 +24,7 @@ class EditBidderRound extends EditRecord
                 ->label(trans('Calculate bidder round'))
                 ->action(fn () => $this->record->calculateBidderRound())
                 ->icon('heroicon-o-calculator')
-                ->disabled(fn () => $this->record->bidderRoundReport()->exists())
+                ->disabled(fn () => $this->record->bidderRoundReport()->exists()),
         ];
     }
 }
