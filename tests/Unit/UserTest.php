@@ -53,31 +53,6 @@ class UserTest extends TestCase
         $this->assertEquals($offers->count(), $offers->intersect($user->offersForRound($bidderRound)->get())->count());
     }
 
-    public function testBidderRoundWithRelations()
-    {
-        $user = $this->createAndActAsUser();
-        $user->assignRole(Role::findOrCreate(User::ROLE_BIDDER_ROUND_PARTICIPANT));
-
-        /** @var BidderRound $bidderRound */
-        $bidderRound = BidderRound::factory()->create()->first();
-
-        $this->createOffers($user, $bidderRound);
-
-        /** @var Collection<User> $users */
-        $users = User::bidderRoundWithRelations($bidderRound->id);
-
-        $this->assertEquals(1, $users->count());
-
-        /** @var User $user */
-        $user = $users->first();
-
-        $this->assertNotNull($user->getRelation('offers'), 'No offers have been loaded');
-        /** @var Offer $offer */
-        $offer = $user->offers->first();
-
-        $this->assertNotNull($offer->getRelation('bidderRound'));
-    }
-
     protected function createOffers(User $user, ?BidderRound $bidderRound = null): Collection
     {
         return Offer::factory()

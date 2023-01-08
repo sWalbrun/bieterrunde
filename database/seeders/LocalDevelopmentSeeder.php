@@ -55,7 +55,6 @@ class LocalDevelopmentSeeder extends Seeder
         $user->countShares = 1;
         $user->save();
         $user->assignRole(Role::findOrCreate(User::ROLE_ADMIN));
-        $user->assignRole(Role::findOrCreate(User::ROLE_BIDDER_ROUND_PARTICIPANT));
         $user->save();
     }
 
@@ -65,7 +64,6 @@ class LocalDevelopmentSeeder extends Seeder
             ->count(self::USER_COUNT)
             ->create()
             ->each(function (User $user) use ($bidderRound) {
-                $user->assignRole(Role::findOrCreate(User::ROLE_BIDDER_ROUND_PARTICIPANT));
                 OfferFactory::reset();
                 OfferFactory::randomize();
                 Offer::factory()

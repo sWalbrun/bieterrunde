@@ -92,8 +92,6 @@ class IsTargetAmountReachedTest extends TestCase
                 });
         }
 
-        $users->each(fn (User $user) => $user->assignRole(Role::findOrCreate(User::ROLE_BIDDER_ROUND_PARTICIPANT)));
-
         $this->artisan('bidderRound:targetAmountReached')->assertSuccessful();
         $bidderRound = $bidderRound->fresh();
 

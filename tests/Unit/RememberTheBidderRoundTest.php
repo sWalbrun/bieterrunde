@@ -49,7 +49,6 @@ class RememberTheBidderRoundTest extends TestCase
     private function createParticipantWithOffers(BidderRound $round): User
     {
         $participantWithOffers = $this->createAndActAsUser();
-        $participantWithOffers->assignRole(Role::findOrCreate(User::ROLE_BIDDER_ROUND_PARTICIPANT));
         $this->createOffers($participantWithOffers, $round);
 
         return $participantWithOffers;
@@ -58,7 +57,6 @@ class RememberTheBidderRoundTest extends TestCase
     private function createParticipantWithoutOffers(): User
     {
         $participantWithoutOffers = $this->createAndActAsUser();
-        $participantWithoutOffers->assignRole(Role::findOrCreate(User::ROLE_BIDDER_ROUND_PARTICIPANT));
 
         return $participantWithoutOffers;
     }

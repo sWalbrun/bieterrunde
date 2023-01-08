@@ -103,14 +103,6 @@ class BidderRound extends BaseModel
     }
 
     /**
-     * @return Collection<Participant>
-     */
-    public function participants(): Collection
-    {
-        return User::bidderRoundParticipants()->get();
-    }
-
-    /**
      * Returns true in case the user still has the possibility to change/create her/his offer.
      *
      * @return bool

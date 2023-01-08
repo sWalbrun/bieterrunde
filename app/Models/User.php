@@ -51,7 +51,6 @@ class User extends Authenticatable implements MustVerifyEmail, Participant
     use BelongsToTenant;
 
     public const TABLE = 'user';
-    public const ROLE_BIDDER_ROUND_PARTICIPANT = 'bidderRoundParticipant';
     public const ROLE_ADMIN = 'admin';
 
     protected $table = self::TABLE;
@@ -189,41 +188,6 @@ class User extends Authenticatable implements MustVerifyEmail, Participant
                 fn (Builder $builder) => $builder
                     ->whereNull(self::COL_EXIT_DATE)
                     ->orWhere(self::COL_EXIT_DATE, '>=', now())
-            );
-    }
-
-    public static function bidderRoundWithRelations(int $bidderRoundId): Builder
-    {
-        return self::query()
-            ->with(
-                'roles',
-                fn (BelongsToMany $builder) => $builder->where('slug', self::ROLE_BIDDER_ROUND_PARTICIPANT)
-            )->with(
-                'offers',
-                fn (HasMany $offers) => $offers
-                    ->where(Offer::COL_FK_BIDDER_ROUND, '=', $bidderRoundId)
-                    ->with('bidderRound')
-            );
-    }
-
-    /**
-     * TODO Change this logic for getting a loose coupling between user and bidder round.
-     *
-     * Returns all users which are enabled to participate at the next {@link BidderRound}.
-     *
-     * @return Builder
-     */
-    public static function bidderRoundParticipants(): Builder
-    {
-        return self::query()
-            ->where(
-                fn (Builder $builder) => $builder
-                    ->whereNull(self::COL_EXIT_DATE)
-                    ->orWhere(self::COL_EXIT_DATE, '>=', Carbon::now())
-            )
-            ->whereHas(
-                'roles',
-                fn (Builder $builder) => $builder->where('slug', self::ROLE_BIDDER_ROUND_PARTICIPANT)
             );
     }
 }

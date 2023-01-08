@@ -2,8 +2,6 @@
 
 use App\Import\Providers\ImportServiceProvider;
 use App\Models\Tenant;
-use App\Providers\FortifyServiceProvider;
-use App\Providers\JetstreamServiceProvider;
 use App\Providers\TenancyServiceProvider;
 use Stancl\Tenancy\Database\Models\Domain;
 
@@ -183,8 +181,6 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         TenancyServiceProvider::class,
-        FortifyServiceProvider::class,
-        JetstreamServiceProvider::class,
         ImportServiceProvider::class,
     ],
 

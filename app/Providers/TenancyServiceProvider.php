@@ -4,20 +4,12 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Http\Middleware\EncryptCookies;
 use App\Jobs\CreateStorageDirectories;
-use App\Jobs\SetTenantCookie;
 use App\Tenancy\InitializeTenancyByCookie;
 use Illuminate\Contracts\Http\Kernel;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use Laravel\Fortify\Actions\AttemptToAuthenticate;
-use Laravel\Fortify\Actions\EnsureLoginIsNotThrottled;
-use Laravel\Fortify\Actions\PrepareAuthenticatedSession;
-use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
-use Laravel\Fortify\Fortify;
 use Stancl\JobPipeline\JobPipeline;
 use Stancl\Tenancy\Events;
 use Stancl\Tenancy\Jobs;
@@ -115,7 +107,6 @@ class TenancyServiceProvider extends ServiceProvider
         $this->mapRoutes();
 
         $this->makeTenancyMiddlewareHighestPriority();
-        $this->bootForSettingTenantInCookie();
     }
 
     protected function bootEvents()
@@ -156,26 +147,5 @@ class TenancyServiceProvider extends ServiceProvider
         foreach (array_reverse($tenancyMiddleware) as $middleware) {
             $this->app[Kernel::class]->prependToMiddlewarePriority($middleware);
         }
-    }
-
-    /**
-     * This authentication routine is doing the exact same thing as the default but is additionally adding
-     * the tenant cookie in case the login was successful.
-     *
-     * @return void
-     */
-    private function bootForSettingTenantInCookie(): void
-    {
-        Fortify::authenticateThrough(function (Request $request) {
-            return array_filter([
-                // We have to set the tenant cookie while authenticating
-                SetTenantCookie::class,
-
-                config('fortify.limiters.login') ? null : EnsureLoginIsNotThrottled::class,
-                RedirectIfTwoFactorAuthenticatable::class,
-                AttemptToAuthenticate::class,
-                PrepareAuthenticatedSession::class,
-            ]);
-        });
     }
 }

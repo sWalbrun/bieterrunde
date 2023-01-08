@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/', fn() => redirect('main'));
+
 Route::get('/assets/{path?}', 'Stancl\Tenancy\Controllers\TenantAssetsController@asset')
     ->where('path', '(.*)')
     ->name('stancl.tenancy.asset');

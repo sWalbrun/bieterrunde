@@ -67,10 +67,12 @@ class UserResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make(User::COL_NAME)
                     ->label(trans('Name'))
-                    ->copyable(),
+                    ->copyable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make(User::COL_EMAIL)
                     ->label(trans('E-Mail'))
-                    ->copyable(),
+                    ->copyable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make(User::COL_CONTRIBUTION_GROUP)
                     ->label(trans('Name'))
                     ->formatStateUsing(fn (EnumContributionGroup|null $state) => isset($state) ? trans($state->value) : null),
