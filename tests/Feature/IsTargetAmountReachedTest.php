@@ -86,6 +86,7 @@ class IsTargetAmountReachedTest extends TestCase
                 ->make()
                 ->each(function (Offer $offer) use ($i, $users, $bidderRound) {
                     $offer->bidderRound()->associate($bidderRound);
+                    $bidderRound->users()->sync($users);
 
                     // This leads to $countOffers offered by every user
                     $offer->user()->associate($users->get($i))->save();

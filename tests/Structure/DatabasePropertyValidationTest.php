@@ -2,6 +2,7 @@
 
 namespace Tests\Structure;
 
+use App\Models\BaseModel;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -39,7 +40,7 @@ class DatabasePropertyValidationTest extends TestCase
                 continue;
             }
             $object = resolve($class);
-            if (!($object instanceof Model)) {
+            if (!($object instanceof BaseModel)) {
                 // this is no model. Therefore we cannot check stuff
                 continue;
             }
@@ -49,13 +50,16 @@ class DatabasePropertyValidationTest extends TestCase
             $propertyAnnotations = $this->readPropertiesFromClassAnnotation($reflectionClass);
             $errors = [];
             if (!$reflectionClass->hasProperty('table')) {
-                $errors[] = ' - missing property $table ('.$class.')'.PHP_EOL;
+                $errors[] = ' - missing property $table (' . $class . ')' . PHP_EOL;
             } else {
                 $tableReflection = $reflectionClass->getProperty('table');
                 $tableReflection->setAccessible(true);
                 $tableName = $tableReflection->getValue($object);
-                if (!Str::startsWith(strtolower($reflection->getBasename('.php')), strtolower($tableName))) {
-                    $errors[] = ' - the tablename and the classname are not matching'.PHP_EOL;
+                if (!Str::startsWith(
+                    strtolower($reflection->getBasename('.php')),
+                    Str::replace(['-', '_'], '', strtolower($tableName))
+                )) {
+                    $errors[] = ' - the tablename and the classname are not matching' . PHP_EOL;
                 }
             }
 

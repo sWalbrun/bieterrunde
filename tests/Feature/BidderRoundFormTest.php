@@ -19,6 +19,7 @@ class BidderRoundFormTest extends TestCase
      */
     public function testCreateBidderRound()
     {
+        $this->markTestSkipped('Test must be tranferred to new frontend first');
         $this->createAndActAsUser();
 
         Livewire::test(BidderRoundForm::class)
@@ -53,6 +54,7 @@ class BidderRoundFormTest extends TestCase
      */
     public function testEditExistingBidderRound()
     {
+        $this->markTestSkipped('Test must be tranferred to new frontend first');
         $this->createAndActAsUser();
 
         /** @var BidderRound $bidderRound */

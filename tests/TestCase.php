@@ -24,6 +24,13 @@ abstract class TestCase extends BaseTestCase
     public const TARGET_AMOUNT = 68_000;
     public const COUNT_OFFERS = 5;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Role::findOrCreate(config('filament-shield.super_admin.name'));
+        Role::findOrCreate(config('filament-shield.filament_user.name'));
+    }
+
     protected function createAndActAsUser(): User
     {
         /** @var User $user */
@@ -32,12 +39,13 @@ abstract class TestCase extends BaseTestCase
             User::COL_COUNT_SHARES => 1,
         ]);
 
+        // TODO delete possibly
         $this->withoutMiddleware([
-            InitializeTenancyByCookie::class,
-            SetTenantCookie::class,
+//            InitializeTenancyByCookie::class,
+//            SetTenantCookie::class,
         ]);
 
-        $user->assignRole(Role::findOrCreate(User::ROLE_ADMIN));
+        $user->assignRole(Role::findOrCreate(config('filament-shield.super_admin.name')));
         $this->actingAs($user);
 
         return $user;

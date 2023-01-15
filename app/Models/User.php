@@ -51,7 +51,6 @@ class User extends Authenticatable implements MustVerifyEmail, Participant
     use BelongsToTenant;
 
     public const TABLE = 'user';
-    public const ROLE_ADMIN = 'admin';
 
     protected $table = self::TABLE;
 

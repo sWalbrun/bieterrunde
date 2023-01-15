@@ -20,7 +20,7 @@ trait BidderRoundEntities
             User::COL_CONTRIBUTION_GROUP => EnumContributionGroup::FULL_MEMBER,
             User::COL_COUNT_SHARES => 1,
         ]);
-        $user->assignRole(Role::findOrCreate(User::ROLE_ADMIN));
+        $user->assignRole(Role::findOrCreate(config('filament-shield.super_admin.name')));
         $this->actingAs($user);
 
         return $user;

@@ -30,6 +30,7 @@ class RememberTheBidderRoundTest extends TestCase
         $round = $this->createBidderRound();
         $participantWithOffers = $this->createParticipantWithOffers($round);
         $participantWithoutOffers = $this->createParticipantWithoutOffers();
+        $round->users()->sync([$participantWithOffers->id, $participantWithoutOffers->id]);
 
         $job = new RememberTheBidderRound($round);
         $job->handle();

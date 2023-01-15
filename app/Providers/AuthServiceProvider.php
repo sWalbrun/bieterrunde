@@ -25,29 +25,5 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerPolicies();
-
-        Gate::define('createBidderRound', function () {
-            // phpcs:ignore
-            /** @var User $user */
-            $user = auth()->user();
-
-            return $user->hasRole(User::ROLE_ADMIN);
-        });
-
-        Gate::define(self::MANAGE_USERS, function () {
-            // phpcs:ignore
-            /** @var User $user */
-            $user = auth()->user();
-
-            return $user->hasRole(User::ROLE_ADMIN);
-        });
-
-        Gate::define('manageUsers', function () {
-            // phpcs:ignore
-            /** @var User $user */
-            $user = auth()->user();
-
-            return $user->hasRole('admin');
-        });
     }
 }

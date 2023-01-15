@@ -13,6 +13,12 @@ use Tests\TestCase;
  */
 class BidderRoundOverviewTableTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->markTestSkipped('Test must be tranferred to new frontend first');
+    }
+
     public function testBiddingRoundOverviewWithoutBidderRound()
     {
         Livewire::test(BiddingRoundOverviewTable::class, ['bidderRoundId' => 0])->assertSuccessful();

@@ -30,6 +30,8 @@ class LocalDevelopmentSeeder extends Seeder
             Tenant::query()->updateOrCreate(['id' => 'bar']);
             return;
         }
+        Role::findOrCreate(config('filament-shield.super_admin.name'));
+        Role::findOrCreate(config('filament-shield.filament_user.name'));
 
         $this->seedAdmin();
         if (User::query()->count() > 1) {
@@ -54,7 +56,7 @@ class LocalDevelopmentSeeder extends Seeder
         $user->contributionGroup = EnumContributionGroup::FULL_MEMBER();
         $user->countShares = 1;
         $user->save();
-        $user->assignRole(Role::findOrCreate(User::ROLE_ADMIN));
+        $user->assignRole(Role::findOrCreate(config('filament-shield.super_admin.name')));
         $user->save();
     }
 
