@@ -50,7 +50,7 @@ class InitializeTenancyByCookie extends InitializeTenancyByRequestData
             $tenantId = $request->cookie(SetTenantCookie::TENANT_ID);
 
             if (!isset($tenantId)) {
-                return redirect('login');
+                return redirect('main/login');
             }
             if (Tenant::query()->where(Tenant::COL_ID, $tenantId)->doesntExist()) {
                 Log::info("There is no tenant existing for the given id ($tenantId)");
