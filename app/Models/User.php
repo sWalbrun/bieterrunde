@@ -7,6 +7,7 @@ use App\Enums\EnumContributionGroup;
 use App\Enums\EnumPaymentInterval;
 use BezhanSalleh\FilamentShield\Traits\HasFilamentShield;
 use Carbon\Carbon;
+use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,7 +17,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
-use Spatie\Permission\Traits\HasRoles;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 /**
@@ -43,7 +43,7 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
  * @property Collection<Offer> offers
  * @property Tenant $tenant
  */
-class User extends Authenticatable implements MustVerifyEmail, Participant
+class User extends Authenticatable implements MustVerifyEmail, Participant, FilamentUser
 {
     use HasFilamentShield;
     use HasFactory;
@@ -130,6 +130,11 @@ class User extends Authenticatable implements MustVerifyEmail, Participant
     public function identifier(): string
     {
         return self::TABLE;
+    }
+
+    public function canAccessFilament(): bool
+    {
+        return true;
     }
 
     public function bidderRounds(): BelongsToMany
