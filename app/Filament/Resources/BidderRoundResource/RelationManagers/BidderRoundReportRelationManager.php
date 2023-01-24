@@ -50,7 +50,8 @@ class BidderRoundReportRelationManager extends RelationManager
                 Tables\Actions\Action::make('informParticipants')
                     ->label(trans('Inform participants'))
                     ->action(fn (BidderRoundReport $record) => $record->notifyUsers())
-                    ->icon('codicon-broadcast'),
+                    ->icon('codicon-broadcast')
+                    ->requiresConfirmation(),
             ]);
     }
 }

@@ -665,7 +665,7 @@
     "Import": "Importieren",
     "Templates": "Vorlagen",
     "Files": "Dateien",
-    "User template": "Benutzervorlage",
+    "User template": "Benutzervorlage herunter laden",
     "Remind participants": "Teilnehmer erinnern",
     "Currently no open round": "Derzeit gibt es keine offene Bieterrunde",
     "Offer :numberOfRound": "Gebot :numberOfRound",
@@ -673,5 +673,8 @@
     "Payment interval": "Zahlungsintervall",
     "Your offers": "Deine Gebote",
     "Administration": "Verwaltung",
-    "Round=Amount": "Runde=Betrag"
+    "Round=Amount": "Runde=Betrag",
+    "Add all current members": "Alle aktuellen Mitglieder hinzufügen",
+    "If members have been added or removed, they are also linked or unlinked to this bidding round.": "Falls Mitglieder hinzugefügt oder entfernt wurden, werden diese auch mit dieser Bieterrunde verknüpft bzw. entknüpft.",
+    "Synced successfully. Attached (:attached), detached (:detached)": "Erfolgreich synchronisiert. Verknüpft (:attached), getrennt (:detached)"
 }

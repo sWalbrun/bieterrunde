@@ -4,6 +4,7 @@ namespace App\Filament\Resources\BidderRoundResource\RelationManagers;
 
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 use App\BidderRound\BidderRoundService;
+use App\Enums\EnumContributionGroup;
 use App\Models\BidderRound;
 use App\Models\Offer;
 use App\Models\User;
@@ -48,6 +49,19 @@ class UsersRelationManager extends RelationManager
                     ->required()
                     ->maxLength(255)
                     ->disabled(),
+                Forms\Components\Select::make(User::COL_CONTRIBUTION_GROUP)
+                    ->label(trans('Contribution group'))
+                    ->options(
+                        collect(EnumContributionGroup::getInstances())
+                            ->mapWithKeys(
+                                fn (EnumContributionGroup $value) => [$value->key => trans($value->value)]
+                            )
+                    )
+                    ->disabled(),
+                Forms\Components\TextInput::make(User::COL_COUNT_SHARES)
+                    ->label(trans('Count shares'))
+                    ->integer()
+                    ->disabled(),
                 Forms\Components\KeyValue::make('offers')
                     ->keyLabel(trans('Round'))
                     ->valueLabel(trans('Offer'))
@@ -78,6 +92,10 @@ class UsersRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make(User::COL_NAME)->searchable(),
                 Tables\Columns\TextColumn::make(User::COL_EMAIL)->searchable(),
+                Tables\Columns\TextColumn::make(User::COL_CONTRIBUTION_GROUP)
+                    ->translateLabel()
+                    ->formatStateUsing(fn (EnumContributionGroup|null $state) => isset($state) ? trans($state->value) : null),
+                Tables\Columns\BadgeColumn::make(User::COL_COUNT_SHARES)->label(trans('Count shares')),
                 Tables\Columns\BadgeColumn::make('Offers given')
                     ->translateLabel()
                     ->getStateUsing(
@@ -134,7 +152,7 @@ class UsersRelationManager extends RelationManager
                                 Log::info('User has been reminded');
                             }
                         )
-                    ),
+                    )->requiresConfirmation(),
                 Tables\Actions\DetachBulkAction::make(),
                 Tables\Actions\DeleteBulkAction::make(),
             ]);

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "430fd97d288d7e911cedc178eb40fb56",
+    "content-hash": "4ab1d39f0cb81b7094f3ce77010ed952",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -128,6 +128,84 @@
                 "source": "https://github.com/alperenersoy/filament-export/tree/v0.2.4"
             },
             "time": "2022-12-31T15:28:29+00:00"
+        },
+        {
+            "name": "artmin96/filament-password-less",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ArtMin96/filament-password-less.git",
+                "reference": "92c41fd7cb0b5b5f9c3f47f3e96a5aa912e7bec0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ArtMin96/filament-password-less/zipball/92c41fd7cb0b5b5f9c3f47f3e96a5aa912e7bec0",
+                "reference": "92c41fd7cb0b5b5f9c3f47f3e96a5aa912e7bec0",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^2.13",
+                "illuminate/contracts": "^8.0|^9.0",
+                "php": "^8.0|^8.1",
+                "spatie/laravel-package-tools": "^1.9.2"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0",
+                "nunomaduro/collision": "^5.0|^6.0",
+                "nunomaduro/larastan": "^1.0",
+                "orchestra/testbench": "^6.0|^7.0",
+                "pestphp/pest": "^1.21",
+                "pestphp/pest-plugin-laravel": "^1.1",
+                "phpstan/extension-installer": "^1.1",
+                "phpstan/phpstan-deprecation-rules": "^1.0",
+                "phpstan/phpstan-phpunit": "^1.0",
+                "phpunit/phpunit": "^9.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "ArtMin96\\FilamentPasswordLess\\FilamentPasswordLessServiceProvider"
+                    ],
+                    "aliases": {
+                        "FilamentPasswordless": "FilamentPasswordLess"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "ArtMin96\\FilamentPasswordLess\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Arthur Minasyan",
+                    "email": "artminasyanartwork@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Password-less for Filament",
+            "homepage": "https://github.com/artmin96/filament-passwordless",
+            "keywords": [
+                "ArtMin96",
+                "filament-passwordless",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/ArtMin96/filament-password-less/issues",
+                "source": "https://github.com/ArtMin96/filament-password-less/tree/1.0.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/ArtMin96",
+                    "type": "github"
+                }
+            ],
+            "time": "2022-08-14T15:53:39+00:00"
         },
         {
             "name": "barryvdh/laravel-dompdf",

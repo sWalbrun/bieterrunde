@@ -2,14 +2,17 @@
 
 namespace App\Filament\Resources;
 
+use App\BidderRound\BidderRoundService;
 use App\Filament\EnumNavigationGroups;
 use App\Filament\Resources\BidderRoundResource\Pages;
 use App\Filament\Resources\BidderRoundResource\RelationManagers\BidderRoundReportRelationManager;
 use App\Filament\Resources\BidderRoundResource\RelationManagers\UsersRelationManager;
 use App\Models\BidderRound;
+use App\Models\User;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -118,6 +121,24 @@ class BidderRoundResource extends Resource
             ])
             ->filters([])
             ->actions([
+                Tables\Actions\Action::make('Add all current members')
+                    ->translateLabel()
+                    ->icon('iconpark-treediagram-o')
+                    ->tooltip(trans('If members have been added or removed, they are also linked or unlinked to this bidding round.'))
+                    ->action(function (BidderRound $record) {
+                        $changes = BidderRoundService::syncBidderRoundParticipants($record);
+
+                        Notification::make('syncMembers')
+                            ->title(trans(
+                                'Synced successfully. Attached (:attached), detached (:detached)',
+                                [
+                                    'attached' => User::query()->whereIn(User::COL_ID, $changes['attached'])->pluck(User::COL_NAME)->implode(', '),
+                                    'detached' => User::query()->whereIn(User::COL_ID, $changes['detached'])->pluck(User::COL_NAME)->implode(', '),
+                                ]
+                            ))
+                            ->success()
+                            ->send();
+                    }),
                 Tables\Actions\EditAction::make(),
             ])->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 use App\Enums\EnumContributionGroup;
 use App\Filament\EnumNavigationGroups;
 use App\Filament\Resources\UserResource\Pages;
@@ -57,7 +58,8 @@ class UserResource extends Resource
                 Forms\Components\Select::make('roles')
                     ->multiple()
                     ->relationship('roles', 'name')
-                    ->label(trans('Roles')),
+                    ->label(trans('Roles'))
+                    ->preload(),
             ]);
     }
 
@@ -66,15 +68,15 @@ class UserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make(User::COL_NAME)
-                    ->label(trans('Name'))
+                    ->translateLabel()
                     ->copyable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make(User::COL_EMAIL)
-                    ->label(trans('E-Mail'))
+                    ->translateLabel()
                     ->copyable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make(User::COL_CONTRIBUTION_GROUP)
-                    ->label(trans('Name'))
+                    ->translateLabel()
                     ->formatStateUsing(fn (EnumContributionGroup|null $state) => isset($state) ? trans($state->value) : null),
                 Tables\Columns\BadgeColumn::make(User::COL_COUNT_SHARES)->label(trans('Count shares')),
                 Tables\Columns\TextColumn::make(User::COL_JOIN_DATE)->label(trans('Join date'))
@@ -87,6 +89,7 @@ class UserResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
+                FilamentExportBulkAction::make('Export'),
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }

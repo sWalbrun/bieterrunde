@@ -105,4 +105,9 @@ class BidderRoundService
     {
         return number_format(ceil($amount), 2, ',', '.');
     }
+
+    public static function syncBidderRoundParticipants(BidderRound $bidderRound): array
+    {
+        return $bidderRound->users()->sync(User::currentlyActive()->pluck(User::COL_ID));
+    }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\BidderRound\Participant;
+use App\BidderRound\BidderRoundService;
 use App\Console\Commands\IsTargetAmountReached;
 use Carbon\Carbon;
 use Filament\Notifications\Notification;
@@ -71,7 +71,7 @@ class BidderRound extends BaseModel
         static::created(
             // Since it is quite elaborate to associate all the users, we simply associate all active ones
             // and the admin can dissociate afterwards the ones, which should not be part of this round
-            fn (self $bidderRound) => $bidderRound->users()->saveMany(User::currentlyActive()->get())
+            fn (self $bidderRound) => BidderRoundService::syncBidderRoundParticipants($bidderRound)
         );
     }
 
