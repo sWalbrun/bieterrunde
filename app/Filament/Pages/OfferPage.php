@@ -96,9 +96,11 @@ class OfferPage extends Page
     public function mount(): void
     {
         parent::mount();
-
         $this->user = auth()->user();
-        $this->roundToOfferMapping = BidderRoundService::getOffers($this->getFormModel(), $this->user);
+        $this->roundToOfferMapping = BidderRoundService::getOffers($this->getFormModel(), $this->user)
+            // The dehydration of filament cannot handle null values within a collection with models. Therefore, we insert
+            // empty offers instead.
+            ->map(fn (Offer|null $offer) => $offer ?? new Offer());
         $this->roundToAmountMapping = $this->roundToOfferMapping->map(fn (Offer|null $offer) => $offer?->amount);
 
         // Code is inspired by

@@ -52,7 +52,7 @@ class Offer extends BaseModel
      */
     public function isOfWinningRound(): bool
     {
-        return $this->bidderRound?->bidderRoundReport?->roundWon === $this->round;
+        return $this->exists && $this->bidderRound?->bidderRoundReport?->roundWon === $this->round;
     }
 
     public function getAmountFormattedAttribute(): string
