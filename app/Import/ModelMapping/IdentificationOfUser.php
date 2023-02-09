@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use jeremykenedy\LaravelRoles\Models\Role;
+use Spatie\Permission\Models\Role;
 
 class IdentificationOfUser extends IdentificationOf implements AssociationOf
 {
