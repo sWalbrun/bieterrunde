@@ -70,10 +70,12 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make(User::COL_NAME)
                     ->translateLabel()
                     ->copyable()
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make(User::COL_EMAIL)
                     ->translateLabel()
                     ->copyable()
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make(User::COL_CONTRIBUTION_GROUP)
                     ->translateLabel()
@@ -84,7 +86,12 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make(User::COL_EXIT_DATE)->label(trans('Exit date'))
                     ->formatStateUsing(fn (Carbon|null $state) => $state?->format('d.m.Y')),
             ])
-            ->filters([])
+            ->filters([
+                Tables\Filters\SelectFilter::make(User::COL_CONTRIBUTION_GROUP)->options(
+                    collect(EnumContributionGroup::getInstances())
+                        ->mapWithKeys(fn (EnumContributionGroup $value) => [$value->key => trans($value->value)])->toArray()
+                )
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
