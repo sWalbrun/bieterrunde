@@ -13,6 +13,7 @@
         "artmin96/filament-password-less": "^1.0",
         "bensampo/laravel-enum": "^6.1",
         "bezhansalleh/filament-shield": "^2.3",
+        "bradyrenting/filament-passwordless": "^1.0",
         "codeat3/blade-codicons": "^1.27",
         "codeat3/blade-iconpark": "^1.4",
         "davidhsianturi/blade-bootstrap-icons": "^1.3",

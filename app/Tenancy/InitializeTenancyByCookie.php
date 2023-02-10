@@ -32,6 +32,7 @@ class InitializeTenancyByCookie extends InitializeTenancyByRequestData
     public static array $whiteListRoutes = [
         '/login',
         'filament.core.auth.login',
+        'brady-renting.filament-passwordless.http.livewire.auth.login',
         '/forgot-password',
         'assets',
     ];
@@ -50,6 +51,7 @@ class InitializeTenancyByCookie extends InitializeTenancyByRequestData
             $tenantId = $request->cookie(SetTenantCookie::TENANT_ID);
 
             if (!isset($tenantId)) {
+                Log::info('No tenant could have been identified for the uri (' . $request->getUri() . ')');
                 return redirect('main/login');
             }
             if (Tenant::query()->where(Tenant::COL_ID, $tenantId)->doesntExist()) {
