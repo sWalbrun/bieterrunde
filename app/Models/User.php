@@ -17,6 +17,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 /**
@@ -116,6 +118,12 @@ class User extends Authenticatable implements MustVerifyEmail, Participant, Fila
         self::COL_EXIT_DATE => 'datetime',
         self::COL_CONTRIBUTION_GROUP => EnumContributionGroup::class,
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+        self::creating(fn (User $user) => $user->password ??= Hash::make(Str::random(10)));
+    }
 
     public function name(): string
     {
