@@ -136,7 +136,7 @@ class OfferPage extends Page
                 Select::make(self::USER_PAYMENT_INTERVAL)
                     ->label(trans('Payment interval'))
                     ->options(collect(EnumPaymentInterval::getInstances())
-                        ->mapWithKeys(fn (EnumPaymentInterval $value) => [$value->key => trans($value->value)]))
+                    ->mapWithKeys(fn (EnumPaymentInterval $value) => [$value->key => trans($value->value)]))
                     ->required(),
                 ...collect($this->roundToAmountMapping)->map(
                 // See the mount method for setting the corresponding values
