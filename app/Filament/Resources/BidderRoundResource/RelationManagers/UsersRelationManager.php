@@ -5,6 +5,7 @@ namespace App\Filament\Resources\BidderRoundResource\RelationManagers;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 use App\BidderRound\BidderRoundService;
 use App\Enums\EnumContributionGroup;
+use App\Enums\EnumPaymentInterval;
 use App\Models\BidderRound;
 use App\Models\Offer;
 use App\Models\User;
@@ -62,6 +63,14 @@ class UsersRelationManager extends RelationManager
                     ->label(trans('Count shares'))
                     ->integer()
                     ->disabled(),
+                Forms\Components\Select::make(User::COL_PAYMENT_INTERVAL)
+                    ->translateLabel()
+                    ->options(
+                        collect(EnumPaymentInterval::getInstances())
+                            ->mapWithKeys(
+                                fn (EnumPaymentInterval $value) => [$value->key => trans($value->value)]
+                            )
+                    ),
                 Forms\Components\KeyValue::make('offers')
                     ->keyLabel(trans('Round'))
                     ->valueLabel(trans('Offer'))
@@ -74,7 +83,7 @@ class UsersRelationManager extends RelationManager
                             BidderRoundService::getOffers($livewire->ownerRecord, $record)
                                 ->map(fn (Offer|null $offer) => $offer?->amount)
                         )
-                    )
+                    )->columnSpan(2)
                     ->afterStateUpdated(fn (
                         self                      $livewire,
                         Forms\Components\KeyValue $component,
@@ -106,6 +115,9 @@ class UsersRelationManager extends RelationManager
                             ? 'success'
                             : 'secondary'
                     ),
+                Tables\Columns\TextColumn::make(User::COL_PAYMENT_INTERVAL)
+                    ->translateLabel()
+                    ->formatStateUsing(fn (EnumPaymentInterval|null $state) => isset($state) ? trans($state->value) : null),
                 Tables\Columns\TextColumn::make('Round=Amount')
                     ->getStateUsing(
                         fn (User $record, self $livewire) => $record->offersAsStringFor($livewire->ownerRecord)

@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 use App\Enums\EnumContributionGroup;
+use App\Enums\EnumPaymentInterval;
 use App\Filament\EnumNavigationGroups;
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
@@ -51,6 +52,14 @@ class UserResource extends Resource
                     ->label(trans('Count shares'))
                     ->integer()
                     ->gt(0),
+                Forms\Components\Select::make(User::COL_PAYMENT_INTERVAL)
+                    ->translateLabel()
+                    ->options(
+                        collect(EnumPaymentInterval::getInstances())
+                            ->mapWithKeys(
+                                fn (EnumPaymentInterval $value) => [$value->key => trans($value->value)]
+                            )
+                    ),
                 Forms\Components\DatePicker::make(User::COL_JOIN_DATE)
                     ->label(trans('Join date')),
                 Forms\Components\DatePicker::make(User::COL_EXIT_DATE)

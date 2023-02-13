@@ -117,6 +117,7 @@ class User extends Authenticatable implements MustVerifyEmail, Participant, Fila
         self::COL_JOIN_DATE => 'datetime',
         self::COL_EXIT_DATE => 'datetime',
         self::COL_CONTRIBUTION_GROUP => EnumContributionGroup::class,
+        self::COL_PAYMENT_INTERVAL => EnumPaymentInterval::class,
     ];
 
     protected static function boot()

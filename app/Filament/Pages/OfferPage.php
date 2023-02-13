@@ -56,7 +56,7 @@ class OfferPage extends Page
         return url('/main/offer-page');
     }
 
-    public function getHeading(): string | Htmlable
+    public function getHeading(): string|Htmlable
     {
         return static::getNavigationLabel();
     }
@@ -109,7 +109,7 @@ class OfferPage extends Page
         $this->form->fill([
             self::USER => $this->user,
             self::USER_CONTRIBUTION_GROUP => trans($this->user->contributionGroup?->value),
-            self::USER_PAYMENT_INTERVAL => $this->user->paymentInterval,
+            self::USER_PAYMENT_INTERVAL => $this->user->paymentInterval?->value,
         ]);
     }
 
@@ -135,7 +135,8 @@ class OfferPage extends Page
             Card::make([
                 Select::make(self::USER_PAYMENT_INTERVAL)
                     ->label(trans('Payment interval'))
-                    ->options(collect(EnumPaymentInterval::getInstances())->mapWithKeys(fn (EnumPaymentInterval $value) => [$value->key => trans($value->value)]))
+                    ->options(collect(EnumPaymentInterval::getInstances())
+                        ->mapWithKeys(fn (EnumPaymentInterval $value) => [$value->key => trans($value->value)]))
                     ->required(),
                 ...collect($this->roundToAmountMapping)->map(
                 // See the mount method for setting the corresponding values
@@ -182,7 +183,7 @@ class OfferPage extends Page
             $offer->save();
         })->toArray();
 
-        $atLeastOneChange |= $this->user->paymentInterval !== $this->userPaymentInterval;
+        $atLeastOneChange |= $this->user->paymentInterval?->isNot($this->userPaymentInterval);
         $this->user->paymentInterval = $this->userPaymentInterval;
         $this->user->save();
 
