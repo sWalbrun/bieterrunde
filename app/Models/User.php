@@ -176,7 +176,7 @@ class User extends Authenticatable implements MustVerifyEmail, Participant, Fila
     public function offersAsStringFor(BidderRound $bidderRound): string
     {
         return $this->offersForRound($bidderRound)
-            ->chunkMap(fn (Offer $offer) => "$offer->round=$offer->amountFormatted")->implode(', ');
+            ->chunkMap(fn (Offer $offer) => "$offer->amountFormatted")->implode(';');
     }
 
     public function offersForRound(BidderRound $round): HasMany
