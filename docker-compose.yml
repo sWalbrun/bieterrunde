@@ -44,6 +44,10 @@ services:
     depends_on:
       init:
         condition: service_completed_successfully
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
 
   queue-worker:
     build:
