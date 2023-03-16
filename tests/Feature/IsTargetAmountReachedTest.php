@@ -31,15 +31,22 @@ class IsTargetAmountReachedTest extends TestCase
         ]);
 
         Log::shouldReceive('info')
-            ->with("No round found for which the the offer count has been reached (0) for bidder round ($bidderRound)");
+            ->with("No round found for which the offer count has been reached (0) for bidder round ($bidderRound)");
 
         $this->artisan('bidderRound:targetAmountReached')->assertExitCode(IsTargetAmountReached::NOT_ALL_OFFERS_GIVEN);
     }
 
     public function testNotEnoughMoney()
     {
+        $offers = 30;
         /** @var BidderRound $bidderRound */
-        $bidderRound = BidderRound::query()->create([
+        $bidderRound = BidderRound::factory()->has(
+            Offer::factory(
+                $offers, [
+                Offer::COL_AMOUNT => 51,
+                Offer::COL_ROUND => 1,
+            ])->for(User::factory())
+        )->create([
             BidderRound::COL_TARGET_AMOUNT => 100,
             BidderRound::COL_START_OF_SUBMISSION => Carbon::now()->subDay(),
             BidderRound::COL_END_OF_SUBMISSION => Carbon::now()->addDay(),
@@ -47,14 +54,12 @@ class IsTargetAmountReachedTest extends TestCase
             BidderRound::COL_NOTE => '',
         ]);
 
-        Offer::factory()->create([
-            Offer::COL_FK_BIDDER_ROUND => $bidderRound->id,
-            Offer::COL_AMOUNT => 51,
-            Offer::COL_ROUND => 1,
-        ]);
+        $bidderRound->offers->each(fn (Offer $offer) => $bidderRound->users()->save($offer->user));
+        // Create one further user but no corresponding offer
+        $bidderRound->users()->save(User::factory()->create());
 
         Log::shouldReceive('info')
-            ->with("No round found for which the the offer count has been reached (0) for bidder round ($bidderRound)");
+            ->with("No round found for which the offer count has been reached ({$bidderRound->users()->count()}) for bidder round ($bidderRound)");
 
         $this->artisan('bidderRound:targetAmountReached')->assertExitCode(IsTargetAmountReached::NOT_ALL_OFFERS_GIVEN);
     }
