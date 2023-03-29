@@ -1,186 +1,139 @@
 <?php
 
-namespace Tests\Feature\Import;
-
-use App\Http\Controllers\ImportController;
-use App\Http\Requests\CsvImportRequest;
+use App\Filament\Pages\Import;
 use App\Import\ModelMapping\AssociationRegister;
 use App\Import\ModelMapping\IdentificationRegister;
-use App\Import\ModelMapping\IdentificationOf;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
-use Mockery;
 use Tests\Feature\Import\ModelMappings\IdentificationOfBlog;
 use Tests\Feature\Import\ModelMappings\IdentificationOfPost;
-use Tests\TestCase;
+use function Pest\Livewire\livewire;
 
-class ImportTest extends TestCase
+it('can create an user and roles by import', function () {
+    $fileToImport = getDefaultXlsx('UserImport.xlsx');
+
+    livewire(Import::class)
+        ->fillForm([
+            Import::IMPORT => [uuid_create() => $fileToImport]
+        ])->send();
+
+    /** @var User $importedUser */
+    $importedUser = User::query()->where(User::COL_NAME, '=', 'Sebastian')->first();
+    expect($importedUser)->not->toBeNull()
+        ->and($importedUser->hasRole('admin'))->toBeTruthy()
+        ->and($importedUser->hasRole('user'))->toBeTruthy();
+});
+
+it('can update an user by import', function () {
+    User::query()->create([
+        'name' => 'Sebastian12',
+        'password' => Hash::make('password!'),
+        'email' => 'ws-1993@gmx.de'
+    ]);
+
+    $fileToImport = getDefaultXlsx('UserImport.xlsx');
+    livewire(Import::class)
+        ->fillForm([
+            Import::IMPORT => [uuid_create() => $fileToImport]
+        ])->send();
+
+    /** @var User $importedUser */
+    $importedUser = User::query()->where(User::COL_NAME, '=', 'Sebastian')->first();
+    expect($importedUser->name)
+        ->toBe('Sebastian', 'Value has not been updated according to xlsx file')
+        ->and(User::query()->count())->toBe(2, 'Only the logged in user and the updated one must exist');
+});
+
+
+it('does not call the relation hook if the method argument types do not match', function () {
+    $blogMock = mockBlock();
+    $postMock = mockPost();
+
+    /** @var IdentificationRegister $identificationRegister */
+    $identificationRegister = resolve(IdentificationRegister::class);
+    $identificationRegister
+        ->register(new IdentificationOfBlog($blogMock))
+        ->register(new IdentificationOfPost($postMock));
+
+    /** @var AssociationRegister $associationRegister */
+    $associationRegister = resolve(AssociationRegister::class);
+    $associationRegister->registerClosure(
+        fn (stdClass $post, IdentificationOfBlog $blog) => IdentificationOfPost::$hasHookBeenCalled = true
+    );
+
+    $fileToImport = getDefaultXlsx('UserImport.xlsx');
+    livewire(Import::class)
+        ->fillForm([
+            Import::IMPORT => [uuid_create() => $fileToImport]
+        ])->send();
+
+    expect(IdentificationOfPost::$hasHookBeenCalled)->toBeFalsy();
+});
+
+it('does call the relation hook if the method argument types match', function () {
+    $this->markTestSkipped('Create mocks and test');
+    $blogMock = mockBlock();
+    $postMock = mockPost();
+
+    /** @var IdentificationRegister $identificationRegister */
+    $identificationRegister = resolve(IdentificationRegister::class);
+    $identificationRegister
+        ->register(new IdentificationOfBlog($blogMock))
+        ->register(new IdentificationOfPost($postMock));
+
+    /** @var AssociationRegister $associationRegister */
+    $associationRegister = resolve(AssociationRegister::class);
+    $associationRegister->registerClosure(
+        fn (stdClass $post, IdentificationOfBlog $blog) => IdentificationOfPost::$hasHookBeenCalled = true
+    );
+
+    $fileToImport = getDefaultXlsx('UserImport.xlsx');
+    livewire(Import::class)
+        ->fillForm([
+            Import::IMPORT => [uuid_create() => $fileToImport]
+        ])->send();
+
+    expect(IdentificationOfPost::$hasHookBeenCalled)->toBeFalsy();
+});
+
+function getDefaultXlsx(string $fileName): UploadedFile
 {
-    public const ROUTE_IMPORT = 'api/' . ImportController::ROUTE_IMPORT;
+    return new UploadedFile(
+        base_path('tests/assets/' . $fileName),
+        $fileName,
+        null,
+        null,
+        true
+    );
+}
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->markTestSkipped('Test must be tranferred to new frontend first');
-    }
-
-    /**
-     * This test ensures the import create a user and two roles and also relates those.
-     *
-     * @return void
-     */
-    public function testUserAndRoleImport(): void
-    {
-        User::query()->create([
-            'name' => 'Sebastian12',
-            'password' => Hash::make('password!'),
-            'email' => 'ws-1993@gmx.de'
-        ]);
-
-        $this->createAndActAsUser();
-        $this->postJson(
-            self::ROUTE_IMPORT,
-            [CsvImportRequest::FILE => $this->getDefaultXlsx('UserImport.xlsx')],
-        )->assertSuccessful();
-
-        /** @var User $user */
-        $user = User::query()->first();
-        $this->assertEquals('Sebastian', $user->name);
-        $this->assertTrue($user->hasRole('admin'));
-        $this->assertTrue($user->hasRole('bidderroundparticipant'));
-    }
-
-//    /**
-//     * This test ensures an exception gets thrown as soon as a column has been found which matches for more than one
-//     * regex.
-//     *
-//     * @dataProvider modelMappingProvider
-//     * @param IdentificationOf $modelMapping
-//     * @return void
-//     */
-//    public function testOverlappingRegex(IdentificationOf $modelMapping): void
-//    {
-//        $this->createAndActAsUser();
-//
-//        /** @var IdentificationRegister $register */
-//        $register = resolve(IdentificationRegister::class);
-//        $register->register($modelMapping);
-//
-//        $response = $this->postJson(
-//            self::ROUTE_IMPORT,
-//            [CsvImportRequest::FILE => $this->getDefaultXlsx('UserImport.xlsx')],
-//        );
-//        $this->assertTrue($response->isServerError());
-//        $this->assertStringContainsString(
-//            'The regex\'s result is overlapping. More than one matching regex',
-//            $response->json('message')
-//        );
-//    }
-
-    public function testHookNotFound(): void
-    {
-        $this->createAndActAsUser();
-
-        /** @var IdentificationRegister $identificationRegister */
-        $identificationRegister = resolve(IdentificationRegister::class);
-
-        $blogMock = Mockery::mock(Model::class)->makePartial();
-        $blogMock->shouldReceive('save')->andReturn(true);
-        $blogMock->shouldReceive('newInstance')->andReturn($blogMock);
-        $blogMock->shouldReceive('getAttributes')->passthru();
-        $blogBuilderMock = Mockery::mock(Builder::class);
-        $blogBuilderMock->shouldReceive('updateOrCreate')->andReturn($blogMock);
-        $blogMock->shouldReceive('newQuery')
-            ->andReturn(
-                $blogBuilderMock
-            );
-
-        $postMock = Mockery::mock(Model::class)->makePartial();
-        $postMock->shouldReceive('save')->andReturn(true);
-        $postMock->shouldReceive('newInstance')->andReturn($postMock);
-        $postMock->shouldReceive('getAttributes')->passthru();
-        $postMock->fillable(['property']);
-        $postBuilderMock = Mockery::mock(Builder::class);
-        $postBuilderMock->shouldReceive('firstOrNew')->andReturn($postMock);
-        $postMock->shouldReceive('newQuery')->andReturn($postBuilderMock);
-
-        $identificationRegister
-            ->register(new IdentificationOfBlog($blogMock))
-            ->register(new IdentificationOfPost($postMock));
-
-        /** @var AssociationRegister $associationRegister */
-        $associationRegister = resolve(AssociationRegister::class);
-        $associationRegister->registerClosure(
-            fn (self $post, IdentificationOfBlog $blog) => IdentificationOfPost::$hasHookBeenCalled = true
+function mockBlock(): Model
+{
+    $blogMock = Mockery::mock(Model::class)->makePartial();
+    $blogMock->shouldReceive('save')->andReturn(true);
+    $blogMock->shouldReceive('newInstance')->andReturn($blogMock);
+    $blogMock->shouldReceive('getAttributes')->passthru();
+    $blogBuilderMock = Mockery::mock(Builder::class);
+    $blogBuilderMock->shouldReceive('updateOrCreate')->andReturn($blogMock);
+    $blogMock->shouldReceive('newQuery')
+        ->andReturn(
+            $blogBuilderMock
         );
+    return $blogMock;
+}
 
-        $this->postJson(
-            self::ROUTE_IMPORT,
-            [CsvImportRequest::FILE => $this->getDefaultXlsx('PropertyImport.xlsx')],
-        )->assertSuccessful();
-
-        $this->assertFalse(IdentificationOfPost::$hasHookBeenCalled);
-    }
-
-    public function modelMappingProvider(): array
-    {
-        return [
-            'regex matching between two models' => [
-                new class extends IdentificationOf {
-                    public function __construct()
-                    {
-                        parent::__construct(new User());
-                    }
-
-                    public function propertyMapping(): Collection
-                    {
-                        return collect([
-                            'matchAll' => '/.*/i'
-                        ]);
-                    }
-
-                    public function uniqueColumns(): array
-                    {
-                        return [];
-                    }
-                }
-            ],
-            'regex matching within same model' => [
-                new class extends IdentificationOf {
-                    public function __construct()
-                    {
-                        parent::__construct(new User());
-                    }
-
-                    public function propertyMapping(): Collection
-                    {
-                        return collect([
-                            'productNumber' => '/Product Number/i',
-                            'userNumber' => '/Number/i'
-                        ]);
-                    }
-
-                    public function uniqueColumns(): array
-                    {
-                        return [];
-                    }
-                }
-            ]
-        ];
-    }
-
-    private function getDefaultXlsx(string $fileName): UploadedFile
-    {
-        return new UploadedFile(
-            base_path('tests/assets/' . $fileName),
-            $fileName,
-            null,
-            null,
-            true
-        );
-    }
+function mockPost(): Model
+{
+    $postMock = Mockery::mock(Model::class)->makePartial();
+    $postMock->shouldReceive('save')->andReturn(true);
+    $postMock->shouldReceive('newInstance')->andReturn($postMock);
+    $postMock->shouldReceive('getAttributes')->passthru();
+    $postMock->fillable(['property']);
+    $postBuilderMock = Mockery::mock(Builder::class);
+    $postBuilderMock->shouldReceive('firstOrNew')->andReturn($postMock);
+    $postMock->shouldReceive('newQuery')->andReturn($postBuilderMock);
+    return $postMock;
 }

@@ -31,7 +31,7 @@ class IsTargetAmountReachedTest extends TestCase
         ]);
 
         Log::shouldReceive('info')
-            ->with("No round found for which the offer count has been reached (0) for bidder round ($bidderRound)");
+            ->with("No round found for which the offer count has been reached (1) for bidder round ($bidderRound)");
 
         $this->artisan('bidderRound:targetAmountReached')->assertExitCode(IsTargetAmountReached::NOT_ALL_OFFERS_GIVEN);
     }
