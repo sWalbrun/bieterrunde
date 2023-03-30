@@ -2,71 +2,93 @@
 
 namespace Tests\Feature;
 
-use App\Http\Livewire\BidderRoundForm;
+use App\Filament\Resources\BidderRoundResource\Pages\CreateBidderRound;
+use App\Filament\Resources\BidderRoundResource\Pages\EditBidderRound;
+use App\Filament\Resources\BidderRoundResource\RelationManagers\UsersRelationManager;
 use App\Models\BidderRound;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Cache;
+use App\Models\User;
+use Filament\Resources\Resource;
 use Livewire\Livewire;
-use Tests\TestCase;
 
-/**
- * Those tests make sure the bidder round form is working properly for creating and editing a {@link BidderRound}.
- */
-class BidderRoundFormTest extends TestCase
-{
-    /**
-     * This tests checks the creation of a bidder round and the corresponding validations.
-     */
-    public function testCreateBidderRound()
-    {
-        $this->markTestSkipped('Test must be tranferred to new frontend first');
-        $this->createAndActAsUser();
+beforeAll(fn () => Resource::ignorePolicies());
 
-        Livewire::test(BidderRoundForm::class)
-            ->call('save')
-            ->assertHasErrors();
+it('creates a bidder round', function () {
+    /** @var BidderRound $bidderRound */
+    $bidderRound = BidderRound::factory()->make();
+    Livewire::test(CreateBidderRound::class)->fillForm(
+        $bidderRound->getAttributes()
+    )->call('create')->assertHasNoErrors();
 
-        Livewire::test(BidderRoundForm::class)
-            ->set('validFrom', '01.01.2022')
-            ->set('validTo', '31.12.2022')
-            ->set('startOfSubmission', '01.03.2022')
-            ->set('endOfSubmission', '15.03.2022')
-            ->set('bidderRound.countOffers', 4)
-            ->set('bidderRound.targetAmount', 68_000)
-            ->call('save')
-            ->assertHasNoErrors();
+    /** @var BidderRound $persistedBidderRound */
+    $persistedBidderRound = BidderRound::query()->first();
+    expect($persistedBidderRound->validFrom)->toEqual($bidderRound->validFrom)
+        ->and($persistedBidderRound->validTo)->toEqual($bidderRound->validTo)
+        ->and($persistedBidderRound->startOfSubmission)->toEqual($bidderRound->startOfSubmission)
+        ->and($persistedBidderRound->endOfSubmission)->toEqual($bidderRound->endOfSubmission)
+        ->and($persistedBidderRound->countOffers)->toEqual($bidderRound->countOffers)
+        ->and($persistedBidderRound->targetAmount)->toEqual($bidderRound->targetAmount);
+});
 
-        $this->assertDatabaseCount(BidderRound::class, 1);
+it('updates a bidder round', function () {
+    /** @var BidderRound $bidderRound */
+    $bidderRound = BidderRound::factory()->create();
+    Livewire::test(EditBidderRound::class, ['record' => $bidderRound->id])->fillForm(
+        [BidderRound::COL_COUNT_OFFERS => $bidderRound->countOffers + 1]
+    )->call('save')->assertHasNoErrors();
 
-        /** @var BidderRound $bidderRound */
-        $bidderRound = BidderRound::query()->first();
+    /** @var BidderRound $persistedBidderRound */
+    $persistedBidderRound = BidderRound::query()->first();
+    expect($persistedBidderRound->countOffers)->toEqual($bidderRound->countOffers + 1);
+});
 
-        $this->assertTrue($bidderRound->validFrom->isSameDay(Carbon::createFromFormat('Y-m-d', '2022-01-01')));
-        $this->assertTrue($bidderRound->validTo->isSameDay(Carbon::createFromFormat('Y-m-d', '2022-12-31')));
-        $this->assertTrue($bidderRound->startOfSubmission->isSameDay(Carbon::createFromFormat('Y-m-d', '2022-03-01')));
-        $this->assertTrue($bidderRound->endOfSubmission->isSameDay(Carbon::createFromFormat('Y-m-d', '2022-03-15')));
-        $this->assertEquals(4, $bidderRound->countOffers);
-        $this->assertEquals(68_000, $bidderRound->targetAmount);
-    }
+it('fails because of validation', function () {
+    Livewire::test(CreateBidderRound::class)->fillForm()->call('create')->assertHasErrors(
+        [
+            'data.' . BidderRound::COL_VALID_FROM,
+            'data.' . BidderRound::COL_VALID_TO,
+            'data.' . BidderRound::COL_START_OF_SUBMISSION,
+            'data.' . BidderRound::COL_END_OF_SUBMISSION,
+            'data.' . BidderRound::COL_COUNT_OFFERS,
+            'data.' . BidderRound::COL_TARGET_AMOUNT,
+        ]
+    );
+    expect(BidderRound::query()->count())->toBe(0);
+});
 
-    /**
-     * This test checks if there is a bidder round route available for a fresh created round.
-     */
-    public function testEditExistingBidderRound()
-    {
-        $this->markTestSkipped('Test must be tranferred to new frontend first');
-        $this->createAndActAsUser();
+it('deletes a bidder round', function () {
+    /** @var BidderRound $bidderRound */
+    $bidderRound = BidderRound::factory()->create();
+    Livewire::test(EditBidderRound::class, ['record' => $bidderRound->id])->fillForm(
+        [BidderRound::COL_COUNT_OFFERS => $bidderRound->countOffers + 1]
+    )->call('delete')->assertHasNoErrors();
+    expect(BidderRound::query()->first())->toBeNull();
+});
 
-        /** @var BidderRound $bidderRound */
-        $bidderRound = BidderRound::query()->create([
-            BidderRound::COL_VALID_FROM => Carbon::createFromFormat('Y-m-d', '2022-01-01'),
-            BidderRound::COL_VALID_TO => Carbon::createFromFormat('Y-m-d', '2022-12-31'),
-            BidderRound::COL_START_OF_SUBMISSION => Carbon::createFromFormat('Y-m-d', '2022-03-01'),
-            BidderRound::COL_END_OF_SUBMISSION => Carbon::createFromFormat('Y-m-d', '2022-03-15'),
-            BidderRound::COL_TARGET_AMOUNT => 68_000,
-            BidderRound::COL_COUNT_OFFERS => 5,
-        ]);
+it('shows the active members', function () {
 
-        $this->get("bidderRounds/$bidderRound->id")->assertSeeLivewire('bidder-round-form');
-    }
-}
+    $activeUsers = User::factory()->count(2)->create([
+        User::COL_JOIN_DATE => now()->subDay(),
+        User::COL_EXIT_DATE => now()->addDay(),
+    ]);
+
+    /** @var BidderRound $bidderRound */
+    $bidderRound = BidderRound::factory()->create();
+
+    Livewire::test(UsersRelationManager::class, [
+        'ownerRecord' => $bidderRound,
+    ])->assertCanSeeTableRecords($activeUsers);
+});
+
+it('does not show former members', function () {
+
+    $veterans = User::factory()->count(2)->create([
+        User::COL_EXIT_DATE => now()->subDay()
+    ]);
+
+    /** @var BidderRound $bidderRound */
+    $bidderRound = BidderRound::factory()->create();
+
+    Livewire::test(UsersRelationManager::class, [
+        'ownerRecord' => $bidderRound,
+    ])->assertCanNotSeeTableRecords($veterans);
+});

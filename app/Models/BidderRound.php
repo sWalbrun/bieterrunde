@@ -28,6 +28,7 @@ use Symfony\Component\Console\Command\Command;
  * @property self|Builder started
  * @property string tenant_id
  * @property Collection<Offer> offers
+ * @property Collection<User> users
  * @property BidderRoundReport $bidderRoundReport
  */
 class BidderRound extends BaseModel
