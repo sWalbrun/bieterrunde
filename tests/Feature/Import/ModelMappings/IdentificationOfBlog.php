@@ -10,7 +10,9 @@ class IdentificationOfBlog extends IdentificationOf
 
     public function propertyMapping(): Collection
     {
-        return collect();
+        return collect([
+            'blogName' => '/BlogName/i',
+        ]);
     }
 
     public function uniqueColumns(): array

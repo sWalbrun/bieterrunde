@@ -14,7 +14,7 @@ class IdentificationOfPost extends IdentificationOf
     {
         return collect(
             [
-                'property' => '/Property/i'
+                'postName' => '/PostName/i'
             ]
         );
     }

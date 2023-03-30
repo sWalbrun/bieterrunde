@@ -1,12 +1,15 @@
 <?php
 
+use __Tests__\Models\Blog;
+use __Tests__\Models\Post;
 use App\Filament\Pages\Import;
 use App\Import\ModelMapping\AssociationRegister;
+use App\Import\ModelMapping\IdentificationOf;
 use App\Import\ModelMapping\IdentificationRegister;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Tests\Feature\Import\ModelMappings\IdentificationOfBlog;
 use Tests\Feature\Import\ModelMappings\IdentificationOfPost;
@@ -47,16 +50,15 @@ it('can update an user by import', function () {
         ->and(User::query()->count())->toBe(2, 'Only the logged in user and the updated one must exist');
 });
 
-
 it('does not call the relation hook if the method argument types do not match', function () {
-    $blogMock = mockBlock();
-    $postMock = mockPost();
+    $blog = mockBlog();
+    $post = mockPost();
 
     /** @var IdentificationRegister $identificationRegister */
     $identificationRegister = resolve(IdentificationRegister::class);
     $identificationRegister
-        ->register(new IdentificationOfBlog($blogMock))
-        ->register(new IdentificationOfPost($postMock));
+        ->register(new IdentificationOfBlog($blog))
+        ->register(new IdentificationOfPost($post));
 
     /** @var AssociationRegister $associationRegister */
     $associationRegister = resolve(AssociationRegister::class);
@@ -64,40 +66,91 @@ it('does not call the relation hook if the method argument types do not match', 
         fn (stdClass $post, IdentificationOfBlog $blog) => IdentificationOfPost::$hasHookBeenCalled = true
     );
 
-    $fileToImport = getDefaultXlsx('UserImport.xlsx');
+    $fileToImport = getDefaultXlsx('PropertyImport.xlsx');
     livewire(Import::class)
         ->fillForm([
             Import::IMPORT => [uuid_create() => $fileToImport]
-        ])->send();
-
+        ]);
     expect(IdentificationOfPost::$hasHookBeenCalled)->toBeFalsy();
 });
 
 it('does call the relation hook if the method argument types match', function () {
-    $this->markTestSkipped('Create mocks and test');
-    $blogMock = mockBlock();
-    $postMock = mockPost();
+    $blog = mockBlog();
+    $post = mockPost();
 
     /** @var IdentificationRegister $identificationRegister */
     $identificationRegister = resolve(IdentificationRegister::class);
     $identificationRegister
-        ->register(new IdentificationOfBlog($blogMock))
-        ->register(new IdentificationOfPost($postMock));
+        ->register(new IdentificationOfBlog($blog))
+        ->register(new IdentificationOfPost($post));
 
     /** @var AssociationRegister $associationRegister */
     $associationRegister = resolve(AssociationRegister::class);
     $associationRegister->registerClosure(
-        fn (stdClass $post, IdentificationOfBlog $blog) => IdentificationOfPost::$hasHookBeenCalled = true
+        fn (Post $post, Blog $blog) => IdentificationOfPost::$hasHookBeenCalled = true
     );
 
-    $fileToImport = getDefaultXlsx('UserImport.xlsx');
+    $fileToImport = getDefaultXlsx('PropertyImport.xlsx');
     livewire(Import::class)
         ->fillForm([
             Import::IMPORT => [uuid_create() => $fileToImport]
-        ])->send();
-
-    expect(IdentificationOfPost::$hasHookBeenCalled)->toBeFalsy();
+        ]);
+    expect(IdentificationOfPost::$hasHookBeenCalled)->toBeTruthy();
 });
+
+it('throws an exception for ', function (Closure $modelMapping) {
+    /** @var IdentificationRegister $register */
+    $register = resolve(IdentificationRegister::class);
+    $register->register($modelMapping());
+
+    $fileToImport = getDefaultXlsx('UserImport.xlsx');
+    expect(fn() => livewire(Import::class)
+        ->fillForm([
+            Import::IMPORT => [uuid_create() => $fileToImport]
+        ])->send())->toThrow(Exception::class, "The regex's result is overlapping");
+})->with([
+    'regex matching between two models' =>
+        fn () => new class extends IdentificationOf {
+            public function __construct()
+            {
+                parent::__construct(new User());
+            }
+
+            public function propertyMapping(): Collection
+            {
+                return collect([
+                    'matchAll' => '/.*/i'
+                ]);
+            }
+
+            public function uniqueColumns(): array
+            {
+                return [];
+            }
+        }
+    ,
+    'regex matching within same model' =>
+        fn () => new class extends IdentificationOf {
+            public function __construct()
+            {
+                parent::__construct(new User());
+            }
+
+            public function propertyMapping(): Collection
+            {
+                return collect([
+                    'productNumber' => '/Product Number/i',
+                    'userNumber' => '/Number/i'
+                ]);
+            }
+
+            public function uniqueColumns(): array
+            {
+                return [];
+            }
+        }
+
+]);
 
 function getDefaultXlsx(string $fileName): UploadedFile
 {
@@ -110,24 +163,9 @@ function getDefaultXlsx(string $fileName): UploadedFile
     );
 }
 
-function mockBlock(): Model
+function mockPost(): Post
 {
-    $blogMock = Mockery::mock(Model::class)->makePartial();
-    $blogMock->shouldReceive('save')->andReturn(true);
-    $blogMock->shouldReceive('newInstance')->andReturn($blogMock);
-    $blogMock->shouldReceive('getAttributes')->passthru();
-    $blogBuilderMock = Mockery::mock(Builder::class);
-    $blogBuilderMock->shouldReceive('updateOrCreate')->andReturn($blogMock);
-    $blogMock->shouldReceive('newQuery')
-        ->andReturn(
-            $blogBuilderMock
-        );
-    return $blogMock;
-}
-
-function mockPost(): Model
-{
-    $postMock = Mockery::mock(Model::class)->makePartial();
+    $postMock = Mockery::mock(Post::class)->makePartial();
     $postMock->shouldReceive('save')->andReturn(true);
     $postMock->shouldReceive('newInstance')->andReturn($postMock);
     $postMock->shouldReceive('getAttributes')->passthru();
@@ -137,3 +175,24 @@ function mockPost(): Model
     $postMock->shouldReceive('newQuery')->andReturn($postBuilderMock);
     return $postMock;
 }
+
+function mockBlog(): Blog
+{
+    $blogMock = Mockery::mock(Blog::class)->makePartial();
+    $blogMock->shouldReceive('save')->andReturn(true);
+    $blogMock->shouldReceive('newInstance')->andReturn($blogMock);
+    $blogMock->shouldReceive('getAttributes')->passthru();
+    $blogMock->shouldReceive('fill');
+    $blogBuilderMock = Mockery::mock(Builder::class);
+    $blogBuilderMock->shouldReceive('firstOrNew')->andReturn($blogMock);
+    $blogBuilderMock->shouldReceive('updateOrCreate')->andReturn($blogMock);
+    $blogMock->shouldReceive('newQuery')
+        ->andReturn(
+            $blogBuilderMock
+        );
+    return $blogMock;
+}
+
+
+
+
