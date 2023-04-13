@@ -81,18 +81,6 @@ class BidderRound extends BaseModel
         return $this->hasMany(Offer::class, Offer::COL_FK_BIDDER_ROUND);
     }
 
-    /**
-     * Returns the builder for all offers which has a given user made for this round.
-     *
-     * @param User $user
-     *
-     * @return HasMany
-     */
-    public function offerFor(User $user): HasMany
-    {
-        return $this->offers()->whereBelongsTo($user, $user->identifier());
-    }
-
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(
@@ -112,32 +100,6 @@ class BidderRound extends BaseModel
     {
         return !$this->bidderRoundReport()->exists()
             && $this->bidderRoundBetweenNow();
-    }
-
-    /**
-     * Returns true in case a given user has made all offers needed for this round.
-     *
-     * @param User $user
-     *
-     * @return bool
-     */
-    public function allOffersGivenFor(User $user): bool
-    {
-        return $this
-            ->offerFor($user)
-            ->whereNotNull(Offer::COL_AMOUNT)
-            ->count() === $this->countOffers;
-    }
-
-    /**
-     * @return Collection<self>
-     */
-    public static function orderedRounds(): Collection
-    {
-        return self::query()
-            ->orderBy(self::COL_VALID_FROM, 'DESC')
-            ->orderBy(self::COL_VALID_TO, 'DESC')
-            ->get();
     }
 
     public static function scopeStarted(Builder $builder): Builder
@@ -164,8 +126,8 @@ class BidderRound extends BaseModel
     {
         $result = Artisan::call('bidderRound:targetAmountReached', ['bidderRoundId' => $this->id]);
 
-        $round = $this->bidderRoundReport?->roundWon;
-        $amount = $this->bidderRoundReport?->sumAmountFormatted;
+        $round = $this->bidderRoundReport?->refresh()->roundWon;
+        $amount = $this->bidderRoundReport?->refresh()->sumAmountFormatted;
 
         switch ($result) {
             case Command::SUCCESS:
