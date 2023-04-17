@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Console\Commands\IsTargetAmountReached;
+use App\BidderRound\EnumTargetAmountReachedStatus;
 use App\Enums\EnumContributionGroup;
 use App\Models\BidderRound;
 use App\Models\BidderRoundReport;
@@ -11,7 +11,6 @@ use App\Models\User;
 use Carbon\Carbon;
 use Database\Factories\OfferFactory;
 use Illuminate\Support\Facades\Log;
-use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 /**
@@ -33,7 +32,7 @@ class IsTargetAmountReachedTest extends TestCase
         Log::shouldReceive('info')
             ->with("No round found for which the offer count has been reached (1) for bidder round ($bidderRound)");
 
-        $this->artisan('bidderRound:targetAmountReached')->assertExitCode(IsTargetAmountReached::NOT_ALL_OFFERS_GIVEN);
+        $this->artisan('bidderRound:targetAmountReached')->assertExitCode(EnumTargetAmountReachedStatus::NOT_ALL_OFFERS_GIVEN);
     }
 
     public function testNotEnoughMoney()
@@ -61,7 +60,7 @@ class IsTargetAmountReachedTest extends TestCase
         Log::shouldReceive('info')
             ->with("No round found for which the offer count has been reached ({$bidderRound->users()->count()}) for bidder round ($bidderRound)");
 
-        $this->artisan('bidderRound:targetAmountReached')->assertExitCode(IsTargetAmountReached::NOT_ALL_OFFERS_GIVEN);
+        $this->artisan('bidderRound:targetAmountReached')->assertExitCode(EnumTargetAmountReachedStatus::NOT_ALL_OFFERS_GIVEN);
     }
 
     public function testIsTargetAmountReached()
@@ -98,7 +97,7 @@ class IsTargetAmountReachedTest extends TestCase
                 });
         }
 
-        $this->artisan('bidderRound:targetAmountReached')->assertSuccessful();
+        $this->artisan('bidderRound:targetAmountReached')->assertExitCode(EnumTargetAmountReachedStatus::SUCCESS);
         $bidderRound = $bidderRound->fresh();
 
         $this->assertEquals(2, $bidderRound->bidderRoundReport->roundWon, 'Not the matching round has been found');
@@ -116,7 +115,7 @@ class IsTargetAmountReachedTest extends TestCase
         Log::shouldReceive('info')
             ->with("Skipping bidder round ($bidderRound) since there is already a round won present. Report ($bidderRound->bidderRoundReport)");
 
-        $this->artisan('bidderRound:targetAmountReached')->assertExitCode(IsTargetAmountReached::ROUND_ALREADY_PROCESSED);
+        $this->artisan('bidderRound:targetAmountReached')->assertExitCode(EnumTargetAmountReachedStatus::ROUND_ALREADY_PROCESSED);
     }
 
     public function testTargetAmountReachedWithSomeMixedSharedCounts()

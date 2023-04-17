@@ -2,15 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\BidderRound\BidderRoundService;
+use App\BidderRound\TargetAmountReachedReport;
 use App\Models\BidderRound;
 use App\Models\BidderRoundReport;
-use App\Models\Offer;
-use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 /**
  * This command is checking for all {@link BidderRound rounds} (or for the one given) if there may be a
@@ -18,118 +16,32 @@ use Illuminate\Support\Facades\Log;
  */
 class IsTargetAmountReached extends Command
 {
-    public const ROUND_ALREADY_PROCESSED = 2;
-    public const NOT_ALL_OFFERS_GIVEN = 3;
-    public const NOT_ENOUGH_MONEY = 4;
-
-    public const START_CAPITAL_AMOUNT = 12.5 * 12;
-
     public const BIDDER_ROUND_ID = 'bidderRoundId';
-    private const SUM_AMOUNT = 'sumAmount';
-    private const COUNT_AMOUNT = 'countAmount';
 
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'bidderRound:targetAmountReached {' . self::BIDDER_ROUND_ID . '?}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Command description';
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public function __construct(private readonly BidderRoundService $bidderRoundService)
     {
         parent::__construct();
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     */
     public function handle(): int
     {
         $rounds = BidderRound::query()
             ->when(
-                $this->getBidderRound(),
-                fn (Builder $builder) => $builder->where('id', '=', $this->getBidderRound())
+                $this->getBidderRoundId(),
+                fn (Builder $builder) => $builder->where('id', '=', $this->getBidderRoundId())
             )->get();
 
-        return $rounds->map(fn (BidderRound $round) => DB::transaction(fn () => $this->handleRound($round)))->min();
+        return $rounds->map(fn (BidderRound $round) => DB::transaction(fn () => $this->bidderRoundService->calculateBidderRound($round)))
+            ->map(fn (TargetAmountReachedReport $report) => $report->status->value)
+            ->min();
     }
 
-    public function getBidderRound(): ?int
+    public function getBidderRoundId(): ?int
     {
         return $this->argument(self::BIDDER_ROUND_ID);
-    }
-
-    private function handleRound(BidderRound $bidderRound): int
-    {
-        if (isset($bidderRound->bidderRoundReport)) {
-            Log::info("Skipping bidder round ($bidderRound) since there is already a round won present. Report ($bidderRound->bidderRoundReport)");
-
-            return self::ROUND_ALREADY_PROCESSED;
-        }
-
-        $groupedByRound = $bidderRound->groupedByRound();
-        $userCount = $bidderRound->users()->count();
-        // Filter all rounds in which not all offers have been made
-        $groupedByRound = $groupedByRound->filter(fn (Collection $offersOfOneRound) => $offersOfOneRound->count() >= $userCount);
-
-        if ($groupedByRound->count() <= 0) {
-            $message = "No round found for which the offer count has been reached ($userCount) for bidder round ($bidderRound)";
-            Log::info($message);
-
-            return self::NOT_ALL_OFFERS_GIVEN;
-        }
-
-        $sumOfRounds = $groupedByRound
-            ->mapWithKeys(function (Collection $offersOfOneRound, int $round) {
-                return [$round => $offersOfOneRound->sum(fn (Offer $offer) => $offer->amount * 12 * $offer->user->countShares)];
-            });
-
-        foreach ($sumOfRounds->sort() as $round => $sum) {
-            if ($sum >= $bidderRound->targetAmount) {
-                $reachedAmount = $sum;
-                $roundWon = $round;
-                break;
-            }
-        }
-
-        if (!isset($reachedAmount) || !isset($roundWon)) {
-            Log::info(sprintf(
-                'No round found which may has enough money in sum (%s) to reach the target amount (%s) for bidder round (%s)',
-                $sumOfRounds->first(),
-                $bidderRound->targetAmount,
-                $bidderRound
-            ));
-
-            return self::NOT_ENOUGH_MONEY;
-        }
-
-        $this->createReport($reachedAmount, $roundWon, $userCount, $bidderRound);
-
-        return self::SUCCESS;
-    }
-
-    private function createReport(float $sumAmount, int $roundWon, int $countParticipants, BidderRound $bidderRound)
-    {
-        $report = new BidderRoundReport();
-        $report->roundWon = $roundWon;
-        $report->sumAmount = $sumAmount;
-        $report->countParticipants = $countParticipants;
-        $report->countRounds = $bidderRound->countOffers;
-        $report->save();
-        $report->bidderRound()->associate($bidderRound)->save();
     }
 }

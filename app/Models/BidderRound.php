@@ -122,52 +122,6 @@ class BidderRound extends BaseModel
         return Carbon::now()->isBetween($this->startOfSubmission->startOfDay(), $this->endOfSubmission->endOfDay());
     }
 
-    public function calculateBidderRound()
-    {
-        $result = Artisan::call('bidderRound:targetAmountReached', ['bidderRoundId' => $this->id]);
-
-        $round = $this->bidderRoundReport?->refresh()->roundWon;
-        $amount = $this->bidderRoundReport?->refresh()->sumAmountFormatted;
-
-        switch ($result) {
-            case Command::SUCCESS:
-                Notification::make()
-                    ->title(trans('Es konnte eine Runde ermittelt werden!'))
-                    ->body(trans("Bieterrunde $round mit dem Betrag {$amount}€ deckt die Kosten"))
-                    ->success()
-                    ->send();
-                break;
-
-            case IsTargetAmountReached::ROUND_ALREADY_PROCESSED:
-                Notification::make()
-                    ->title(trans('Die Runde wurde bereits ermittelt!'))
-                    ->body(trans("Bieterrunde $round mit dem Betrag {$amount}€ deckt die Kosten"))
-                    ->success();
-                break;
-
-            case IsTargetAmountReached::NOT_ALL_OFFERS_GIVEN:
-                Notification::make()
-                    ->title(trans('Es wurden noch nicht alle Gebote abgegeben!'))
-                    ->warning()
-                    ->send();
-                break;
-
-            case IsTargetAmountReached::NOT_ENOUGH_MONEY:
-                Notification::make()
-                    ->title(trans('Leider konnte mit keiner einzigen Runde der Zielbetrag ermittelt werden.'))
-                    ->danger()
-                    ->send();
-                break;
-
-            default:
-                Notification::make()
-                    ->title(trans('Es ist ein unerwarteter Fehler aufgetreten'))
-                    ->danger()
-                    ->send();
-                break;
-        }
-    }
-
     public function __toString()
     {
         return trans('Bieterrunde ') . ($this->validFrom ? $this->validFrom->format('Y') : '');
