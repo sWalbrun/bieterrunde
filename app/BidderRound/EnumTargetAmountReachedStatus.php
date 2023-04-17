@@ -20,7 +20,7 @@ class EnumTargetAmountReachedStatus extends Enum
 
     public function isReportAvailable(): bool
     {
-        return $this->isNot(EnumTargetAmountReachedStatus::SUCCESS())
-            && $this->isNot(EnumTargetAmountReachedStatus::ROUND_ALREADY_PROCESSED());
+        return $this->is(EnumTargetAmountReachedStatus::SUCCESS())
+            || $this->is(EnumTargetAmountReachedStatus::ROUND_ALREADY_PROCESSED());
     }
 }
