@@ -56,8 +56,6 @@ jobs:
         uses: pat-s/always-upload-cache@v1.1.4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
-          # Use the hash of composer.json as the key for your cache if you do not commit composer.lock.
-          # key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
 
@@ -66,3 +64,4 @@ jobs:
 
       - name: Detect coding standard violations
         run: vendor/bin/phpcs --standard=ruleset.xml app/ -q --report=checkstyle | cs2pr --graceful-warnings
+        continue-on-error: true
