@@ -33,7 +33,9 @@ jobs:
           php -r "file_exists('.env') || copy('.env.testing.example', '.env');"
           php artisan key:generate
       - name: Run Testsuite
-        run: vendor/bin/pest --coverage-clover coverage.xml --configuration ./phpunit.xml
+        run: php -dXDEBUG_MODE=coverage vendor/bin/pest --coverage-clover coverage.xml --configuration ./phpunit.xml
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
 
   phpcs:
     runs-on: ubuntu-latest
