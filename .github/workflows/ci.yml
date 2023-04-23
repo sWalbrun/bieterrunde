@@ -37,9 +37,9 @@ jobs:
 
       - name: Run Testsuite
         run: |
-          - cat .env
-          - php -v
-          - vendor/bin/pest --coverage-clover coverage.xml --configuration ./phpunit.xml
+          cat .env
+          php -v
+          vendor/bin/pest --coverage-clover coverage.xml --configuration ./phpunit.xml
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
