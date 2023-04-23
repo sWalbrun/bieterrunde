@@ -24,7 +24,7 @@ jobs:
         with:
           fetch-depth: 1
       - name: Install coverage engine
-        run: apt-get install -y php-xdebug
+        run: apt-get install -y php8.1-xdebug
       - name: Install composer dependencies
         run: |
           composer install --no-scripts
