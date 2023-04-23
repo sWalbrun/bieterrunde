@@ -24,7 +24,9 @@ jobs:
         with:
           fetch-depth: 1
       - name: Install coverage engine
-        run: apt-get install -y php8.1-xdebug
+        run: |
+          php -v
+          apt-get install -y php8.1-xdebug
       - name: Install composer dependencies
         run: |
           composer install --no-scripts
@@ -33,7 +35,7 @@ jobs:
           php -r "file_exists('.env') || copy('.env.testing.example', '.env');"
           php artisan key:generate
       - name: Run Testsuite
-        run: php -dXDEBUG_MODE=coverage vendor/bin/pest --coverage-clover coverage.xml --configuration ./phpunit.xml
+        run: php -dxdebug_mode=coverage vendor/bin/pest --coverage-clover coverage.xml --configuration ./phpunit.xml
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
 
