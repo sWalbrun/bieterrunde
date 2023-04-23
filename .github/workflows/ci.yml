@@ -4,6 +4,9 @@ on: [push, pull_request]
 jobs:
   unit-tests:
     runs-on: ubuntu-latest
+    container:
+      image: kirschbaumdevelopment/laravel-test-runner:8.1
+
     services:
       mysql:
         image: mysql:5.7
@@ -17,32 +20,20 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - uses: actions/checkout@v2
         with:
-          php-version: '8.1'
-          coverage: xdebug
-          tools: composer, cs2pr
-
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-suggest --no-progress
-
+          fetch-depth: 1
+      - name: Install coverage engine
+        run: apt-get install -y php-xdebug
+      - name: Install composer dependencies
+        run: |
+          composer install --no-scripts
       - name: Prepare Laravel Application
         run: |
-          php -r "file_exists('.env.testing') || copy('.env.testing.example', '.env.testing');"
-          php artisan key:generate --env=testing
-
+          php -r "file_exists('.env') || copy('.env.testing.example', '.env');"
+          php artisan key:generate
       - name: Run Testsuite
-        run: |
-          cat .env.testing
-          php -v
-          vendor/bin/pest --coverage-clover coverage.xml --configuration ./phpunit.xml
-
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
+        run: vendor/bin/pest --coverage-clover coverage.xml --configuration ./phpunit.xml
 
   phpcs:
     runs-on: ubuntu-latest
