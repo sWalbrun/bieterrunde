@@ -27,6 +27,9 @@ jobs:
           coverage: xdebug
           tools: composer, cs2pr
 
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-suggest --no-progress
+
       - name: Prepare Laravel Application
         run: |
           php -r "file_exists('.env') || copy('.env.testing.example', '.env');"
