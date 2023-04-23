@@ -35,7 +35,9 @@ jobs:
           php -r "file_exists('.env') || copy('.env.testing.example', '.env');"
           php artisan key:generate
       - name: Run Testsuite
-        run: vendor/bin/phpunit tests/
+        run: vendor/bin/pest --coverage-clover coverage.xml --configuration ./phpunit.xml
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
 
   phpcs:
     runs-on: ubuntu-latest
@@ -68,30 +70,3 @@ jobs:
 
       - name: Detect coding standard violations
         run: vendor/bin/phpcs --standard=ruleset.xml app/ -q --report=checkstyle | cs2pr --graceful-warnings
-
-#  deploy:
-#    runs-on: ubuntu-latest
-#    if: github.ref == 'refs/heads/develop'
-#    needs: unit-tests
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v2
-#      - name: Deployment
-#        uses: appleboy/ssh-action@master
-#        env:
-#          REPOSRC: ${{ github.server_url }}/${{ github.repository }}.git
-#          LOCALREPO: ${{ secrets.LOCALREPO }}
-#        with:
-#          host: ${{ secrets.SSH_HOST }}
-#          key: ${{ secrets.SSH_PRIVATE_KEY }}
-#          username: ${{ secrets.SSH_USERNAME }}
-#          envs: REPOSRC,LOCALREPO
-#          script: |
-#            if [ ! -d $LOCALREPO ]
-#            then
-#                git clone $REPOSRC $LOCALREPO
-#            else
-#                cd $LOCALREPO
-#                git checkout -f
-#                git pull
-#            fi
