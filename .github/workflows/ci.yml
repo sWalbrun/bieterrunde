@@ -36,7 +36,7 @@ jobs:
           php artisan key:generate
 
       - name: Run Testsuite
-        run:
+        run: |
           - cat .env
           - php -v
           - vendor/bin/pest --coverage-clover coverage.xml --configuration ./phpunit.xml
