@@ -32,12 +32,12 @@ jobs:
 
       - name: Prepare Laravel Application
         run: |
-          php -r "file_exists('.env') || copy('.env.testing.example', '.env');"
-          php artisan key:generate
+          php -r "file_exists('.env.testing') || copy('.env.testing.example', '.env.testing');"
+          php artisan key:generate --env=testing
 
       - name: Run Testsuite
         run: |
-          cat .env
+          cat .env.testing
           php -v
           vendor/bin/pest --coverage-clover coverage.xml --configuration ./phpunit.xml
 
