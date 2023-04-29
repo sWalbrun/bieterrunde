@@ -160,7 +160,6 @@ class OfferPage extends Page
                                 ? trans('Round with enough turnover')
                                 : null
                         )->hintColor('success')
-                        ->placeholder(BidderRoundService::getReferenceAmountFor($record, $this->user, $numberOfRound))
                         ->suffix('€')
                         ->required()
                 )->toArray(),

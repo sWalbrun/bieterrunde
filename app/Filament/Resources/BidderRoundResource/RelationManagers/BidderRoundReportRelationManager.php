@@ -10,6 +10,8 @@ use Filament\Tables;
 
 class BidderRoundReportRelationManager extends RelationManager
 {
+    public const INFORM_PARTICIPANTS = 'informParticipants';
+
     protected static string $relationship = 'bidderRoundReport';
 
     protected static ?string $recordTitleAttribute = 'roundWon';
@@ -47,7 +49,7 @@ class BidderRoundReportRelationManager extends RelationManager
             ->filters([])
             ->actions([
                 Tables\Actions\DeleteAction::make(),
-                Tables\Actions\Action::make('informParticipants')
+                Tables\Actions\Action::make(self::INFORM_PARTICIPANTS)
                     ->label(trans('Inform participants'))
                     ->action(fn (BidderRoundReport $record) => $record->notifyUsers())
                     ->icon('codicon-broadcast')

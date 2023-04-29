@@ -1,14 +1,10 @@
 <?php
 
-use App\Enums\EnumContributionGroup;
-use App\Enums\EnumPaymentInterval;
 use App\Filament\Resources\UserResource;
 use App\Jobs\SetTenantCookie;
 use App\Models\Tenant;
 use App\Models\User;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Spatie\Permission\Models\Permission;
-use function Pest\Livewire\livewire;
 
 it("denies without permission to access routes", function (string $route) {
 

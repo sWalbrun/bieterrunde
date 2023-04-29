@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Feature\Notification;
 
 use App\BidderRound\Participant;
 use App\Jobs\RememberTheBidderRound;

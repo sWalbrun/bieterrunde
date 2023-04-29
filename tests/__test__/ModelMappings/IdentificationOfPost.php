@@ -1,14 +1,13 @@
 <?php
 
-namespace Tests\Feature\Import\ModelMappings;
+namespace __Tests__\ModelMappings;
 
-use App\Import\ModelMapping\AssociationOf;
 use App\Import\ModelMapping\IdentificationOf;
 use Illuminate\Support\Collection;
 
 class IdentificationOfPost extends IdentificationOf
 {
-    public static $hasHookBeenCalled = false;
+    public static bool $hasHookBeenCalled = false;
 
     public function propertyMapping(): Collection
     {

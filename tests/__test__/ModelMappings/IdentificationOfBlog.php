@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Import\ModelMappings;
+namespace __Tests__\ModelMappings;
 
 use App\Import\ModelMapping\IdentificationOf;
 use Illuminate\Support\Collection;

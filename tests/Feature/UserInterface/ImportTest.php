@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
-use Tests\Feature\Import\ModelMappings\IdentificationOfBlog;
-use Tests\Feature\Import\ModelMappings\IdentificationOfPost;
+use __Tests__\ModelMappings\IdentificationOfBlog;
+use __Tests__\ModelMappings\IdentificationOfPost;
 use function Pest\Livewire\livewire;
 
 it('can create an user and roles by import', function () {

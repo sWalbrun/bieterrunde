@@ -1,17 +1,9 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Enums;
 
-use App\BidderRound\Participant;
 use App\Enums\EnumPaymentInterval;
-use App\Jobs\RememberTheBidderRound;
-use App\Models\BidderRound;
-use App\Models\User;
-use App\Notifications\ReminderOfBidderRound;
 use BenSampo\Enum\Exceptions\InvalidEnumKeyException;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Translation\Translator;
 use Tests\TestCase;
 
 class EnumPaymentIntervalTest extends TestCase

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Console;
 
 use App\BidderRound\EnumTargetAmountReachedStatus;
 use App\Enums\EnumContributionGroup;
