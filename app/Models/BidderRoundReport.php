@@ -58,8 +58,8 @@ class BidderRoundReport extends BaseModel
             ->each(function (Participant $user) {
                 /** @var Offer $offer */
                 $offer = $user
-                    ->offersForRound($this->report->bidderRound)
-                    ->where(Offer::COL_ROUND, '=', $this->report->roundWon)->first();
+                    ->offersForRound($this->bidderRound)
+                    ->where(Offer::COL_ROUND, '=', $this->roundWon)->first();
                 $notification = new BidderRoundFound($this, $offer->amountFormatted ?? '', $offer->round);
                 Log::info("Notifying user ({$user->email()}) about report");
                 $user->notify($notification);
