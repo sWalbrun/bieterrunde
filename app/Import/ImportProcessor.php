@@ -153,12 +153,16 @@ class ImportProcessor implements OnEachRow
                 $reflectionMethod = new ReflectionFunction($callback);
                 // We have to remember the position within the method declaration to make sure the closure
                 // always get called correctly
-                $requiredModelClasses = collect($reflectionMethod->getParameters())
+                $requiredTypes = collect($reflectionMethod->getParameters())
                     ->mapWithKeys(fn (ReflectionParameter $parameter) => [$parameter->getPosition() => $parameter->getType()->getName()]);
 
                 $requiredModels = $allModels
-                    ->mapWithKeys(fn (Model $model) => [$requiredModelClasses->search(get_class($model)) => $model]);
-                if ($requiredModelClasses->count() !== $requiredModels->count()) {
+                    ->mapWithKeys(
+                        fn (Model $importedModel) => [
+                            $requiredTypes->search(fn (string $requiredType) => $importedModel instanceof $requiredType) => $importedModel
+                        ]
+                    );
+                if ($requiredTypes->count() !== $requiredModels->count()) {
                     return;
                 }
 

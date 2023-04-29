@@ -3,16 +3,15 @@
 namespace Tests;
 
 use App\Enums\EnumContributionGroup;
-use App\Jobs\SetTenantCookie;
 use App\Models\BidderRound;
 use App\Models\Offer;
 use App\Models\User;
-use App\Tenancy\InitializeTenancyByCookie;
 use Carbon\Carbon;
 use Database\Factories\OfferFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
 abstract class TestCase extends BaseTestCase
@@ -29,6 +28,13 @@ abstract class TestCase extends BaseTestCase
         parent::setUp();
         Role::findOrCreate(config('filament-shield.super_admin.name'));
         Role::findOrCreate(config('filament-shield.filament_user.name'));
+        /** @var User $user */
+        $user = User::query()->create([
+            'name' => 'Sebastian12',
+            'password' => Hash::make('password!'),
+            'email' => 'foo@bar.com'
+        ]);
+        $this->actingAs($user);
     }
 
     protected function createAndActAsUser(): User

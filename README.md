@@ -2,6 +2,9 @@
 
 <p align="center">
 <a href="https://github.com/sWalbrun/solawi/actions/workflows/ci.yml"><img src="https://github.com/sWalbrun/solawi/actions/workflows/ci.yml/badge.svg?branch=develop" alt="CI"></a>
+<a href="https://codecov.io/gh/sWalbrun/bieterrunde" > 
+ <img src="https://codecov.io/gh/sWalbrun/bieterrunde/branch/develop/graph/badge.svg?token=9HG0Q05UW2"/> 
+ </a>
 </p>
 
 # SolaWi|Bieterrunde

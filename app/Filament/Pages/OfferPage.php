@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\BidderRound\BidderRoundService;
+use App\Enums\EnumContributionGroup;
 use App\Enums\EnumPaymentInterval;
 use App\Filament\EnumNavigationGroups;
 use App\Models\BidderRound;
@@ -15,7 +16,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Pages\Actions\Action;
 use Filament\Pages\Page;
-use Filament\Resources\Pages\Concerns\HasWizard;
+use Filament\Support\Actions\Concerns\HasForm;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Collection;
 
@@ -25,13 +26,13 @@ use Illuminate\Support\Collection;
  */
 class OfferPage extends Page
 {
-    use HasWizard;
+    use HasForm;
     use HasPageShield;
 
     private const USER = 'user';
-    private const ROUND_TO_AMOUNT_MAPPING = 'roundToAmountMapping';
-    private const USER_CONTRIBUTION_GROUP = 'userContributionGroup';
-    private const USER_PAYMENT_INTERVAL = 'userPaymentInterval';
+    public const ROUND_TO_AMOUNT_MAPPING = 'roundToAmountMapping';
+    public const USER_CONTRIBUTION_GROUP = 'userContributionGroup';
+    public const USER_PAYMENT_INTERVAL = 'userPaymentInterval';
 
     /**
      * @var Collection<int, float> round to amount mapping
@@ -46,6 +47,8 @@ class OfferPage extends Page
     public User|null $user = null;
 
     public EnumPaymentInterval|string|null $userPaymentInterval = null;
+
+    public EnumContributionGroup|string|null $userContributionGroup = null;
 
     protected static ?string $navigationIcon = 'heroicon-o-currency-euro';
 
@@ -102,13 +105,9 @@ class OfferPage extends Page
             // empty offers instead.
             ->map(fn (Offer|null $offer) => $offer ?? new Offer());
         $this->roundToAmountMapping = $this->roundToOfferMapping->map(fn (Offer|null $offer) => $offer?->amount);
-
-        // Code is inspired by
-        // https://github.com/filamentphp/demo/blob/main/app/Filament/Pages/Auth/Login.php
-        // since I did not find an 'official' way
-        $this->form->fill([
+        $this->formData([
             self::USER => $this->user,
-            self::USER_CONTRIBUTION_GROUP => trans($this->user->contributionGroup?->value),
+            self::USER_CONTRIBUTION_GROUP => isset($this->user->contributionGroup) ? trans($this->user->contributionGroup->value) : null,
             self::USER_PAYMENT_INTERVAL => $this->user->paymentInterval?->value,
         ]);
     }
@@ -161,7 +160,6 @@ class OfferPage extends Page
                                 ? trans('Round with enough turnover')
                                 : null
                         )->hintColor('success')
-                        ->placeholder(BidderRoundService::getReferenceAmountFor($record, $this->user, $numberOfRound))
                         ->suffix('€')
                         ->required()
                 )->toArray(),

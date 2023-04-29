@@ -28,6 +28,7 @@ use Symfony\Component\Console\Command\Command;
  * @property self|Builder started
  * @property string tenant_id
  * @property Collection<Offer> offers
+ * @property Collection<User> users
  * @property BidderRoundReport $bidderRoundReport
  */
 class BidderRound extends BaseModel
@@ -80,18 +81,6 @@ class BidderRound extends BaseModel
         return $this->hasMany(Offer::class, Offer::COL_FK_BIDDER_ROUND);
     }
 
-    /**
-     * Returns the builder for all offers which has a given user made for this round.
-     *
-     * @param User $user
-     *
-     * @return HasMany
-     */
-    public function offerFor(User $user): HasMany
-    {
-        return $this->offers()->whereBelongsTo($user, $user->identifier());
-    }
-
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(
@@ -113,32 +102,6 @@ class BidderRound extends BaseModel
             && $this->bidderRoundBetweenNow();
     }
 
-    /**
-     * Returns true in case a given user has made all offers needed for this round.
-     *
-     * @param User $user
-     *
-     * @return bool
-     */
-    public function allOffersGivenFor(User $user): bool
-    {
-        return $this
-            ->offerFor($user)
-            ->whereNotNull(Offer::COL_AMOUNT)
-            ->count() === $this->countOffers;
-    }
-
-    /**
-     * @return Collection<self>
-     */
-    public static function orderedRounds(): Collection
-    {
-        return self::query()
-            ->orderBy(self::COL_VALID_FROM, 'DESC')
-            ->orderBy(self::COL_VALID_TO, 'DESC')
-            ->get();
-    }
-
     public static function scopeStarted(Builder $builder): Builder
     {
         return $builder
@@ -157,52 +120,6 @@ class BidderRound extends BaseModel
     public function bidderRoundBetweenNow(): bool
     {
         return Carbon::now()->isBetween($this->startOfSubmission->startOfDay(), $this->endOfSubmission->endOfDay());
-    }
-
-    public function calculateBidderRound()
-    {
-        $result = Artisan::call('bidderRound:targetAmountReached', ['bidderRoundId' => $this->id]);
-
-        $round = $this->bidderRoundReport?->roundWon;
-        $amount = $this->bidderRoundReport?->sumAmountFormatted;
-
-        switch ($result) {
-            case Command::SUCCESS:
-                Notification::make()
-                    ->title(trans('Es konnte eine Runde ermittelt werden!'))
-                    ->body(trans("Bieterrunde $round mit dem Betrag {$amount}€ deckt die Kosten"))
-                    ->success()
-                    ->send();
-                break;
-
-            case IsTargetAmountReached::ROUND_ALREADY_PROCESSED:
-                Notification::make()
-                    ->title(trans('Die Runde wurde bereits ermittelt!'))
-                    ->body(trans("Bieterrunde $round mit dem Betrag {$amount}€ deckt die Kosten"))
-                    ->success();
-                break;
-
-            case IsTargetAmountReached::NOT_ALL_OFFERS_GIVEN:
-                Notification::make()
-                    ->title(trans('Es wurden noch nicht alle Gebote abgegeben!'))
-                    ->warning()
-                    ->send();
-                break;
-
-            case IsTargetAmountReached::NOT_ENOUGH_MONEY:
-                Notification::make()
-                    ->title(trans('Leider konnte mit keiner einzigen Runde der Zielbetrag ermittelt werden.'))
-                    ->danger()
-                    ->send();
-                break;
-
-            default:
-                Notification::make()
-                    ->title(trans('Es ist ein unerwarteter Fehler aufgetreten'))
-                    ->danger()
-                    ->send();
-                break;
-        }
     }
 
     public function __toString()

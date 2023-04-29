@@ -26,6 +26,8 @@ class Import extends Page
      */
     public $import = null;
 
+    public const IMPORT = 'import';
+
     protected static ?string $navigationIcon = 'bi-filetype-xlsx';
 
     protected static string $view = 'filament.pages.import';
@@ -53,7 +55,7 @@ class Import extends Page
     protected function getFormSchema(): array
     {
         return [
-            FileUpload::make('import')
+            FileUpload::make(self::IMPORT)
                 ->label(trans('Import'))
                 ->afterStateUpdated(
                     function () {

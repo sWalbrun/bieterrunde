@@ -1,8 +1,5 @@
 <?php
 
-use App\Http\Livewire\BidderRoundForm;
-use App\Http\Livewire\OfferForm;
-use App\Http\Middleware\CanManipulateBidderRound;
 use Illuminate\Support\Facades\Route;
 
 /*

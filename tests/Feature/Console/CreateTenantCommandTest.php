@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Feature\Console;
 
 use App\Console\Commands\CreateTenantCommand;
 use App\Models\Tenant;

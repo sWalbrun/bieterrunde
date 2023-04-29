@@ -19,6 +19,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 /**
@@ -44,6 +45,7 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
  * @property Carbon $updatedAt
  * @property Collection<Offer> offers
  * @property Tenant $tenant
+ * @property Collection<Role> roles
  */
 class User extends Authenticatable implements MustVerifyEmail, Participant, FilamentUser
 {
