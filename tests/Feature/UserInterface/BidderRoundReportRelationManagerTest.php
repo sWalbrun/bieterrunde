@@ -5,11 +5,11 @@ use App\Models\BidderRound;
 use App\Models\BidderRoundReport;
 use App\Models\User;
 use App\Notifications\BidderRoundFound;
-use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Livewire;
 
 it('informs the participants about the found round', function () {
-    Notification::fake();
+    Mail::fake();
     $userCount = 5;
 
     /** @var BidderRound $bidderRound */
@@ -25,5 +25,5 @@ it('informs the participants about the found round', function () {
     )
         ->callTableAction(BidderRoundReportRelationManager::INFORM_PARTICIPANTS, $bidderRound->bidderRoundReport)
         ->assertHasNoErrors();
-    $bidderRound->users->each(fn (User $user) => Notification::assertSentTo($user, BidderRoundFound::class));
+    $bidderRound->users->each(fn (User $user) => Mail::assertSent(BidderRoundFound::class, $userCount));
 });

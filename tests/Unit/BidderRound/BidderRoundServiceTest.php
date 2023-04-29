@@ -10,6 +10,10 @@ use App\Models\Offer;
 use App\Models\User;
 use Carbon\Carbon;
 
+it('handles invalid input', function () {
+    expect(BidderRoundService::getOffers(null, User::factory()->create()))->toBeEmpty();
+});
+
 it('gets null offers', function () {
     $countOffers = 3;
     /** @var BidderRound $bidderRound */
