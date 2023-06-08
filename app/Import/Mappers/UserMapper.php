@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Import\ModelMapping;
+namespace App\Import\Mappers;
 
 use App\Models\User;
 use Illuminate\Support\Collection;
 use Spatie\Permission\Models\Role;
+use SWalbrun\FilamentModelImport\Import\ModelMapping\BaseMapper;
+use SWalbrun\FilamentModelImport\Import\ModelMapping\Relator;
 
-class IdentificationOfUser extends IdentificationOf implements AssociationOf
+class UserMapper extends BaseMapper implements Relator
 {
     public function __construct()
     {
@@ -32,7 +34,7 @@ class IdentificationOfUser extends IdentificationOf implements AssociationOf
         ]);
     }
 
-    public function associationOfClosures(): Collection
+    public function relatingClosures(): Collection
     {
         return collect([
             fn (User $user, Role $role) => $user->assignRole($role),

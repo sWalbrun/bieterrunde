@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "90bce7a440098f514a3b16a8e2c116f7",
+    "content-hash": "d80510eeee2df59b75189a2ed6eaaedc",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -6695,6 +6695,92 @@
                 "source": "https://github.com/archtechx/virtualcolumn/tree/v1.3.1"
             },
             "time": "2023-02-16T10:34:42+00:00"
+        },
+        {
+            "name": "swalbrun/filament-regex-import",
+            "version": "0.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sWalbrun/filament-regex-import.git",
+                "reference": "e95b6619a4880a398ac0d1900f98a8f3872ede30"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sWalbrun/filament-regex-import/zipball/e95b6619a4880a398ac0d1900f98a8f3872ede30",
+                "reference": "e95b6619a4880a398ac0d1900f98a8f3872ede30",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^2.17",
+                "illuminate/contracts": "^9.0|^10.0",
+                "maatwebsite/excel": "^3.1",
+                "php": "^8.0",
+                "spatie/laravel-package-tools": "^1.13.5"
+            },
+            "require-dev": {
+                "captainhook/captainhook": "^5.16",
+                "laravel/pint": "^1.0",
+                "nunomaduro/collision": "^6.0",
+                "nunomaduro/larastan": "^2.0.1",
+                "orchestra/testbench": "^7.0",
+                "pestphp/pest": "^1.21",
+                "pestphp/pest-plugin-laravel": "^1.1",
+                "pestphp/pest-plugin-livewire": "^1.0",
+                "pestphp/pest-plugin-parallel": "^1.0",
+                "phpstan/extension-installer": "^1.1",
+                "phpstan/phpstan-deprecation-rules": "^1.0",
+                "phpstan/phpstan-phpunit": "^1.0",
+                "phpunit/phpunit": "^9.5",
+                "ramsey/conventional-commits": "^1.5",
+                "spatie/laravel-permission": "^5.10",
+                "spatie/laravel-ray": "^1.26"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "SWalbrun\\FilamentModelImport\\FilamentRegexImportServiceProvider"
+                    ],
+                    "aliases": {
+                        "FilamentModelImport": "SWalbrun\\FilamentModelImport\\Facades\\FilamentModelImport"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "SWalbrun\\FilamentModelImport\\": "src",
+                    "SWalbrun\\FilamentModelImport\\Database\\Factories\\": "database/factories"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian Walbrun",
+                    "email": "sebastian@walbrun-consulting.de",
+                    "role": "Developer"
+                }
+            ],
+            "description": "This Filament Plugin will enable you to import files to upsert models by matching columns via regex.",
+            "homepage": "https://github.com/swalbrun/filament-regex-import",
+            "keywords": [
+                "filament-regex-import",
+                "laravel",
+                "sWalbrun"
+            ],
+            "support": {
+                "issues": "https://github.com/sWalbrun/filament-regex-import/issues",
+                "source": "https://github.com/sWalbrun/filament-regex-import/tree/0.2.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sWalbrun",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-06-08T13:22:22+00:00"
         },
         {
             "name": "symfony/console",

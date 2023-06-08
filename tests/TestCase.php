@@ -69,10 +69,6 @@ abstract class TestCase extends BaseTestCase
         ]);
     }
 
-    /**
-     * @param User $user
-     * @param BidderRound $bidderRound
-     */
     protected function createOffers(User $user, BidderRound $bidderRound): Collection
     {
         OfferFactory::reset();
