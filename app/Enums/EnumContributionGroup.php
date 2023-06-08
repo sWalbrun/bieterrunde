@@ -19,12 +19,4 @@ final class EnumContributionGroup extends Enum
      * This member is simply supporting the foundation.
      */
     public const SUSTAINING_MEMBER = 'SUSTAINING_MEMBER';
-
-    /**
-     * @return array a mapping where the key is the original value and the value the translated one
-     */
-    public static function translated(): array
-    {
-        return collect(self::getValues())->mapWithKeys(fn (string $group) => [$group => trans($group)])->toArray();
-    }
 }

@@ -187,11 +187,6 @@ class User extends Authenticatable implements MustVerifyEmail, Participant, Fila
         return $this->offers()->where(Offer::COL_FK_BIDDER_ROUND, '=', $round->id);
     }
 
-    public function pickUpGroup(): BelongsTo
-    {
-        return $this->belongsTo(PickUpGroup::class, 'fkPickUpGroup');
-    }
-
     public static function currentlyActive(): Builder
     {
         return self::query()

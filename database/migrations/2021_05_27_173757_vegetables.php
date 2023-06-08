@@ -1,51 +1,41 @@
 <?php
 
-use App\Enums\Unit;
-use App\Models\PickUp;
-use App\Models\PickUpGroup;
 use App\Models\User;
-use App\Models\Vegetable;
-use App\Models\VegetableRating;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 class Vegetables extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
+    public function up(): void
     {
-        Schema::create(PickUpGroup::TABLE, function (Blueprint $table) {
+        Schema::create('pickUpGroup', function (Blueprint $table) {
             $table->id();
             $table->timestamp(User::COL_CREATED_AT)->nullable();
             $table->timestamp(User::COL_UPDATED_AT)->nullable();
         });
 
         Schema::table(User::TABLE, function (Blueprint $table) {
-            $table->foreignId('fkPickUpGroup')->nullable()->references('id')->on(PickUpGroup::TABLE);
+            $table->foreignId('fkPickUpGroup')->nullable()->references('id')->on('pickUpGroup');
         });
 
-        Schema::create(Vegetable::TABLE, function (Blueprint $table) {
+        Schema::create('vegetable', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('unit', Unit::getValues());
+            $table->enum('unit', ['DEPRECATED']);
             $table->timestamp(User::COL_CREATED_AT)->nullable();
             $table->timestamp(User::COL_UPDATED_AT)->nullable();
         });
 
-        Schema::create(VegetableRating::TABLE, function (Blueprint $table) {
+        Schema::create('vegetableRating', function (Blueprint $table) {
             $table->id();
             $table->integer('stars')->unsigned();
-            $table->foreignId('fkVegetable')->nullable()->references('id')->on(Vegetable::TABLE);
+            $table->foreignId('fkVegetable')->nullable()->references('id')->on('vegetable');
             $table->timestamp(User::COL_CREATED_AT)->nullable();
             $table->timestamp(User::COL_UPDATED_AT)->nullable();
         });
 
-        Schema::create(PickUp::TABLE, function (Blueprint $table) {
+        Schema::create('pickUp', function (Blueprint $table) {
             $table->id();
             $table->date('date');
             $table->timestamp(User::COL_CREATED_AT)->nullable();
@@ -57,7 +47,7 @@ class Vegetables extends Migration
             $table->boolean('pickedUp')->default(false);
             $table->integer('amount')->unsigned();
             $table->foreignId('fkUser')->nullable()->references('id')->on(User::TABLE);
-            $table->foreignId('fkPickUp')->nullable()->references('id')->on(PickUp::TABLE);
+            $table->foreignId('fkPickUp')->nullable()->references('id')->on('pickUp');
             $table->timestamp(User::COL_CREATED_AT)->nullable();
             $table->timestamp(User::COL_UPDATED_AT)->nullable();
         });
@@ -65,20 +55,10 @@ class Vegetables extends Migration
         Schema::create('vegetablePickup', function (Blueprint $table) {
             $table->id();
             $table->float('amount');
-            $table->foreignId('fkVegetable')->nullable()->references('id')->on(Vegetable::TABLE);
-            $table->foreignId('fkPickUp')->nullable()->references('id')->on(PickUp::TABLE);
+            $table->foreignId('fkVegetable')->nullable()->references('id')->on('vegetable');
+            $table->foreignId('fkPickUp')->nullable()->references('id')->on('pickUp');
             $table->timestamp(User::COL_CREATED_AT)->nullable();
             $table->timestamp(User::COL_UPDATED_AT)->nullable();
         });
-    }
-
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        //
     }
 }
