@@ -1,5 +1,5 @@
 <?php
-// phpcs:ignoreFile
+
 namespace App\Policies;
 
 use App\Models\User;

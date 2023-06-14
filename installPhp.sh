@@ -17,6 +17,7 @@ then
     echo "Migrating and seeding"
     php artisan key:generate --force
     php artisan migrate:fresh --seed
+    php artisan shield:generate --all
     php artisan migrate:fresh --env=testing
     php artisan tenants:run db:seed
     echo "Make sure you create at least one super admin with php/sail artisan shield:super-admin"
