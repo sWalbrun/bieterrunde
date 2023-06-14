@@ -13,11 +13,9 @@ Dieser Standalone-Webserver bietet umfangreiche Funktionen für die Abwicklung e
 
 # Requirements|Installation
 
-docker sowie docker-compose müssen installiert sein.
-
 Mit dem Befehl
 <code>./serve.sh --fresh</code>
-werden alle Abhängigkeiten bezogen und die Datenbank wird erstellt sowie initial befüllt mit Testdaten.
+(kann bei der ersten Ausführung mehrere Minuten benötigen) werden alle Abhängigkeiten bezogen und die Datenbank wird erstellt sowie initial befüllt mit Testdaten.
 Sobal der Command fertig ist, steht unter http://localhost der Webserver zur Verfügung mit den <b>Standardbenutzern
 <i>adminfoo@solawi.de</i> und <i>adminbar@solawi.de</i> mit Passwort <i>password</i></b>. Die Admin-Benutzer sind dabei über ihr Mandat getrennt.
 

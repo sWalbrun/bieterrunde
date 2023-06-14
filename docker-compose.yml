@@ -99,7 +99,7 @@ services:
     ports:
       - '3307:3306'
     environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
     volumes:
       - dbdata:/var/lib/mysql/
       - ./mysql/init:/docker-entrypoint-initdb.d

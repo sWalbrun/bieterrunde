@@ -65,6 +65,9 @@
         ],
         "post-update-cmd": [
             "@php artisan filament:upgrade"
+        ],
+        "test": [
+            "@php vendor/bin/pest --configuration phpunit.xml"
         ]
     },
     "extra": {
