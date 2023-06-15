@@ -91,8 +91,6 @@ services:
       init:
         condition: service_completed_successfully
 
-# Two databases get created while init. Once (solawi) for local development and another one (solawi_ut) for unit tests
-# see mysql/init/ for further information
   mysql:
     image: 'mysql:8.0'
     container_name: '${DB_HOST}'

@@ -82,4 +82,14 @@ abstract class TestCase extends BaseTestCase
                 $offer->user()->associate($user)->save();
             });
     }
+
+    public function getEnvironmentSetUp($app)
+    {
+        config()->set('database.default', 'sqlite');
+        config()->set('database.connections.sqlite', [
+            'driver' => 'sqlite',
+            'database' => ':memory:',
+            'prefix' => '',
+        ]);
+    }
 }
