@@ -55,8 +55,8 @@ jobs:
 
       - name: Prepare Laravel Application
         run: |
-          php -r "file_exists('.env') || copy('.env.testing.example', '.env');"
-          php artisan key:generate
+          php -r "file_exists('.env') || copy('.env.testing.example', '.env.testing');"
+          php artisan key:generate --env=testing
 
       - name: Grant write permission to root
         run: chmod +w ./
