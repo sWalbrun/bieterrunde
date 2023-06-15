@@ -38,20 +38,19 @@ class InitializeTenancyByCookie extends InitializeTenancyByRequestData
     ];
 
     /**
-     * @param Request $request
-     * @param Closure $next
-     *
+     * @param  Request  $request
      * @return Application|RedirectResponse|Redirector|mixed
      *
      * @throws TenantCouldNotBeIdentifiedById
      */
     public function handle($request, Closure $next)
     {
-        if ($request->method() !== 'OPTIONS' && !$this->isWhiteListed($request)) {
+        if ($request->method() !== 'OPTIONS' && ! $this->isWhiteListed($request)) {
             $tenantId = $request->cookie(SetTenantCookie::TENANT_ID);
 
-            if (!isset($tenantId)) {
-                Log::info('No tenant could have been identified for the uri (' . $request->getUri() . ')');
+            if (! isset($tenantId)) {
+                Log::info('No tenant could have been identified for the uri ('.$request->getUri().')');
+
                 return redirect('main/login');
             }
             if (Tenant::query()->where(Tenant::COL_ID, $tenantId)->doesntExist()) {
@@ -70,7 +69,7 @@ class InitializeTenancyByCookie extends InitializeTenancyByRequestData
             /** @var User $user */
             $user = auth()->user();
             if ($response->isSuccessful()
-                && (!isset($user->tenant->id) || $user->tenant->id !== $tenantId)
+                && (! isset($user->tenant->id) || $user->tenant->id !== $tenantId)
             ) {
                 Auth::logout();
                 throw new TenantCouldNotBeIdentifiedById('null');

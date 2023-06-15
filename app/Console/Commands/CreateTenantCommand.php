@@ -13,16 +13,16 @@ use Stancl\Tenancy\Exceptions\TenantCouldNotBeIdentifiedById;
 class CreateTenantCommand extends Command
 {
     public const TENANT_ID = 'tenant';
+
     public const SIGNATURE_WITHOUT_PARAMS = 'tenants:create';
-    public const SIGNATURE = self::SIGNATURE_WITHOUT_PARAMS . ' {' . self::TENANT_ID . '?}';
+
+    public const SIGNATURE = self::SIGNATURE_WITHOUT_PARAMS.' {'.self::TENANT_ID.'?}';
 
     protected $signature = self::SIGNATURE;
 
     protected $description = 'Create and initialize a new tenant';
 
     /**
-     * @return int
-     *
      * @throws TenantCouldNotBeIdentifiedById
      */
     public function handle(): int
@@ -43,6 +43,7 @@ class CreateTenantCommand extends Command
         Artisan::call('migrate --force');
         tenancy()->end();
         $this->info("Congratulation! Your new tenant ($tenantId) is ready for use!");
+
         return self::SUCCESS;
     }
 }

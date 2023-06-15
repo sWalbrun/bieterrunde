@@ -3,18 +3,14 @@
 namespace App\Models;
 
 use App\BidderRound\BidderRoundService;
-use App\Console\Commands\IsTargetAmountReached;
 use Carbon\Carbon;
-use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Artisan;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
-use Symfony\Component\Console\Command\Command;
 
 /**
  * @property int id
@@ -42,12 +38,19 @@ class BidderRound extends BaseModel
     protected $table = self::TABLE;
 
     public const COL_TARGET_AMOUNT = 'targetAmount';
+
     public const COL_START_OF_SUBMISSION = 'startOfSubmission';
+
     public const COL_END_OF_SUBMISSION = 'endOfSubmission';
+
     public const COL_VALID_FROM = 'validFrom';
+
     public const COL_VALID_TO = 'validTo';
+
     public const COL_COUNT_OFFERS = 'countOffers';
+
     public const COL_NOTE = 'note';
+
     public const COL_FK_TENANT = 'tenant_id';
 
     protected $casts = [
@@ -93,12 +96,10 @@ class BidderRound extends BaseModel
 
     /**
      * Returns true in case the user still has the possibility to change/create her/his offer.
-     *
-     * @return bool
      */
     public function isOfferStillPossible(): bool
     {
-        return !$this->bidderRoundReport()->exists()
+        return ! $this->bidderRoundReport()->exists()
             && $this->bidderRoundBetweenNow();
     }
 
@@ -124,6 +125,6 @@ class BidderRound extends BaseModel
 
     public function __toString()
     {
-        return trans('Bieterrunde ') . ($this->validFrom ? $this->validFrom->format('Y') : '');
+        return trans('Bieterrunde ').($this->validFrom ? $this->validFrom->format('Y') : '');
     }
 }

@@ -4,7 +4,7 @@ use App\Models\BidderRound;
 use App\Models\BidderRoundReport;
 use App\Notifications\BidderRoundFound;
 
-it("builds a fully qualified mail", function () {
+it('builds a fully qualified mail', function () {
     $roundWon = 1;
     /** @var BidderRoundReport $report */
     $report = BidderRoundReport::factory()

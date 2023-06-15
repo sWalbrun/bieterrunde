@@ -76,19 +76,19 @@ class UsersRelationManager extends RelationManager
                     ->valueLabel(trans('Offer'))
                     ->afterStateHydrated(
                         fn (
-                            self                      $livewire,
+                            self $livewire,
                             Forms\Components\KeyValue $component,
-                            User                      $record,
+                            User $record,
                         ) => $component->state(
                             BidderRoundService::getOffers($livewire->ownerRecord, $record)
                                 ->map(fn (Offer|null $offer) => $offer?->amount)
                         )
                     )->columnSpan(2)
                     ->afterStateUpdated(fn (
-                        self                      $livewire,
+                        self $livewire,
                         Forms\Components\KeyValue $component,
-                        User                      $record,
-                        array                     $state,
+                        User $record,
+                        array $state,
                     ) => $livewire->updateOffers($state, $livewire, $record))
                     ->disableAddingRows()
                     ->disableDeletingRows(),
@@ -130,7 +130,7 @@ class UsersRelationManager extends RelationManager
                     ->form(
                         [
                             Forms\Components\Checkbox::make('onlyWithoutOffersGiven')
-                                ->label(trans('Only without all offers given'))
+                                ->label(trans('Only without all offers given')),
                         ]
                     )->query(fn (array $data, Builder $query, self $livewire) => $query->when(
                         $data['onlyWithoutOffersGiven'],
@@ -142,7 +142,7 @@ class UsersRelationManager extends RelationManager
                             '<',
                             $livewire->ownerRecord->countOffers
                         )
-                    ))
+                    )),
             ])
             ->headerActions([
                 Tables\Actions\AttachAction::make()->preloadRecordSelect(),
@@ -188,6 +188,7 @@ class UsersRelationManager extends RelationManager
                         ->where(Offer::COL_FK_USER, '=', $record->id)
                         ->where(Offer::COL_ROUND, '=', $round)
                         ->delete();
+
                     return;
                 }
                 Offer::query()->updateOrCreate(

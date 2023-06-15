@@ -13,12 +13,12 @@ return [
     |
     */
 
-    'connection'            => env('ROLES_DATABASE_CONNECTION', null),
-    'rolesTable'            => env('ROLES_ROLES_DATABASE_TABLE', 'roles'),
-    'roleUserTable'         => env('ROLES_ROLE_USER_DATABASE_TABLE', 'role_user'),
-    'permissionsTable'      => env('ROLES_PERMISSIONS_DATABASE_TABLE', 'permissions'),
-    'permissionsRoleTable'  => env('ROLES_PERMISSION_ROLE_DATABASE_TABLE', 'permission_role'),
-    'permissionsUserTable'  => env('ROLES_PERMISSION_USER_DATABASE_TABLE', 'permission_user'),
+    'connection' => env('ROLES_DATABASE_CONNECTION', null),
+    'rolesTable' => env('ROLES_ROLES_DATABASE_TABLE', 'roles'),
+    'roleUserTable' => env('ROLES_ROLE_USER_DATABASE_TABLE', 'role_user'),
+    'permissionsTable' => env('ROLES_PERMISSIONS_DATABASE_TABLE', 'permissions'),
+    'permissionsRoleTable' => env('ROLES_PERMISSION_ROLE_DATABASE_TABLE', 'permission_role'),
+    'permissionsUserTable' => env('ROLES_PERMISSION_USER_DATABASE_TABLE', 'permission_user'),
 
     /*
     |--------------------------------------------------------------------------
@@ -30,7 +30,7 @@ return [
     |
     */
 
-    'GUIRoutesPrefix'           => env('ROLES_GUI_ROUTES_PREFIX', ''),
+    'GUIRoutesPrefix' => env('ROLES_GUI_ROUTES_PREFIX', ''),
 
     /*
     |--------------------------------------------------------------------------
@@ -57,9 +57,9 @@ return [
     */
 
     'models' => [
-        'role'          => env('ROLES_DEFAULT_ROLE_MODEL', jeremykenedy\LaravelRoles\Models\Role::class),
-        'permission'    => env('ROLES_DEFAULT_PERMISSION_MODEL', jeremykenedy\LaravelRoles\Models\Permission::class),
-        'defaultUser'   => env('ROLES_DEFAULT_USER_MODEL', config('auth.providers.users.model')),
+        'role' => env('ROLES_DEFAULT_ROLE_MODEL', jeremykenedy\LaravelRoles\Models\Role::class),
+        'permission' => env('ROLES_DEFAULT_PERMISSION_MODEL', jeremykenedy\LaravelRoles\Models\Permission::class),
+        'defaultUser' => env('ROLES_DEFAULT_USER_MODEL', config('auth.providers.users.model')),
     ],
 
     /*
@@ -90,9 +90,9 @@ return [
     'pretend' => [
         'enabled' => false,
         'options' => [
-            'hasRole'       => true,
+            'hasRole' => true,
             'hasPermission' => true,
-            'allowed'       => true,
+            'allowed' => true,
         ],
     ],
     /*
@@ -107,7 +107,7 @@ return [
     */
 
     'defaultMigrations' => [
-        'enabled'        => env('ROLES_MIGRATION_DEFAULT_ENABLED', false),
+        'enabled' => env('ROLES_MIGRATION_DEFAULT_ENABLED', false),
     ],
     /*
     |--------------------------------------------------------------------------
@@ -121,10 +121,10 @@ return [
     */
 
     'defaultSeeds' => [
-        'PermissionsTableSeeder'        => env('ROLES_SEED_DEFAULT_PERMISSIONS', false),
-        'RolesTableSeeder'              => env('ROLES_SEED_DEFAULT_ROLES', false),
-        'ConnectRelationshipsSeeder'    => env('ROLES_SEED_DEFAULT_RELATIONSHIPS', false),
-        'UsersTableSeeder'              => env('ROLES_SEED_DEFAULT_USERS', false),
+        'PermissionsTableSeeder' => env('ROLES_SEED_DEFAULT_PERMISSIONS', false),
+        'RolesTableSeeder' => env('ROLES_SEED_DEFAULT_ROLES', false),
+        'ConnectRelationshipsSeeder' => env('ROLES_SEED_DEFAULT_RELATIONSHIPS', false),
+        'UsersTableSeeder' => env('ROLES_SEED_DEFAULT_USERS', false),
     ],
 
     /*
@@ -139,64 +139,64 @@ return [
     */
 
     // Enable Optional Roles Gui
-    'rolesGuiEnabled'               => env('ROLES_GUI_ENABLED', false),
+    'rolesGuiEnabled' => env('ROLES_GUI_ENABLED', false),
 
     // Enable `auth` middleware
-    'rolesGuiAuthEnabled'           => env('ROLES_GUI_AUTH_ENABLED', true),
+    'rolesGuiAuthEnabled' => env('ROLES_GUI_AUTH_ENABLED', true),
 
     // Enable Roles GUI middleware
-    'rolesGuiMiddlewareEnabled'     => env('ROLES_GUI_MIDDLEWARE_ENABLED', true),
+    'rolesGuiMiddlewareEnabled' => env('ROLES_GUI_MIDDLEWARE_ENABLED', true),
 
     // Optional Roles GUI Middleware
-    'rolesGuiMiddleware'            => env('ROLES_GUI_MIDDLEWARE', 'role:admin'),
+    'rolesGuiMiddleware' => env('ROLES_GUI_MIDDLEWARE', 'role:admin'),
 
     // User Permissions or Role needed to create a new role
-    'rolesGuiCreateNewRolesMiddlewareType'   => env('ROLES_GUI_CREATE_ROLE_MIDDLEWARE_TYPE', 'role'), //permissions or roles
-    'rolesGuiCreateNewRolesMiddleware'       => env('ROLES_GUI_CREATE_ROLE_MIDDLEWARE', 'admin'), // admin, XXX. ... or perms.XXX
+    'rolesGuiCreateNewRolesMiddlewareType' => env('ROLES_GUI_CREATE_ROLE_MIDDLEWARE_TYPE', 'role'), //permissions or roles
+    'rolesGuiCreateNewRolesMiddleware' => env('ROLES_GUI_CREATE_ROLE_MIDDLEWARE', 'admin'), // admin, XXX. ... or perms.XXX
 
     // User Permissions or Role needed to create a new permission
-    'rolesGuiCreateNewPermissionMiddlewareType'  => env('ROLES_GUI_CREATE_PERMISSION_MIDDLEWARE_TYPE', 'role'), //permissions or roles
-    'rolesGuiCreateNewPermissionsMiddleware'     => env('ROLES_GUI_CREATE_PERMISSION_MIDDLEWARE', 'admin'), // admin, XXX. ... or perms.XXX
+    'rolesGuiCreateNewPermissionMiddlewareType' => env('ROLES_GUI_CREATE_PERMISSION_MIDDLEWARE_TYPE', 'role'), //permissions or roles
+    'rolesGuiCreateNewPermissionsMiddleware' => env('ROLES_GUI_CREATE_PERMISSION_MIDDLEWARE', 'admin'), // admin, XXX. ... or perms.XXX
 
     // The parent blade file
-    'bladeExtended'                 => env('ROLES_GUI_BLADE_EXTENDED', 'layouts.app'),
+    'bladeExtended' => env('ROLES_GUI_BLADE_EXTENDED', 'layouts.app'),
 
     // Blade Extension Placement
-    'bladePlacement'                => env('ROLES_GUI_BLADE_PLACEMENT', 'yield'),
-    'bladePlacementCss'             => env('ROLES_GUI_BLADE_PLACEMENT_CSS', 'inline_template_linked_css'),
-    'bladePlacementJs'              => env('ROLES_GUI_BLADE_PLACEMENT_JS', 'inline_footer_scripts'),
+    'bladePlacement' => env('ROLES_GUI_BLADE_PLACEMENT', 'yield'),
+    'bladePlacementCss' => env('ROLES_GUI_BLADE_PLACEMENT_CSS', 'inline_template_linked_css'),
+    'bladePlacementJs' => env('ROLES_GUI_BLADE_PLACEMENT_JS', 'inline_footer_scripts'),
 
     // Titles placement extend
-    'titleExtended'                 => env('ROLES_GUI_TITLE_EXTENDED', 'template_title'),
+    'titleExtended' => env('ROLES_GUI_TITLE_EXTENDED', 'template_title'),
 
     // Switch Between bootstrap 3 `panel` and bootstrap 4 `card` classes
-    'bootstapVersion'               => env('ROLES_GUI_BOOTSTRAP_VERSION', '4'),
+    'bootstapVersion' => env('ROLES_GUI_BOOTSTRAP_VERSION', '4'),
 
     // Additional Card classes for styling -
     // See: https://getbootstrap.com/docs/4.0/components/card/#background-and-color
     // Example classes: 'text-white bg-primary mb-3'
-    'bootstrapCardClasses'          => env('ROLES_GUI_CARD_CLASSES', ''),
+    'bootstrapCardClasses' => env('ROLES_GUI_CARD_CLASSES', ''),
 
     // Bootstrap Tooltips
-    'tooltipsEnabled'               => env('ROLES_GUI_TOOLTIPS_ENABLED', true),
+    'tooltipsEnabled' => env('ROLES_GUI_TOOLTIPS_ENABLED', true),
 
     // jQuery
-    'enablejQueryCDN'               => env('ROLES_GUI_JQUERY_CDN_ENABLED', true),
-    'JQueryCDN'                     => env('ROLES_GUI_JQUERY_CDN_URL', 'https://code.jquery.com/jquery-3.3.1.min.js'),
+    'enablejQueryCDN' => env('ROLES_GUI_JQUERY_CDN_ENABLED', true),
+    'JQueryCDN' => env('ROLES_GUI_JQUERY_CDN_URL', 'https://code.jquery.com/jquery-3.3.1.min.js'),
 
     // Selectize JS
-    'enableSelectizeJsCDN'          => env('ROLES_GUI_SELECTIZEJS_CDN_ENABLED', true),
-    'SelectizeJsCDN'                => env('ROLES_GUI_SELECTIZEJS_CDN_URL', 'https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js'),
-    'enableSelectizeJs'             => env('ROLES_GUI_SELECTIZEJS_ENABLED', true),
-    'enableSelectizeJsCssCDN'       => env('ROLES_GUI_SELECTIZEJS_CSS_CDN_ENABLED', true),
-    'SelectizeJsCssCDN'             => env('ROLES_GUI_SELECTIZEJS_CSS_CDN_URL', 'https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.min.css'),
+    'enableSelectizeJsCDN' => env('ROLES_GUI_SELECTIZEJS_CDN_ENABLED', true),
+    'SelectizeJsCDN' => env('ROLES_GUI_SELECTIZEJS_CDN_URL', 'https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js'),
+    'enableSelectizeJs' => env('ROLES_GUI_SELECTIZEJS_ENABLED', true),
+    'enableSelectizeJsCssCDN' => env('ROLES_GUI_SELECTIZEJS_CSS_CDN_ENABLED', true),
+    'SelectizeJsCssCDN' => env('ROLES_GUI_SELECTIZEJS_CSS_CDN_URL', 'https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.min.css'),
 
     // Font Awesome
-    'enableFontAwesomeCDN'          => env('ROLES_GUI_FONT_AWESOME_CDN_ENABLED', true),
-    'fontAwesomeCDN'                => env('ROLES_GUI_FONT_AWESOME_CDN_URL', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'),
+    'enableFontAwesomeCDN' => env('ROLES_GUI_FONT_AWESOME_CDN_ENABLED', true),
+    'fontAwesomeCDN' => env('ROLES_GUI_FONT_AWESOME_CDN_URL', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'),
 
     // Flash Messaging
-    'builtInFlashMessagesEnabled'   => env('ROLES_GUI_FLASH_MESSAGES_ENABLED', true),
+    'builtInFlashMessagesEnabled' => env('ROLES_GUI_FLASH_MESSAGES_ENABLED', true),
 
     /*
     |--------------------------------------------------------------------------
@@ -208,24 +208,24 @@ return [
     | not needed for your application.
     |
     */
-    'rolesApiEnabled'               => env('ROLES_API_ENABLED', false),
+    'rolesApiEnabled' => env('ROLES_API_ENABLED', false),
 
     // Enable `auth` middleware
-    'rolesAPIAuthEnabled'           => env('ROLES_API_AUTH_ENABLED', true),
+    'rolesAPIAuthEnabled' => env('ROLES_API_AUTH_ENABLED', true),
 
     // Enable Roles API middleware
-    'rolesAPIMiddlewareEnabled'     => env('ROLES_API_MIDDLEWARE_ENABLED', true),
+    'rolesAPIMiddlewareEnabled' => env('ROLES_API_MIDDLEWARE_ENABLED', true),
 
     // Optional Roles API Middleware
-    'rolesAPIMiddleware'            => env('ROLES_API_MIDDLEWARE', 'role:admin'),
+    'rolesAPIMiddleware' => env('ROLES_API_MIDDLEWARE', 'role:admin'),
 
     // User Permissions or Role needed to create a new role
-    'rolesAPICreateNewRolesMiddlewareType'   => env('ROLES_API_CREATE_ROLE_MIDDLEWARE_TYPE', 'role'), //permissions or roles
-    'rolesAPICreateNewRolesMiddleware'       => env('ROLES_API_CREATE_ROLE_MIDDLEWARE', 'admin'), // admin, XXX. ... or perms.XXX
+    'rolesAPICreateNewRolesMiddlewareType' => env('ROLES_API_CREATE_ROLE_MIDDLEWARE_TYPE', 'role'), //permissions or roles
+    'rolesAPICreateNewRolesMiddleware' => env('ROLES_API_CREATE_ROLE_MIDDLEWARE', 'admin'), // admin, XXX. ... or perms.XXX
 
     // User Permissions or Role needed to create a new permission
-    'rolesAPICreateNewPermissionMiddlewareType'  => env('ROLES_API_CREATE_PERMISSION_MIDDLEWARE_TYPE', 'role'), //permissions or roles
-    'rolesAPICreateNewPermissionsMiddleware'     => env('ROLES_API_CREATE_PERMISSION_MIDDLEWARE', 'admin'), // admin, XXX. ... or perms.XXX
+    'rolesAPICreateNewPermissionMiddlewareType' => env('ROLES_API_CREATE_PERMISSION_MIDDLEWARE_TYPE', 'role'), //permissions or roles
+    'rolesAPICreateNewPermissionsMiddleware' => env('ROLES_API_CREATE_PERMISSION_MIDDLEWARE', 'admin'), // admin, XXX. ... or perms.XXX
 
     /*
     |--------------------------------------------------------------------------
@@ -233,11 +233,11 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'enabledDatatablesJs'           => env('ROLES_GUI_DATATABLES_JS_ENABLED', false),
-    'datatablesJsStartCount'        => env('ROLES_GUI_DATATABLES_JS_START_COUNT', 25),
-    'datatablesCssCDN'              => env('ROLES_GUI_DATATABLES_CSS_CDN', 'https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css'),
-    'datatablesJsCDN'               => env('ROLES_GUI_DATATABLES_JS_CDN', 'https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js'),
-    'datatablesJsPresetCDN'         => env('ROLES_GUI_DATATABLES_JS_PRESET_CDN', 'https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js'),
+    'enabledDatatablesJs' => env('ROLES_GUI_DATATABLES_JS_ENABLED', false),
+    'datatablesJsStartCount' => env('ROLES_GUI_DATATABLES_JS_START_COUNT', 25),
+    'datatablesCssCDN' => env('ROLES_GUI_DATATABLES_CSS_CDN', 'https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css'),
+    'datatablesJsCDN' => env('ROLES_GUI_DATATABLES_JS_CDN', 'https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js'),
+    'datatablesJsPresetCDN' => env('ROLES_GUI_DATATABLES_JS_PRESET_CDN', 'https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js'),
 
     /*
     |--------------------------------------------------------------------------
@@ -245,5 +245,5 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'laravelUsersEnabled'           => env('ROLES_GUI_LARAVEL_ROLES_ENABLED', false),
+    'laravelUsersEnabled' => env('ROLES_GUI_LARAVEL_ROLES_ENABLED', false),
 ];

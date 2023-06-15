@@ -71,7 +71,7 @@ class DeleteTenantCommandTest extends TestCase
 
         $this->assertDatabaseCount(Tenant::TABLE, 2);
         $this->artisan(DeleteTenantCommand::SIGNATURE_WITHOUT_PARAMS, [DeleteTenantCommand::TENANT_ID => $tenantId])
-            ->expectsOutput('Only those tenants (' . Tenant::query()->pluck(Tenant::COL_ID)->implode(', ') . ')  are existing!')
+            ->expectsOutput('Only those tenants ('.Tenant::query()->pluck(Tenant::COL_ID)->implode(', ').')  are existing!')
             ->assertFailed();
         $this->assertDatabaseCount(Tenant::TABLE, 2);
     }

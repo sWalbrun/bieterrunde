@@ -13,15 +13,15 @@ use BenSampo\Enum\Exceptions\InvalidEnumKeyException;
 final class EnumPaymentInterval extends Enum
 {
     public const ANNUAL = 'ANNUAL';
+
     public const SEMIANNUAL = 'SEMIANNUAL';
+
     public const MONTHLY = 'MONTHLY';
 
     /**
      * This method tries to determine the interval by comparing with the key, the value or even the translation for a match.
      *
-     * @param string $interval
      *
-     * @return self|null
      *
      * @throws InvalidEnumKeyException
      */

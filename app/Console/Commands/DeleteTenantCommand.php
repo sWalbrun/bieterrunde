@@ -11,8 +11,10 @@ use Illuminate\Console\Command;
 class DeleteTenantCommand extends Command
 {
     public const TENANT_ID = 'tenant';
+
     public const SIGNATURE_WITHOUT_PARAMS = 'tenants:delete';
-    public const SIGNATURE = self::SIGNATURE_WITHOUT_PARAMS . ' {' . self::TENANT_ID . '?}';
+
+    public const SIGNATURE = self::SIGNATURE_WITHOUT_PARAMS.' {'.self::TENANT_ID.'?}';
 
     protected $signature = self::SIGNATURE;
 
@@ -25,14 +27,15 @@ class DeleteTenantCommand extends Command
         $builder = Tenant::query()->where(Tenant::COL_ID, '=', $tenantId);
         if ($builder->doesntExist()) {
             $this->error(
-                'Only those tenants (' . Tenant::query()->pluck(Tenant::COL_ID)->implode(', ') . ')  are existing!'
+                'Only those tenants ('.Tenant::query()->pluck(Tenant::COL_ID)->implode(', ').')  are existing!'
             );
 
             return self::FAILURE;
         }
 
-        if (!$this->confirm('Do you confirm? The whole database will be deleted.')) {
+        if (! $this->confirm('Do you confirm? The whole database will be deleted.')) {
             $this->info('Phew. Nothing has been deleted');
+
             return self::SUCCESS;
         }
 

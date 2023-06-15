@@ -50,12 +50,12 @@ it('updates a bidder round', function () {
 it('fails because of validation', function () {
     Livewire::test(CreateBidderRound::class)->fillForm()->call('create')->assertHasErrors(
         [
-            'data.' . BidderRound::COL_VALID_FROM,
-            'data.' . BidderRound::COL_VALID_TO,
-            'data.' . BidderRound::COL_START_OF_SUBMISSION,
-            'data.' . BidderRound::COL_END_OF_SUBMISSION,
-            'data.' . BidderRound::COL_COUNT_OFFERS,
-            'data.' . BidderRound::COL_TARGET_AMOUNT,
+            'data.'.BidderRound::COL_VALID_FROM,
+            'data.'.BidderRound::COL_VALID_TO,
+            'data.'.BidderRound::COL_START_OF_SUBMISSION,
+            'data.'.BidderRound::COL_END_OF_SUBMISSION,
+            'data.'.BidderRound::COL_COUNT_OFFERS,
+            'data.'.BidderRound::COL_TARGET_AMOUNT,
         ]
     );
     expect(BidderRound::query()->count())->toBe(0);
@@ -88,7 +88,7 @@ it('shows the active members', function () {
 it('does not show former members', function () {
 
     $veterans = User::factory()->count(2)->create([
-        User::COL_EXIT_DATE => now()->subDay()
+        User::COL_EXIT_DATE => now()->subDay(),
     ]);
 
     /** @var BidderRound $bidderRound */
@@ -122,7 +122,7 @@ it('successfully calculates a bidder round', function () {
             Notification::make()
                 ->success()
                 ->title(trans('Es konnte eine Runde ermittelt werden!'))
-                ->body(trans("Bieterrunde 1 mit dem Betrag wayne€ deckt die Kosten"))
+                ->body(trans('Bieterrunde 1 mit dem Betrag wayne€ deckt die Kosten'))
         );
 });
 
@@ -149,7 +149,7 @@ it('successfully reports about the existing report', function () {
             Notification::make()
                 ->success()
                 ->title(trans('Die Runde wurde bereits ermittelt!'))
-                ->body(trans("Bieterrunde 1 mit dem Betrag wayne€ deckt die Kosten"))
+                ->body(trans('Bieterrunde 1 mit dem Betrag wayne€ deckt die Kosten'))
         );
 });
 

@@ -18,7 +18,7 @@ class UserMapper extends BaseMapper implements Relator
     public function uniqueColumns(): array
     {
         return [
-            User::COL_EMAIL
+            User::COL_EMAIL,
         ];
     }
 

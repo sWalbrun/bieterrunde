@@ -3,15 +3,15 @@
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
-use SWalbrun\FilamentModelImport\Filament\Pages\ImportPage;
 use function Pest\Livewire\livewire;
+use SWalbrun\FilamentModelImport\Filament\Pages\ImportPage;
 
 it('can create an user and roles by import', function () {
     $fileToImport = getDefaultXlsx('UserImport.xlsx');
 
     livewire(ImportPage::class)
         ->fillForm([
-            ImportPage::IMPORT => [uuid_create() => $fileToImport]
+            ImportPage::IMPORT => [uuid_create() => $fileToImport],
         ])
         ->callPageAction('save')
         ->send();
@@ -27,13 +27,13 @@ it('can update an user by import', function () {
     User::query()->create([
         'name' => 'Sebastian12',
         'password' => Hash::make('password!'),
-        'email' => 'ws-1993@gmx.de'
+        'email' => 'ws-1993@gmx.de',
     ]);
 
     $fileToImport = getDefaultXlsx('UserImport.xlsx');
     livewire(ImportPage::class)
         ->fillForm([
-            ImportPage::IMPORT => [uuid_create() => $fileToImport]
+            ImportPage::IMPORT => [uuid_create() => $fileToImport],
         ])
         ->callPageAction('save')
         ->send();
@@ -45,17 +45,13 @@ it('can update an user by import', function () {
         ->and(User::query()->count())->toBe(2, 'Only the logged in user and the updated one must exist');
 });
 
-
 function getDefaultXlsx(string $fileName): UploadedFile
 {
     return new UploadedFile(
-        base_path('tests/assets/' . $fileName),
+        base_path('tests/assets/'.$fileName),
         $fileName,
         null,
         null,
         true
     );
 }
-
-
-

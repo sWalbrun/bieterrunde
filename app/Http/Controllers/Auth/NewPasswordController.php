@@ -17,7 +17,6 @@ class NewPasswordController extends Controller
     /**
      * Display the password reset view.
      *
-     * @param Request $request
      *
      * @return View
      */
@@ -29,7 +28,6 @@ class NewPasswordController extends Controller
     /**
      * Handle an incoming new password request.
      *
-     * @param Request $request
      *
      * @return RedirectResponse
      */
@@ -62,6 +60,6 @@ class NewPasswordController extends Controller
         return $status == Password::PASSWORD_RESET
                     ? redirect()->route('login')->with('status', __($status))
                     : back()->withInput($request->only('email'))
-            ->withErrors(['email' => __($status)]);
+                        ->withErrors(['email' => __($status)]);
     }
 }

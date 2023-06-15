@@ -53,7 +53,7 @@ class CommunityChart extends DoughnutChartWidget
                         'rgb(220,220,220)',
                         'rgb(255,255,224)',
                     ],
-                    'hoverOffset' => 4
+                    'hoverOffset' => 4,
                 ],
             ],
         ];

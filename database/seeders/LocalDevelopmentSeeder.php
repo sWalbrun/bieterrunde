@@ -16,6 +16,7 @@ use Spatie\Permission\Models\Role;
 class LocalDevelopmentSeeder extends Seeder
 {
     public const OFFER_COUNT = 3;
+
     public const USER_COUNT = 120;
 
     /**
@@ -28,6 +29,7 @@ class LocalDevelopmentSeeder extends Seeder
         if (tenant() === null) {
             Tenant::query()->updateOrCreate(['id' => 'foo']);
             Tenant::query()->updateOrCreate(['id' => 'bar']);
+
             return;
         }
         Role::findOrCreate(config('filament-shield.super_admin.name'));
@@ -45,7 +47,7 @@ class LocalDevelopmentSeeder extends Seeder
     private function seedAdmin(): void
     {
 
-        $email = sprintf("admin%s@solawi.de", tenant()->id);
+        $email = sprintf('admin%s@solawi.de', tenant()->id);
         $user = User::query()->where(User::COL_EMAIL, '=', $email)->first();
 
         $user ??= new User();
@@ -90,5 +92,4 @@ class LocalDevelopmentSeeder extends Seeder
             BidderRound::COL_COUNT_OFFERS => 3,
         ]);
     }
-
 }

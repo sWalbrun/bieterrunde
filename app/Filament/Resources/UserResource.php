@@ -99,7 +99,7 @@ class UserResource extends Resource
                 Tables\Filters\SelectFilter::make(User::COL_CONTRIBUTION_GROUP)->options(
                     collect(EnumContributionGroup::getInstances())
                         ->mapWithKeys(fn (EnumContributionGroup $value) => [$value->key => trans($value->value)])->toArray()
-                )
+                ),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

@@ -35,7 +35,7 @@ class TenancyServiceProvider extends ServiceProvider
                     // Comment in those jobs for multi database tenancy
                     // Jobs\CreateDatabase::class,
                     // Jobs\MigrateDatabase::class,
-                    CreateStorageDirectories::class
+                    CreateStorageDirectories::class,
 
                 ])->send(function (Events\TenantCreated $event) {
                     return $event->tenant;

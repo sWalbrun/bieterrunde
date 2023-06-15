@@ -28,11 +28,11 @@ class CreateStorageDirectories implements ShouldQueue
 
     public function handle(): void
     {
-        $this->createDirIfNotExisting(base_path('storage/tenant' . $this->tenant->id . '/app/public'));
-        $this->createDirIfNotExisting(base_path('storage/tenant' . $this->tenant->id . '/framework/cache'));
-        $this->createDirIfNotExisting(base_path('storage/tenant' . $this->tenant->id . '/framework/sessions'));
-        $this->createDirIfNotExisting(base_path('storage/tenant' . $this->tenant->id . '/framework/testing'));
-        $this->createDirIfNotExisting(base_path('storage/tenant' . $this->tenant->id . '/framework/views'));
+        $this->createDirIfNotExisting(base_path('storage/tenant'.$this->tenant->id.'/app/public'));
+        $this->createDirIfNotExisting(base_path('storage/tenant'.$this->tenant->id.'/framework/cache'));
+        $this->createDirIfNotExisting(base_path('storage/tenant'.$this->tenant->id.'/framework/sessions'));
+        $this->createDirIfNotExisting(base_path('storage/tenant'.$this->tenant->id.'/framework/testing'));
+        $this->createDirIfNotExisting(base_path('storage/tenant'.$this->tenant->id.'/framework/views'));
     }
 
     private function createDirIfNotExisting(string $directoryName): void

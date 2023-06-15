@@ -5,8 +5,6 @@ namespace App\Notifications;
 use App\Filament\Pages\OfferPage;
 use App\Models\BidderRound;
 use App\Models\BidderRoundReport;
-use App\Models\Offer;
-use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -23,10 +21,9 @@ class BidderRoundFound extends Notification implements ShouldQueue
 
     public function __construct(
         private readonly BidderRoundReport $report,
-        private readonly string            $amountFormatted,
-        private readonly int               $round,
-    )
-    {
+        private readonly string $amountFormatted,
+        private readonly int $round,
+    ) {
     }
 
     public function via(): array

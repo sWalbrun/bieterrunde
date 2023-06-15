@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Log;
  * @property int countRounds
  * @property float sumAmount
  * @property string sumAmountFormatted
- *
  * @property BidderRound bidderRound
  */
 class BidderRoundReport extends BaseModel
@@ -25,10 +24,15 @@ class BidderRoundReport extends BaseModel
     use HasFactory;
 
     public const TABLE = 'bidderRoundReport';
+
     public const COL_ROUND_WON = 'roundWon';
+
     public const COL_COUNT_PARTICIPANTS = 'countParticipants';
+
     public const COL_COUNT_ROUNDS = 'countRounds';
+
     public const COL_SUM_AMOUNT = 'sumAmount';
+
     public const COL_FK_BIDDER_ROUND = 'fkBidderRound';
 
     protected $table = self::TABLE;
@@ -56,7 +60,9 @@ class BidderRoundReport extends BaseModel
             ->get()
             ->filter(fn (Participant $participant) => method_exists($participant, 'notify'))
             ->each(function (Participant $user) {
-                /** @var Offer $offer */
+                /*
+                 * @var Offer $offer
+                 */
                 $offer = $user
                     ->offersForRound($this->bidderRound)
                     ->where(Offer::COL_ROUND, '=', $this->roundWon)->first();

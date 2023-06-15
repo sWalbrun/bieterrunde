@@ -18,7 +18,7 @@ class IsTargetAmountReached extends Command
 {
     public const BIDDER_ROUND_ID = 'bidderRoundId';
 
-    protected $signature = 'bidderRound:targetAmountReached {' . self::BIDDER_ROUND_ID . '?}';
+    protected $signature = 'bidderRound:targetAmountReached {'.self::BIDDER_ROUND_ID.'?}';
 
     protected $description = 'Command description';
 

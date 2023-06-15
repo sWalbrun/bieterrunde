@@ -22,9 +22,13 @@ class Offer extends BaseModel
     protected $table = self::TABLE;
 
     public const COL_ID = 'id';
+
     public const COL_AMOUNT = 'amount';
+
     public const COL_ROUND = 'round';
+
     public const COL_FK_BIDDER_ROUND = 'fkBidderRound';
+
     public const COL_FK_USER = 'fkUser';
 
     protected $fillable = [
@@ -47,8 +51,6 @@ class Offer extends BaseModel
 
     /**
      * Returns true in case this offer is the one of the round won in case the bidder round is over already.
-     *
-     * @return bool
      */
     public function isOfWinningRound(): bool
     {
@@ -57,6 +59,6 @@ class Offer extends BaseModel
 
     public function getAmountFormattedAttribute(): string
     {
-        return number_format($this->amount, 2, ',', '.') . '€';
+        return number_format($this->amount, 2, ',', '.').'€';
     }
 }

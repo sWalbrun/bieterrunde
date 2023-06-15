@@ -80,5 +80,5 @@ jobs:
         run: composer install --prefer-dist --no-suggest --no-progress
 
       - name: Detect coding standard violations
-        run: vendor/bin/phpcs --standard=ruleset.xml app/ -q --report=checkstyle | cs2pr --graceful-warnings
+        run: composer pint
         continue-on-error: true

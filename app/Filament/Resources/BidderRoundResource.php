@@ -84,12 +84,12 @@ class BidderRoundResource extends Resource
                         ->hidden()
                         ->afterStateHydrated(
                             function (TextInput $component, BidderRound|null $record) {
-                                if (!isset($record)) {
+                                if (! isset($record)) {
                                     return;
                                 }
                                 $component->hidden(false);
                                 $component->state(
-                                    ($record->groupedByRound()->first()?->count() ?? 0) . '/' . $record->users()->count()
+                                    ($record->groupedByRound()->first()?->count() ?? 0).'/'.$record->users()->count()
                                 );
                             }
                         )
@@ -104,7 +104,7 @@ class BidderRoundResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make(BidderRound::COL_TARGET_AMOUNT)
                     ->formatStateUsing(
-                        fn ($state) => number_format($state, 2, ',', '.') . ' €'
+                        fn ($state) => number_format($state, 2, ',', '.').' €'
                     ),
                 Tables\Columns\TextColumn::make(BidderRound::COL_START_OF_SUBMISSION)
                     ->date('d.m.Y')

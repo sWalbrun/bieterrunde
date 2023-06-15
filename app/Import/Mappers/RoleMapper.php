@@ -16,7 +16,7 @@ class RoleMapper extends BaseMapper
     public function uniqueColumns(): array
     {
         return [
-            'name'
+            'name',
         ];
     }
 

@@ -21,6 +21,7 @@ abstract class TestCase extends BaseTestCase
     use BidderRoundEntities;
 
     public const TARGET_AMOUNT = 68_000;
+
     public const COUNT_OFFERS = 5;
 
     protected function setUp(): void
@@ -32,7 +33,7 @@ abstract class TestCase extends BaseTestCase
         $user = User::query()->create([
             'name' => 'Sebastian12',
             'password' => Hash::make('password!'),
-            'email' => 'foo@bar.com'
+            'email' => 'foo@bar.com',
         ]);
         $this->actingAs($user);
     }
@@ -47,8 +48,8 @@ abstract class TestCase extends BaseTestCase
 
         // TODO delete possibly
         $this->withoutMiddleware([
-//            InitializeTenancyByCookie::class,
-//            SetTenantCookie::class,
+            //            InitializeTenancyByCookie::class,
+            //            SetTenantCookie::class,
         ]);
 
         $user->assignRole(Role::findOrCreate(config('filament-shield.super_admin.name')));

@@ -42,9 +42,9 @@ class IsTargetAmountReachedTest extends TestCase
         $bidderRound = BidderRound::factory()->has(
             Offer::factory(
                 $offers, [
-                Offer::COL_AMOUNT => 51,
-                Offer::COL_ROUND => 1,
-            ])->for(User::factory())
+                    Offer::COL_AMOUNT => 51,
+                    Offer::COL_ROUND => 1,
+                ])->for(User::factory())
         )->create([
             BidderRound::COL_TARGET_AMOUNT => 100,
             BidderRound::COL_START_OF_SUBMISSION => Carbon::now()->subDay(),

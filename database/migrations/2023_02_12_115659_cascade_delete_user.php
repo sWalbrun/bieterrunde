@@ -10,11 +10,11 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::table(Offer::TABLE, function(Blueprint $table) {
+        Schema::table(Offer::TABLE, function (Blueprint $table) {
             $table->dropForeign('offer_fkuser_foreign');
         });
-        Schema::table(Offer::TABLE, function(Blueprint $table) {
-            $table->foreign( Offer::COL_FK_USER)
+        Schema::table(Offer::TABLE, function (Blueprint $table) {
+            $table->foreign(Offer::COL_FK_USER)
                 ->references('id')
                 ->on(User::TABLE)
                 ->onDelete('cascade');

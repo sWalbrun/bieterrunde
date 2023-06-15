@@ -10,9 +10,7 @@ use Carbon\Carbon;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Concerns\HasEvents;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -60,25 +58,45 @@ class User extends Authenticatable implements MustVerifyEmail, Participant, Fila
     protected $table = self::TABLE;
 
     public const COL_ID = 'id';
+
     public const COL_NAME = 'name';
+
     public const COL_EMAIL = 'email';
+
     public const COL_PASSWORD = 'password';
+
     public const COL_EMAIL_VERIFIED_AT = 'email_verified_at';
+
     public const COL_REMEMBER_TOKEN = 'remember_token';
+
     public const COL_TWO_FACTOR_SECRET = 'two_factor_secret';
+
     public const COL_TWO_FACTOR_RECOVERY_CODES = 'two_factor_recovery_codes';
+
     public const COL_CURRENT_TEAM_ID = 'current_team_id';
+
     public const COL_PROFILE_PHOTO_PATH = 'profile_photo_path';
+
     public const COL_CREATED_AT = 'createdAt';
+
     public const CREATED_AT = self::COL_CREATED_AT;
+
     public const COL_UPDATED_AT = 'updatedAt';
+
     public const UPDATED_AT = self::COL_UPDATED_AT;
+
     public const COL_CONTRIBUTION_GROUP = 'contributionGroup';
+
     public const COL_JOIN_DATE = 'joinDate';
+
     public const COL_EXIT_DATE = 'exitDate';
+
     public const COL_COUNT_SHARES = 'countShares';
+
     public const DYN_IS_NEW_MEMBER = 'isNewMember';
+
     public const COL_PAYMENT_INTERVAL = 'paymentInterval';
+
     public const COL_FK_TENANT = 'tenant_id';
 
     /**
@@ -172,8 +190,6 @@ class User extends Authenticatable implements MustVerifyEmail, Participant, Fila
     }
 
     /**
-     * @param BidderRound $bidderRound
-     *
      * @return string round=amountFormatted, round2=amountFormatted2
      */
     public function offersAsStringFor(BidderRound $bidderRound): string

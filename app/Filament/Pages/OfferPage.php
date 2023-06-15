@@ -30,8 +30,11 @@ class OfferPage extends Page
     use HasPageShield;
 
     private const USER = 'user';
+
     public const ROUND_TO_AMOUNT_MAPPING = 'roundToAmountMapping';
+
     public const USER_CONTRIBUTION_GROUP = 'userContributionGroup';
+
     public const USER_PAYMENT_INTERVAL = 'userPaymentInterval';
 
     /**
@@ -91,8 +94,8 @@ class OfferPage extends Page
         return [
             Action::make('Save')
                 ->translateLabel()
-                ->disabled(!$this->getFormModel()?->isOfferStillPossible())
-                ->action(fn () => $this->save())
+                ->disabled(! $this->getFormModel()?->isOfferStillPossible())
+                ->action(fn () => $this->save()),
         ];
     }
 
@@ -115,7 +118,7 @@ class OfferPage extends Page
     protected function getFormSchema(): array
     {
         $record = $this->getFormModel();
-        if (!isset($record)) {
+        if (! isset($record)) {
             return [];
         }
 
@@ -124,11 +127,11 @@ class OfferPage extends Page
             // bensampo enum and the arrayble casts (Enum::toArray()) is making problems combined
             // with filament
             Card::make([
-                TextInput::make(self::USER . '.' . User::COL_NAME),
-                TextInput::make(self::USER . '.' . User::COL_EMAIL),
+                TextInput::make(self::USER.'.'.User::COL_NAME),
+                TextInput::make(self::USER.'.'.User::COL_EMAIL),
                 TextInput::make(self::USER_CONTRIBUTION_GROUP)
                     ->label(trans('Contribution group')),
-                TextInput::make(self::USER . '.' . User::COL_COUNT_SHARES)
+                TextInput::make(self::USER.'.'.User::COL_COUNT_SHARES)
                     ->label(trans('Count shares')),
             ])->disabled(),
             Card::make([
@@ -140,8 +143,8 @@ class OfferPage extends Page
                     )
                     ->required(),
                 ...collect($this->roundToAmountMapping)->map(
-                // See the mount method for setting the corresponding values
-                    fn (string|null $amountOfRound, $numberOfRound) => TextInput::make(self::ROUND_TO_AMOUNT_MAPPING . ".$numberOfRound")
+                    // See the mount method for setting the corresponding values
+                    fn (string|null $amountOfRound, $numberOfRound) => TextInput::make(self::ROUND_TO_AMOUNT_MAPPING.".$numberOfRound")
                         ->label(trans('Offer :numberOfRound', ['numberOfRound' => $numberOfRound]))
                         ->numeric()
                         ->mask(
@@ -163,7 +166,7 @@ class OfferPage extends Page
                         ->suffix('€')
                         ->required()
                 )->toArray(),
-            ])->disabled(!$this->getFormModel()?->isOfferStillPossible()),
+            ])->disabled(! $this->getFormModel()?->isOfferStillPossible()),
         ];
     }
 

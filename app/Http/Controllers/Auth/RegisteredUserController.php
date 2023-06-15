@@ -27,16 +27,12 @@ class RegisteredUserController extends Controller
 
     /**
      * Handle an incoming registration request.
-     *
-     * @param Request $request
-     *
-     * @return RedirectResponse
      */
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:' . User::TABLE,
+            'email' => 'required|string|email|max:255|unique:'.User::TABLE,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 

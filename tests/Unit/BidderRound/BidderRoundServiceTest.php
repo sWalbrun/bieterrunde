@@ -18,7 +18,7 @@ it('gets null offers', function () {
     $countOffers = 3;
     /** @var BidderRound $bidderRound */
     $bidderRound = BidderRound::factory()->create([
-        BidderRound::COL_COUNT_OFFERS => $countOffers
+        BidderRound::COL_COUNT_OFFERS => $countOffers,
     ]);
     /** @var User $user */
     $user = User::factory()->create();
@@ -37,7 +37,7 @@ it('gets persisted offers', function () {
             Offer::COL_ROUND => $round,
             Offer::COL_AMOUNT => 420]))
         ->createOneQuietly([
-            BidderRound::COL_COUNT_OFFERS => 2
+            BidderRound::COL_COUNT_OFFERS => 2,
         ]);
     $bidderRound->users()->attach($user);
     $bidderRound->offers->each(fn (Offer $offer) => $offer->user()->associate($user)->save());
@@ -83,9 +83,9 @@ it('does not calculate a report because of exactly one missing offer', function 
     $bidderRound = BidderRound::factory()->has(
         Offer::factory(
             $offers, [
-            Offer::COL_AMOUNT => 51,
-            Offer::COL_ROUND => 1,
-        ])->for(User::factory())
+                Offer::COL_AMOUNT => 51,
+                Offer::COL_ROUND => 1,
+            ])->for(User::factory())
     )->create([
         BidderRound::COL_TARGET_AMOUNT => 100,
         BidderRound::COL_START_OF_SUBMISSION => Carbon::now()->subDay(),

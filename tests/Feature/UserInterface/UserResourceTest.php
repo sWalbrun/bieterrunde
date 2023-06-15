@@ -7,10 +7,10 @@ use App\Filament\Resources\UserResource\Pages\EditUser;
 use App\Filament\Resources\UserResource\Pages\ListUsers;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Spatie\Permission\Models\Permission;
 use function Pest\Livewire\livewire;
+use Spatie\Permission\Models\Permission;
 
-it("shows all existing users", function () {
+it('shows all existing users', function () {
 
     $users = User::factory()->count(5)->create();
     /** @var User $userToLogin */
@@ -21,7 +21,7 @@ it("shows all existing users", function () {
         ->assertCanSeeTableRecords(collect([...$users, $userToLogin]));
 });
 
-it("shows one user", function () {
+it('shows one user', function () {
 
     /** @var User $userToLogin */
     $userToLogin = $this->createAndActAsUser();
@@ -44,7 +44,7 @@ it("shows one user", function () {
         ]);
 });
 
-it("creates one user", function () {
+it('creates one user', function () {
     /** @var User $userToLogin */
     $userToLogin = $this->createAndActAsUser();
     $userToLogin->givePermissionTo(
@@ -70,7 +70,7 @@ it("creates one user", function () {
     expect(User::query()->where(User::COL_EMAIL, '=', $email)->first())->not->toBeNull();
 });
 
-it("updates one user", function () {
+it('updates one user', function () {
     /** @var User $userToLogin */
     $userToLogin = $this->createAndActAsUser();
     $userToLogin->givePermissionTo(
@@ -95,7 +95,7 @@ it("updates one user", function () {
     expect($userToLogin->refresh()->getAttributes())->toMatchArray($changedAttributes);
 });
 
-it("deletes one user", function () {
+it('deletes one user', function () {
     /** @var User $userToLogin */
     $userToLogin = $this->createAndActAsUser();
     $userToLogin->givePermissionTo(
@@ -109,4 +109,3 @@ it("deletes one user", function () {
         ->assertSuccessful();
     expect(fn () => $userToLogin->refresh())->toThrow(ModelNotFoundException::class);
 });
-

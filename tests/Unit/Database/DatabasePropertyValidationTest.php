@@ -19,7 +19,9 @@ class DatabasePropertyValidationTest extends TestCase
     private static $providerDbObjectsList = null;
 
     const IGNORE_COLUMNS_ALL = [User::COL_CREATED_AT, User::COL_UPDATED_AT];
+
     const IGNORE_COLUMNS_VAL = ['id'];
+
     const IGNORE_FILE_NAMES = ['User.php', 'Role.php', 'Permission.php'];
 
     /**
@@ -40,7 +42,7 @@ class DatabasePropertyValidationTest extends TestCase
                 continue;
             }
             $object = resolve($class);
-            if (!($object instanceof BaseModel)) {
+            if (! ($object instanceof BaseModel)) {
                 // this is no model. Therefore we cannot check stuff
                 continue;
             }
@@ -49,17 +51,17 @@ class DatabasePropertyValidationTest extends TestCase
             $dbColumns = $dbSchema->getColumnListing($object->getTable());
             $propertyAnnotations = $this->readPropertiesFromClassAnnotation($reflectionClass);
             $errors = [];
-            if (!$reflectionClass->hasProperty('table')) {
-                $errors[] = ' - missing property $table (' . $class . ')' . PHP_EOL;
+            if (! $reflectionClass->hasProperty('table')) {
+                $errors[] = ' - missing property $table ('.$class.')'.PHP_EOL;
             } else {
                 $tableReflection = $reflectionClass->getProperty('table');
                 $tableReflection->setAccessible(true);
                 $tableName = $tableReflection->getValue($object);
-                if (!Str::startsWith(
+                if (! Str::startsWith(
                     strtolower($reflection->getBasename('.php')),
                     Str::replace(['-', '_'], '', strtolower($tableName))
                 )) {
-                    $errors[] = ' - the tablename and the classname are not matching' . PHP_EOL;
+                    $errors[] = ' - the tablename and the classname are not matching'.PHP_EOL;
                 }
             }
 
@@ -75,7 +77,7 @@ class DatabasePropertyValidationTest extends TestCase
                 }
             }
 
-            if (!empty($errors)) {
+            if (! empty($errors)) {
                 $this->fail('Problems in Class '.$reflection->getFileName()." :\r\n".implode($errors));
             }
         }
@@ -111,13 +113,11 @@ class DatabasePropertyValidationTest extends TestCase
     }
 
     /**
-     * @return array
-     *
      * @throws ReflectionException
      */
     public function providerDbObjects(): array
     {
-        if (!is_null(self::$providerDbObjectsList)) {
+        if (! is_null(self::$providerDbObjectsList)) {
             return self::$providerDbObjectsList;
         }
         $result = [];
@@ -126,12 +126,12 @@ class DatabasePropertyValidationTest extends TestCase
         $path = dirname($baseModelReflection->getFileName()).DIRECTORY_SEPARATOR;
         $fileNames = scandir($path);
         foreach ($fileNames as $fileName) {
-            if (substr($fileName, -4) === '.php' && !in_array($fileName, self::IGNORE_FILE_NAMES)) {
+            if (substr($fileName, -4) === '.php' && ! in_array($fileName, self::IGNORE_FILE_NAMES)) {
                 $class = substr($fileName, 0, strlen($fileName) - 4);
                 $classNs = $namespace.$class;
                 $reflection = new ReflectionClass($classNs);
-                if (!$reflection->isAbstract()
-                    && !$reflection->isInterface()
+                if (! $reflection->isAbstract()
+                    && ! $reflection->isInterface()
                     && $reflection->isSubclassOf(Model::class)
                     && strpos($fileName, 'Abstract') === false) {
                     $result[$class] = [$reflection];

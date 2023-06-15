@@ -15,11 +15,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table(Offer::TABLE, function(Blueprint $table) {
+        Schema::table(Offer::TABLE, function (Blueprint $table) {
             $table->dropForeign('offer_fkbidderround_foreign');
         });
-        Schema::table(Offer::TABLE, function(Blueprint $table) {
-            $table->foreign( Offer::COL_FK_BIDDER_ROUND)
+        Schema::table(Offer::TABLE, function (Blueprint $table) {
+            $table->foreign(Offer::COL_FK_BIDDER_ROUND)
                 ->references('id')
                 ->on(BidderRound::TABLE)
                 ->onDelete('cascade');

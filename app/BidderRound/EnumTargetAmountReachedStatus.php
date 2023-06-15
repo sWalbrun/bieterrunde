@@ -5,7 +5,6 @@ namespace App\BidderRound;
 use BenSampo\Enum\Enum;
 
 /**
- *
  * @method static static SUCCESS()
  * @method static static ROUND_ALREADY_PROCESSED()
  * @method static static NOT_ALL_OFFERS_GIVEN()
@@ -14,13 +13,16 @@ use BenSampo\Enum\Enum;
 class EnumTargetAmountReachedStatus extends Enum
 {
     public const SUCCESS = 0;
+
     public const ROUND_ALREADY_PROCESSED = 2;
+
     public const NOT_ALL_OFFERS_GIVEN = 3;
+
     public const NOT_ENOUGH_MONEY = 4;
 
     public function isReportAvailable(): bool
     {
-        return $this->is(EnumTargetAmountReachedStatus::SUCCESS())
-            || $this->is(EnumTargetAmountReachedStatus::ROUND_ALREADY_PROCESSED());
+        return $this->is(self::SUCCESS())
+            || $this->is(self::ROUND_ALREADY_PROCESSED());
     }
 }

@@ -13,10 +13,9 @@ class TargetAmountReachedReport
          * This property should be actually readonly but mockery does not support the initialization with parameters
          */
         public EnumTargetAmountReachedStatus $status,
-        private readonly BidderRound                  $bidderRound,
-        private readonly BidderRoundReport|null       $bidderRoundReport,
-    )
-    {
+        private readonly BidderRound $bidderRound,
+        private readonly BidderRoundReport|null $bidderRoundReport,
+    ) {
     }
 
     /**
@@ -24,9 +23,10 @@ class TargetAmountReachedReport
      */
     public function roundWon(): int
     {
-        if (!$this->status->isReportAvailable()) {
+        if (! $this->status->isReportAvailable()) {
             throw new NoRoundFoundException("No round has been found for bidder round ($this->bidderRound)");
         }
+
         return $this->bidderRoundReport->roundWon;
     }
 
@@ -35,9 +35,10 @@ class TargetAmountReachedReport
      */
     public function sumAmountFormatted(): string
     {
-        if (!$this->status->isReportAvailable()) {
+        if (! $this->status->isReportAvailable()) {
             throw new NoRoundFoundException("No round has been found for bidder round ($this->bidderRound)");
         }
+
         return $this->bidderRoundReport->sumAmountFormatted;
     }
 }

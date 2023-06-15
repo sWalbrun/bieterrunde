@@ -13,9 +13,7 @@ class EnumPaymentIntervalTest extends TestCase
      *
      * @dataProvider validAndInvalidIntervals()
      *
-     * @param bool $throws
-     * @param array ...$intervals
-     *
+     * @param  array  ...$intervals
      * @return void
      *
      * @throws InvalidEnumKeyException
@@ -44,7 +42,7 @@ class EnumPaymentIntervalTest extends TestCase
                 true,
                 'Kleines Bubu',
                 'Electronic Circus',
-            ]
+            ],
         ];
     }
 }

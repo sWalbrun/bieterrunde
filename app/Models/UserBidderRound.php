@@ -10,6 +10,8 @@ class UserBidderRound extends Model
     use HasFactory;
 
     final public const TABLE = 'user_bidderround';
+
     final public const COL_FK_USER = 'fkUser';
+
     final public const COL_FK_BIDDER_ROUND = 'fkBidderRound';
 }

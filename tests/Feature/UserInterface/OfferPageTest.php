@@ -32,16 +32,16 @@ it('shows the master data of the logged in user', function () {
     /** @var TestResponse $response */
     $response = $this->get(OfferPage::url());
     $response->assertSuccessful()
-        ->assertSee(            [
-                $user->name,
-                $user->email,
-                trans($user->contributionGroup->value),
-                $user->countShares,
-            ]
+        ->assertSee([
+            $user->name,
+            $user->email,
+            trans($user->contributionGroup->value),
+            $user->countShares,
+        ]
         );
 });
 
-it("saves the given offers", function () {
+it('saves the given offers', function () {
     $testNow = Carbon::createFromFormat('m.d.Y', '02.03.2023')->toImmutable();
     Carbon::setTestNow($testNow);
 
@@ -61,7 +61,7 @@ it("saves the given offers", function () {
     livewire(OfferPage::class)->fill([
         OfferPage::USER_CONTRIBUTION_GROUP => EnumContributionGroup::FULL_MEMBER,
         OfferPage::USER_PAYMENT_INTERVAL => EnumPaymentInterval::ANNUAL,
-        OfferPage::ROUND_TO_AMOUNT_MAPPING => collect([1 => $amount])
+        OfferPage::ROUND_TO_AMOUNT_MAPPING => collect([1 => $amount]),
     ])->call('save');
     expect($user->refresh()->paymentInterval->value)->toBe(EnumPaymentInterval::ANNUAL);
     /** @var Offer $offer */

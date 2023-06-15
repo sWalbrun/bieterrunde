@@ -27,7 +27,7 @@
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.10",
         "fakerphp/faker": "^1.9.1",
-        "friendsofphp/php-cs-fixer": "^3.1",
+        "laravel/pint": "^1.10",
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.2",
         "nunomaduro/collision": "^7.0",
@@ -66,6 +66,9 @@
         ],
         "test": [
             "@php vendor/bin/pest --configuration phpunit.xml"
+        ],
+        "lint": [
+            "@php vendor/bin/pint"
         ]
     },
     "extra": {

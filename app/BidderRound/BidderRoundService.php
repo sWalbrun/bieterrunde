@@ -2,7 +2,6 @@
 
 namespace App\BidderRound;
 
-use App\Enums\EnumContributionGroup;
 use App\Models\BidderRound;
 use App\Models\BidderRoundReport;
 use App\Models\Offer;
@@ -19,14 +18,12 @@ class BidderRoundService
      * This method fetches all existing offers and fills with empty ones if there are more offers
      * defined in the {@link BidderRound::$countOffers bidder round} than are currently given.
      *
-     * @param BidderRound|null $bidderRound
-     * @param User $user
      *
      * @return Collection<Offer>
      */
     public static function getOffers(BidderRound|null $bidderRound, User $user): Collection
     {
-        if (!isset($bidderRound)) {
+        if (! isset($bidderRound)) {
             return collect();
         }
         // First we have to check for all offers, which have already been given
@@ -86,7 +83,7 @@ class BidderRoundService
             }
         }
 
-        if (!isset($reachedAmount) || !isset($roundWon)) {
+        if (! isset($reachedAmount) || ! isset($roundWon)) {
             Log::info(sprintf(
                 'No round found which may has enough money in sum (%s) to reach the target amount (%s) for bidder round (%s)',
                 $sumOfRounds->first(),
@@ -110,8 +107,8 @@ class BidderRoundService
 
     private function createReport(
         float $sumAmount,
-        int         $roundWon,
-        int         $countParticipants,
+        int $roundWon,
+        int $countParticipants,
         BidderRound $bidderRound
     ): BidderRoundReport {
         /** @var BidderRoundReport $report */
@@ -122,6 +119,7 @@ class BidderRoundService
             BidderRoundReport::COL_COUNT_ROUNDS => $bidderRound->countOffers,
         ]);
         $report->bidderRound()->associate($bidderRound)->save();
+
         return $report;
     }
 

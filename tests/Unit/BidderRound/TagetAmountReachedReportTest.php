@@ -6,7 +6,7 @@ use App\Exceptions\NoRoundFoundException;
 use App\Models\BidderRound;
 use App\Models\BidderRoundReport;
 
-it("returns the round won for success", function () {
+it('returns the round won for success', function () {
     /** @var BidderRound $bidderRound */
     $bidderRound = BidderRound::factory()
         ->has(BidderRoundReport::factory())
@@ -17,7 +17,7 @@ it("returns the round won for success", function () {
     expect($report->roundWon())->toBe($bidderRoundReport->roundWon);
 });
 
-it("returns the format sum amount for success", function () {
+it('returns the format sum amount for success', function () {
     /** @var BidderRound $bidderRound */
     $bidderRound = BidderRound::factory()
         ->has(BidderRoundReport::factory())
@@ -28,7 +28,7 @@ it("returns the format sum amount for success", function () {
     expect($report->sumAmountFormatted())->toBe($bidderRoundReport->sumAmountFormatted);
 });
 
-it("throws for wrong status for sum amount formatted", function () {
+it('throws for wrong status for sum amount formatted', function () {
     /** @var BidderRound $bidderRound */
     $bidderRound = BidderRound::factory()
         ->has(BidderRoundReport::factory())
@@ -39,7 +39,7 @@ it("throws for wrong status for sum amount formatted", function () {
     expect(fn () => $report->sumAmountFormatted())->toThrow(NoRoundFoundException::class);
 });
 
-it("throws for wrong status for round won", function () {
+it('throws for wrong status for round won', function () {
     /** @var BidderRound $bidderRound */
     $bidderRound = BidderRound::factory()
         ->has(BidderRoundReport::factory())

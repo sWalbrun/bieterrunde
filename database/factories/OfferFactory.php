@@ -10,6 +10,7 @@ class OfferFactory extends Factory
     private static int $roundCount = 1;
 
     private static int $offerCount = 50;
+
     private static bool $randomize = false;
 
     public static function reset()
@@ -29,8 +30,6 @@ class OfferFactory extends Factory
 
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
     public function definition(): array
     {
