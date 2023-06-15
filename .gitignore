@@ -25,3 +25,5 @@ storage/*.key
 /data/redis/
 /public/build/
 /.phpunit.cache/
+/build/
+solawi
