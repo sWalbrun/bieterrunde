@@ -50,8 +50,13 @@ jobs:
           echo "::add-matcher::${{ runner.tool_cache }}/php.json"
           echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
-      - name: Install dependencies
-        run: composer install
+      - name: Install composer dependencies
+        run: composer install --no-scripts
+
+      - name: Prepare Laravel Application
+        run: |
+          php -r "file_exists('.env') || copy('.env.testing.example', '.env');"
+          php artisan key:generate
 
       - name: Grant write permission to root
         run: chmod +w ./
