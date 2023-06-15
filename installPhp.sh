@@ -7,7 +7,6 @@ then
 fi
 
 echo "Installing dependencies"
-composer config gitlab-token.gitlab.consolinno-it.de "$GITLAB_TOKEN"
 composer i
 
 php artisan optimize:clear
