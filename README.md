@@ -1,9 +1,9 @@
 <p align="center"><a href="https://solawir.de/" target="_blank"><img src="https://kattendorfer-hof.de/kattendorferhof/wp-content/uploads/2015/01/solawi-logo-660x204.png" width="400"></a></p>
 
 <p align="center">
-<a href="https://github.com/sWalbrun/solawi/actions/workflows/ci.yml"><img src="https://github.com/sWalbrun/solawi/actions/workflows/ci.yml/badge.svg?branch=develop" alt="CI"></a>
+<a href="https://github.com/sWalbrun/solawi/actions/workflows/ci.yml"><img src="https://github.com/sWalbrun/solawi/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
 <a href="https://codecov.io/gh/sWalbrun/bieterrunde" > 
- <img src="https://codecov.io/gh/sWalbrun/bieterrunde/branch/develop/graph/badge.svg?token=9HG0Q05UW2"/> 
+ <img src="https://codecov.io/gh/sWalbrun/bieterrunde/branch/main/graph/badge.svg?token=9HG0Q05UW2"/> 
  </a>
 </p>
 
