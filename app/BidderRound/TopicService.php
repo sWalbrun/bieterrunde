@@ -137,10 +137,10 @@ class TopicService
     public static function syncTopicParticipants(Topic $topic): void
     {
         $shares = User::currentlyActive()
-                ->chunkMap(fn (User $user) => new Share([
-                    Share::COL_FK_USER => $user->id,
-                    Share::COL_VALUE => ShareValue::ONE,
-                ]));
+            ->chunkMap(fn (User $user) => new Share([
+                Share::COL_FK_USER => $user->id,
+                Share::COL_VALUE => ShareValue::ONE,
+            ]));
         $topic->shares()->saveMany($shares);
     }
 }
