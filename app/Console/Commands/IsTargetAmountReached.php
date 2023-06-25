@@ -2,46 +2,48 @@
 
 namespace App\Console\Commands;
 
-use App\BidderRound\BidderRoundService;
 use App\BidderRound\TargetAmountReachedReport;
+use App\BidderRound\TopicService;
+use App\Models\BaseModel;
 use App\Models\BidderRound;
-use App\Models\BidderRoundReport;
+use App\Models\Topic;
+use App\Models\TopicReport;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 /**
  * This command is checking for all {@link BidderRound rounds} (or for the one given) if there may be a
- * round which reaches the {@link BidderRound::$targetAmount} and creates a {@link BidderRoundReport report}.
+ * round which reaches the {@link Topic::$targetAmount} and creates a {@link TopicReport report}.
  */
 class IsTargetAmountReached extends Command
 {
-    public const BIDDER_ROUND_ID = 'bidderRoundId';
+    public const TOPIC_ID = 'topicId';
 
-    protected $signature = 'bidderRound:targetAmountReached {'.self::BIDDER_ROUND_ID.'?}';
+    protected $signature = 'topic:targetAmountReached {'.self::TOPIC_ID.'?}';
 
     protected $description = 'Command description';
 
-    public function __construct(private readonly BidderRoundService $bidderRoundService)
+    public function __construct(private readonly TopicService $bidderRoundService)
     {
         parent::__construct();
     }
 
     public function handle(): int
     {
-        $rounds = BidderRound::query()
+        $rounds = Topic::query()
             ->when(
-                $this->getBidderRoundId(),
-                fn (Builder $builder) => $builder->where('id', '=', $this->getBidderRoundId())
+                $this->getTopicId(),
+                fn (Builder $builder) => $builder->where(BaseModel::COL_ID, '=', $this->getTopicId())
             )->get();
 
-        return $rounds->map(fn (BidderRound $round) => DB::transaction(fn () => $this->bidderRoundService->calculateBidderRound($round)))
+        return $rounds->map(fn (Topic $topic) => DB::transaction(fn () => $this->bidderRoundService->calculateReportForTopic($topic)))
             ->map(fn (TargetAmountReachedReport $report) => $report->status->value)
             ->min();
     }
 
-    public function getBidderRoundId(): ?int
+    public function getTopicId(): ?int
     {
-        return $this->argument(self::BIDDER_ROUND_ID);
+        return $this->argument(self::TOPIC_ID);
     }
 }

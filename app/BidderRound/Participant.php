@@ -3,6 +3,7 @@
 namespace App\BidderRound;
 
 use App\Models\BidderRound;
+use App\Models\Topic;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -14,7 +15,7 @@ interface Participant
 
     public function email(): string;
 
-    public function offersForRound(BidderRound $round): HasMany;
+    public function offersForTopic(Topic $topic): HasMany;
 
     public function identifier(): string;
 }

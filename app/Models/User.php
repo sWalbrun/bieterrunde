@@ -30,7 +30,6 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
  * @property EnumContributionGroup contributionGroup
  * @property Carbon joinDate
  * @property Carbon exitDate
- * @property int countShares
  * @property bool remember_token
  * @property string two_factor_secret
  * @property string two_factor_recovery_codes
@@ -45,6 +44,7 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
  * @property Collection<Offer> offers
  * @property Tenant $tenant
  * @property Collection<Role> roles
+ * @property-read Collection<Topic> topics
  */
 class User extends Authenticatable implements MustVerifyEmail, Participant, FilamentUser
 {
@@ -91,10 +91,6 @@ class User extends Authenticatable implements MustVerifyEmail, Participant, Fila
 
     public const COL_EXIT_DATE = 'exitDate';
 
-    public const COL_COUNT_SHARES = 'countShares';
-
-    public const DYN_IS_NEW_MEMBER = 'isNewMember';
-
     public const COL_PAYMENT_INTERVAL = 'paymentInterval';
 
     public const COL_FK_TENANT = 'tenant_id';
@@ -111,7 +107,6 @@ class User extends Authenticatable implements MustVerifyEmail, Participant, Fila
         self::COL_CONTRIBUTION_GROUP,
         self::COL_JOIN_DATE,
         self::COL_EXIT_DATE,
-        self::COL_COUNT_SHARES,
         self::COL_PAYMENT_INTERVAL,
         self::COL_EMAIL_VERIFIED_AT,
     ];
@@ -167,14 +162,19 @@ class User extends Authenticatable implements MustVerifyEmail, Participant, Fila
         return true;
     }
 
-    public function bidderRounds(): BelongsToMany
+    public function topics(): BelongsToMany
     {
         return $this->belongsToMany(
-            BidderRound::class,
-            UserBidderRound::TABLE,
-            UserBidderRound::COL_FK_USER,
-            UserBidderRound::COL_FK_BIDDER_ROUND
-        );
+            Topic::class,
+            Share::TABLE,
+            Share::COL_FK_USER,
+            Share::COL_FK_TOPIC,
+        )->withPivot([Share::COL_VALUE]);
+    }
+
+    public function shares(): HasMany
+    {
+        return $this->hasMany(Share::class, Share::COL_FK_USER);
     }
 
     public function getIsNewMemberAttribute(): bool
@@ -189,18 +189,15 @@ class User extends Authenticatable implements MustVerifyEmail, Participant, Fila
             ->orderBy(Offer::COL_ROUND, 'ASC');
     }
 
-    /**
-     * @return string round=amountFormatted, round2=amountFormatted2
-     */
-    public function offersAsStringFor(BidderRound $bidderRound): string
+    public function offersAsStringFor(Topic $topic): string
     {
-        return $this->offersForRound($bidderRound)
+        return $this->offersForTopic($topic)
             ->chunkMap(fn (Offer $offer) => "$offer->amountFormatted")->implode(';');
     }
 
-    public function offersForRound(BidderRound $round): HasMany
+    public function offersForTopic(Topic $topic): HasMany
     {
-        return $this->offers()->where(Offer::COL_FK_BIDDER_ROUND, '=', $round->id);
+        return $this->offers()->where(Offer::COL_FK_TOPIC, '=', $topic->id);
     }
 
     public static function currentlyActive(): Builder
@@ -216,5 +213,10 @@ class User extends Authenticatable implements MustVerifyEmail, Participant, Fila
                     ->whereNull(self::COL_EXIT_DATE)
                     ->orWhere(self::COL_EXIT_DATE, '>=', now())
             );
+    }
+
+    public function getShareForTopic(Topic $topic): Share
+    {
+        return $this->shares()->where(Share::COL_FK_TOPIC, '=', $topic->id)->firstOrFail();
     }
 }

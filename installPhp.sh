@@ -19,7 +19,6 @@ then
     php artisan shield:generate --all
     php artisan migrate:fresh --env=testing
     php artisan tenants:run db:seed
-    echo "Make sure you create at least one super admin with php/sail artisan shield:super-admin"
 else
     echo "Migrating without seeding"
     php artisan migrate

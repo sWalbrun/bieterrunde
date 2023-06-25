@@ -15,5 +15,5 @@ return [
         UserMapper::class,
         RoleMapper::class,
     ],
-    'navigation_group' => 'Import',
+    'navigation_group' => 'Verwaltung',
 ];

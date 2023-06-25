@@ -29,7 +29,6 @@ class UserMapper extends BaseMapper implements Relator
             User::COL_EMAIL => '/E-Mail/i',
             User::COL_JOIN_DATE => '/Beitrittsdatum/i',
             User::COL_CONTRIBUTION_GROUP => '/Beitragsgruppe/i',
-            User::COL_COUNT_SHARES => '/Anzahl d(.|er) Anteile/i',
             User::COL_CREATED_AT => '/Angelegt am/i',
         ]);
     }

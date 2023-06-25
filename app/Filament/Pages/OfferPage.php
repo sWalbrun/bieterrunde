@@ -2,15 +2,20 @@
 
 namespace App\Filament\Pages;
 
-use App\BidderRound\BidderRoundService;
+use App\BidderRound\TopicService;
 use App\Enums\EnumContributionGroup;
 use App\Enums\EnumPaymentInterval;
+use App\Enums\ShareValue;
 use App\Filament\EnumNavigationGroups;
+use App\Filament\Utils\ForFilamentTranslator;
 use App\Models\BidderRound;
 use App\Models\Offer;
+use App\Models\Share;
+use App\Models\Topic;
 use App\Models\User;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -18,6 +23,7 @@ use Filament\Pages\Actions\Action;
 use Filament\Pages\Page;
 use Filament\Support\Actions\Concerns\HasForm;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 /**
@@ -38,14 +44,14 @@ class OfferPage extends Page
     public const USER_PAYMENT_INTERVAL = 'userPaymentInterval';
 
     /**
-     * @var Collection<int, float> round to amount mapping
+     * @var Collection<string, float> round to amount mapping
      */
     public Collection $roundToAmountMapping;
 
     /**
-     * @var Collection<int, Offer> round to amount mapping
+     * @var Collection<string, ShareValue>
      */
-    public Collection $roundToOfferMapping;
+    public Collection $topicToShareMapping;
 
     public User|null $user = null;
 
@@ -56,6 +62,13 @@ class OfferPage extends Page
     protected static ?string $navigationIcon = 'heroicon-o-currency-euro';
 
     protected static string $view = 'filament.pages.offer-page';
+
+    public function __construct($id = null)
+    {
+        parent::__construct($id);
+        $this->roundToAmountMapping = collect();
+        $this->topicToShareMapping = collect();
+    }
 
     public static function url(): string
     {
@@ -103,16 +116,8 @@ class OfferPage extends Page
     {
         parent::mount();
         $this->user = auth()->user();
-        $this->roundToOfferMapping = BidderRoundService::getOffers($this->getFormModel(), $this->user)
-            // The dehydration of filament cannot handle null values within a collection with models. Therefore, we insert
-            // empty offers instead.
-            ->map(fn (Offer|null $offer) => $offer ?? new Offer());
-        $this->roundToAmountMapping = $this->roundToOfferMapping->map(fn (Offer|null $offer) => $offer?->amount);
-        $this->formData([
-            self::USER => $this->user,
-            self::USER_CONTRIBUTION_GROUP => isset($this->user->contributionGroup) ? trans($this->user->contributionGroup->value) : null,
-            self::USER_PAYMENT_INTERVAL => $this->user->paymentInterval?->value,
-        ]);
+        $this->userContributionGroup = isset($this->user->contributionGroup) ? trans($this->user->contributionGroup->value) : null;
+        $this->userPaymentInterval = $this->user->paymentInterval?->value;
     }
 
     protected function getFormSchema(): array
@@ -122,51 +127,77 @@ class OfferPage extends Page
             return [];
         }
 
+        $topicsOfInterest = $this->getFormModel()?->topics()->whereHas(
+            'shares',
+            fn (Builder $query) => $query->where(Share::COL_FK_USER, '=', $this->user->id)
+        );
+        $fieldSets = $topicsOfInterest->chunkMap(function (Topic $topic) {
+            $buildOffer = function (Offer|null $offer, int $numberOfRound) use ($topic) {
+                $amounts = $this->roundToAmountMapping->get(
+                    $topic->id) ?? [];
+                $amounts += [$numberOfRound => $offer->amount ?? null];
+                $this->roundToAmountMapping->put($topic->id, $amounts);
+                $this->topicToShareMapping->put(
+                    $topic->id,
+                    $topic
+                        ->shares
+                        ->first(fn (Share $share) => $share->fkUser === $this->user->id)?->value
+                );
+
+                return TextInput::make("roundToAmountMapping.$topic->id.$numberOfRound")
+                    ->label(trans('Offer :numberOfRound', ['numberOfRound' => $numberOfRound]))
+                    ->numeric()
+                    ->mask(
+                        fn (TextInput\Mask $mask) => $mask
+                            ->numeric()
+                            ->decimalPlaces(2)
+                            ->decimalSeparator(',')
+                            ->minValue(1)
+                            ->maxValue(200)
+                            ->normalizeZeros()
+                            ->padFractionalZeros()
+                            ->thousandsSeparator('.')
+                    )
+                    ->hint(
+                        $offer?->isOfWinningRound()
+                            ? trans('Round with enough turnover')
+                            : null
+                    )->hintColor('success')
+                    ->suffix('€')
+                    ->required();
+            };
+
+            return Fieldset::make($topic->name)
+                ->schema(
+                    [
+                        Select::make('topicToShareMapping.'.$topic->id)
+                            ->label(trans('Count shares'))
+                            ->options(ForFilamentTranslator::enum(ShareValue::getInstances()))
+                            ->disabled(),
+                        Card::make(TopicService::getOffers($topic, $this->user)->map($buildOffer)->toArray())
+                            ->columns(2)
+                            ->disabled(fn () => ! $topic->isOfferStillPossible()),
+                    ]);
+        });
+
         return [
             // We have to make a workaround for this value since the contribution group is a
             // bensampo enum and the arrayble casts (Enum::toArray()) is making problems combined
             // with filament
             Card::make([
-                TextInput::make(self::USER.'.'.User::COL_NAME),
-                TextInput::make(self::USER.'.'.User::COL_EMAIL),
+                TextInput::make(self::USER.'.'.User::COL_NAME)->disabled(),
+                TextInput::make(self::USER.'.'.User::COL_EMAIL)->disabled(),
                 TextInput::make(self::USER_CONTRIBUTION_GROUP)
-                    ->label(trans('Contribution group')),
-                TextInput::make(self::USER.'.'.User::COL_COUNT_SHARES)
-                    ->label(trans('Count shares')),
-            ])->disabled(),
-            Card::make([
+                    ->label(trans('Contribution group'))
+                    ->disabled(),
                 Select::make(self::USER_PAYMENT_INTERVAL)
                     ->label(trans('Payment interval'))
                     ->options(
-                        collect(EnumPaymentInterval::getInstances())
-                            ->mapWithKeys(fn (EnumPaymentInterval $value) => [$value->key => trans($value->value)])
+                        ForFilamentTranslator::enum(EnumPaymentInterval::getInstances())
                     )
                     ->required(),
-                ...collect($this->roundToAmountMapping)->map(
-                    // See the mount method for setting the corresponding values
-                    fn (string|null $amountOfRound, $numberOfRound) => TextInput::make(self::ROUND_TO_AMOUNT_MAPPING.".$numberOfRound")
-                        ->label(trans('Offer :numberOfRound', ['numberOfRound' => $numberOfRound]))
-                        ->numeric()
-                        ->mask(
-                            fn (TextInput\Mask $mask) => $mask
-                                ->numeric()
-                                ->decimalPlaces(2)
-                                ->decimalSeparator(',')
-                                ->minValue(1)
-                                ->maxValue(200)
-                                ->normalizeZeros()
-                                ->padFractionalZeros()
-                                ->thousandsSeparator('.')
-                        )
-                        ->hint(
-                            $this->roundToOfferMapping->get($numberOfRound)?->isOfWinningRound()
-                                ? trans('Round with enough turnover')
-                                : null
-                        )->hintColor('success')
-                        ->suffix('€')
-                        ->required()
-                )->toArray(),
-            ])->disabled(! $this->getFormModel()?->isOfferStillPossible()),
+            ]),
+            ...$fieldSets,
         ];
     }
 
@@ -174,16 +205,24 @@ class OfferPage extends Page
     {
         $this->validate();
         $atLeastOneChange = false;
-        collect($this->roundToAmountMapping)->each(function (string|null $amountOfRound, $numberOfRound) use (&$atLeastOneChange) {
-            // phpcs:ignore
-            /** @var Offer $offer */
-            $offer = $this->user->offers()->where(Offer::COL_ROUND, '=', $numberOfRound)->first() ?? new Offer();
-            $offer->round = $numberOfRound;
-            $offer->amount = $amountOfRound;
-            $offer->bidderRound()->associate($this->getFormModel());
-            $offer->user()->associate($this->user);
-            $atLeastOneChange |= $offer->isDirty();
-            $offer->save();
+        collect($this->roundToAmountMapping)->each(function (array $rounds, $topicId) use (&$atLeastOneChange) {
+            collect($rounds)->each(function ($amountOfRound, $numberOfRound) use ($topicId, &$atLeastOneChange) {
+                /** @var Topic $topic */
+                $topic = Topic::query()->findOrFail($topicId);
+                /** @var Offer $offer */
+                $offer = $this
+                    ->user
+                    ->offers()
+                    ->where(Offer::COL_ROUND, '=', $numberOfRound)
+                    ->where(Offer::COL_FK_TOPIC, '=', $topic->id)
+                    ->first() ?? new Offer();
+                $offer->round = $numberOfRound;
+                $offer->amount = $amountOfRound;
+                $offer->topic()->associate($topicId);
+                $offer->user()->associate($this->user);
+                $atLeastOneChange |= $offer->isDirty();
+                $offer->save();
+            });
         })->toArray();
 
         $atLeastOneChange |= $this->user->paymentInterval?->isNot($this->userPaymentInterval);

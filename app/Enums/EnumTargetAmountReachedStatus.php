@@ -1,6 +1,6 @@
 <?php
 
-namespace App\BidderRound;
+namespace App\Enums;
 
 use BenSampo\Enum\Enum;
 

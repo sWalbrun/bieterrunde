@@ -2,9 +2,10 @@
 
 namespace App\BidderRound;
 
+use App\Enums\EnumTargetAmountReachedStatus;
 use App\Exceptions\NoRoundFoundException;
-use App\Models\BidderRound;
-use App\Models\BidderRoundReport;
+use App\Models\Topic;
+use App\Models\TopicReport;
 
 class TargetAmountReachedReport
 {
@@ -13,8 +14,8 @@ class TargetAmountReachedReport
          * This property should be actually readonly but mockery does not support the initialization with parameters
          */
         public EnumTargetAmountReachedStatus $status,
-        private readonly BidderRound $bidderRound,
-        private readonly BidderRoundReport|null $bidderRoundReport,
+        private readonly Topic $topic,
+        private readonly TopicReport|null $topicReport,
     ) {
     }
 
@@ -24,10 +25,10 @@ class TargetAmountReachedReport
     public function roundWon(): int
     {
         if (! $this->status->isReportAvailable()) {
-            throw new NoRoundFoundException("No round has been found for bidder round ($this->bidderRound)");
+            throw new NoRoundFoundException("No round has been found for topic ($this->topic)");
         }
 
-        return $this->bidderRoundReport->roundWon;
+        return $this->topicReport->roundWon;
     }
 
     /**
@@ -36,9 +37,9 @@ class TargetAmountReachedReport
     public function sumAmountFormatted(): string
     {
         if (! $this->status->isReportAvailable()) {
-            throw new NoRoundFoundException("No round has been found for bidder round ($this->bidderRound)");
+            throw new NoRoundFoundException("No round has been found for bidder round ($this->topic)");
         }
 
-        return $this->bidderRoundReport->sumAmountFormatted;
+        return $this->topicReport->sumAmountFormatted;
     }
 }

@@ -36,14 +36,14 @@ class ReminderOfBidderRound extends Notification
         return (new MailMessage())
             ->greeting(trans('Servus :name', ['name' => $this->participant->name()]))
             ->line(trans(
-                'Die Bieterrunde endet am :endOfSubmission und uns ist aufgefallen, dass dein Gebot noch fehlt.',
+                'The bidder round ends at :endOfSubmission and we noticed that your offers are still missing.',
                 ['endOfSubmission' => $this->round->endOfSubmission->format('d.m')]
             ))
-            ->line(trans('Bitte trage dein Gebot noch ein.'))
+            ->line(trans('Please still enter your offer.'))
             ->action(
-                trans('Gebote abgeben'),
+                trans('Offer!'),
                 OfferPage::url(),
             )
-            ->line(trans('Danke fürs Mitmachen!'));
+            ->line(trans('Thanks for participating'));
     }
 }

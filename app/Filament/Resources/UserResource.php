@@ -7,6 +7,7 @@ use App\Enums\EnumContributionGroup;
 use App\Enums\EnumPaymentInterval;
 use App\Filament\EnumNavigationGroups;
 use App\Filament\Resources\UserResource\Pages;
+use App\Filament\Utils\ForFilamentTranslator;
 use App\Models\User;
 use Carbon\Carbon;
 use Filament\Forms;
@@ -47,19 +48,10 @@ class UserResource extends Resource
                     ->label(trans('E-Mail')),
                 Forms\Components\Select::make(User::COL_CONTRIBUTION_GROUP)
                     ->label(trans('Contribution group'))
-                    ->options(collect(EnumContributionGroup::getInstances())->mapWithKeys(fn (EnumContributionGroup $value) => [$value->key => trans($value->value)])),
-                Forms\Components\TextInput::make(User::COL_COUNT_SHARES)
-                    ->label(trans('Count shares'))
-                    ->integer()
-                    ->gt(0),
+                    ->options(ForFilamentTranslator::enum(EnumContributionGroup::getInstances())),
                 Forms\Components\Select::make(User::COL_PAYMENT_INTERVAL)
                     ->translateLabel()
-                    ->options(
-                        collect(EnumPaymentInterval::getInstances())
-                            ->mapWithKeys(
-                                fn (EnumPaymentInterval $value) => [$value->key => trans($value->value)]
-                            )
-                    ),
+                    ->options(ForFilamentTranslator::enum(EnumPaymentInterval::getInstances())),
                 Forms\Components\DatePicker::make(User::COL_JOIN_DATE)
                     ->label(trans('Join date')),
                 Forms\Components\DatePicker::make(User::COL_EXIT_DATE)
@@ -89,7 +81,6 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make(User::COL_CONTRIBUTION_GROUP)
                     ->translateLabel()
                     ->formatStateUsing(fn (EnumContributionGroup|null $state) => isset($state) ? trans($state->value) : null),
-                Tables\Columns\BadgeColumn::make(User::COL_COUNT_SHARES)->label(trans('Count shares')),
                 Tables\Columns\TextColumn::make(User::COL_JOIN_DATE)->label(trans('Join date'))
                     ->formatStateUsing(fn (Carbon|null $state) => $state?->format('d.m.Y')),
                 Tables\Columns\TextColumn::make(User::COL_EXIT_DATE)->label(trans('Exit date'))
@@ -97,8 +88,7 @@ class UserResource extends Resource
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make(User::COL_CONTRIBUTION_GROUP)->options(
-                    collect(EnumContributionGroup::getInstances())
-                        ->mapWithKeys(fn (EnumContributionGroup $value) => [$value->key => trans($value->value)])->toArray()
+                    ForFilamentTranslator::enum(EnumContributionGroup::getInstances())
                 ),
             ])
             ->actions([

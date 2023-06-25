@@ -1,31 +1,31 @@
 <?php
 
-namespace App\Filament\Resources\BidderRoundResource\RelationManagers;
+namespace App\Filament\Resources\TopicResource\RelationManagers;
 
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
-use App\BidderRound\BidderRoundService;
+use App\BidderRound\TopicService;
 use App\Enums\EnumContributionGroup;
 use App\Enums\EnumPaymentInterval;
-use App\Models\BidderRound;
+use App\Enums\ShareValue;
 use App\Models\Offer;
+use App\Models\Share;
+use App\Models\Topic;
 use App\Models\User;
-use App\Notifications\ReminderOfBidderRound;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class UsersRelationManager extends RelationManager
 {
     /**
-     * @var BidderRound|null
+     * @var Topic|null
      */
     public Model $ownerRecord;
 
@@ -50,25 +50,28 @@ class UsersRelationManager extends RelationManager
                     ->required()
                     ->maxLength(255)
                     ->disabled(),
+                Select::make(Share::COL_VALUE)
+                    ->label(trans('Count shares'))
+                    ->options(collect(ShareValue::getInstances())
+                        ->mapWithKeys(
+                            fn (ShareValue $value) => [$value->key => isset($value->value) ? trans($value->value) : null]
+                        )
+                    ),
                 Forms\Components\Select::make(User::COL_CONTRIBUTION_GROUP)
                     ->label(trans('Contribution group'))
                     ->options(
                         collect(EnumContributionGroup::getInstances())
                             ->mapWithKeys(
-                                fn (EnumContributionGroup $value) => [$value->key => trans($value->value)]
+                                fn (EnumContributionGroup $value) => [$value->key => isset($value->value) ? trans($value->value) : null]
                             )
                     )
-                    ->disabled(),
-                Forms\Components\TextInput::make(User::COL_COUNT_SHARES)
-                    ->label(trans('Count shares'))
-                    ->integer()
                     ->disabled(),
                 Forms\Components\Select::make(User::COL_PAYMENT_INTERVAL)
                     ->translateLabel()
                     ->options(
                         collect(EnumPaymentInterval::getInstances())
                             ->mapWithKeys(
-                                fn (EnumPaymentInterval $value) => [$value->key => trans($value->value)]
+                                fn (EnumPaymentInterval $value) => [$value->key => isset($value->value) ? trans($value->value) : null]
                             )
                     ),
                 Forms\Components\KeyValue::make('offers')
@@ -80,7 +83,7 @@ class UsersRelationManager extends RelationManager
                             Forms\Components\KeyValue $component,
                             User $record,
                         ) => $component->state(
-                            BidderRoundService::getOffers($livewire->ownerRecord, $record)
+                            TopicService::getOffers($livewire->ownerRecord, $record)
                                 ->map(fn (Offer|null $offer) => $offer?->amount)
                         )
                     )->columnSpan(2)
@@ -104,14 +107,14 @@ class UsersRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make(User::COL_CONTRIBUTION_GROUP)
                     ->translateLabel()
                     ->formatStateUsing(fn (EnumContributionGroup|null $state) => isset($state) ? trans($state->value) : null),
-                Tables\Columns\BadgeColumn::make(User::COL_COUNT_SHARES)->label(trans('Count shares')),
+                Tables\Columns\BadgeColumn::make(Share::COL_VALUE)->label(trans('Count shares'))->formatStateUsing(fn ($state) => isset($state) ? trans($state) : null),
                 Tables\Columns\BadgeColumn::make('Offers given')
                     ->translateLabel()
                     ->getStateUsing(
-                        fn (User $record, self $livewire) => $record->offersForRound($livewire->ownerRecord)->count()
+                        fn (User $record, self $livewire) => $record->offersForTopic($livewire->ownerRecord)->count()
                     )
                     ->color(
-                        fn (int $state, self $livewire) => $state === $livewire->ownerRecord->countOffers
+                        fn (int $state, self $livewire) => $state === $livewire->ownerRecord->rounds
                             ? 'success'
                             : 'secondary'
                     ),
@@ -136,11 +139,11 @@ class UsersRelationManager extends RelationManager
                         $data['onlyWithoutOffersGiven'],
                         fn (Builder $query) => $query->where(
                             Offer::query()
-                                ->where(Offer::COL_FK_BIDDER_ROUND, '=', $livewire->ownerRecord->id)
+                                ->where(Offer::COL_FK_TOPIC, '=', $livewire->ownerRecord->id)
                                 ->where(Offer::COL_FK_USER, '=', DB::raw('user.id'))
                                 ->selectRaw('COUNT(*)'),
                             '<',
-                            $livewire->ownerRecord->countOffers
+                            $livewire->ownerRecord->rounds
                         )
                     )),
             ])
@@ -153,18 +156,6 @@ class UsersRelationManager extends RelationManager
             ])
             ->bulkActions([
                 FilamentExportBulkAction::make('Export'),
-                Tables\Actions\BulkAction::make('RemindParticipants')
-                    ->label(trans('Remind participants'))
-                    ->icon('iconpark-remind-o')
-                    ->action(
-                        fn (Collection $records, self $livewire) => $records->each(
-                            function (User $participant) use ($livewire) {
-                                Log::info("Remind user ({$participant->email()}) about bidder round");
-                                $participant->notify(new ReminderOfBidderRound($livewire->ownerRecord, $participant));
-                                Log::info('User has been reminded');
-                            }
-                        )
-                    )->requiresConfirmation(),
                 Tables\Actions\DetachBulkAction::make(),
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
@@ -184,7 +175,7 @@ class UsersRelationManager extends RelationManager
                 if ($amount === 0.0) {
                     // 0.0 gets treated as a special case -> Remove the offer to stay upward compatible
                     Offer::query()
-                        ->where(Offer::COL_FK_BIDDER_ROUND, '=', $livewire->ownerRecord->id)
+                        ->where(Offer::COL_FK_TOPIC, '=', $livewire->ownerRecord->id)
                         ->where(Offer::COL_FK_USER, '=', $record->id)
                         ->where(Offer::COL_ROUND, '=', $round)
                         ->delete();
@@ -193,14 +184,14 @@ class UsersRelationManager extends RelationManager
                 }
                 Offer::query()->updateOrCreate(
                     [
-                        Offer::COL_FK_BIDDER_ROUND => $livewire->ownerRecord->id,
+                        Offer::COL_FK_TOPIC => $livewire->ownerRecord->id,
                         Offer::COL_FK_USER => $record->id,
                         Offer::COL_ROUND => $round,
                     ],
                     [
                         Offer::COL_AMOUNT => $amount,
                         Offer::COL_ROUND => $round,
-                        Offer::COL_FK_BIDDER_ROUND => $livewire->ownerRecord->id,
+                        Offer::COL_FK_TOPIC => $livewire->ownerRecord->id,
                         Offer::COL_FK_USER => $record->id,
                     ]
                 );

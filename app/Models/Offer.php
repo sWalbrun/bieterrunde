@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string amountFormatted
  * @property int round
  * @property User user
- * @property BidderRound bidderRound
+ * @property Topic topic
  */
 class Offer extends BaseModel
 {
@@ -27,7 +27,7 @@ class Offer extends BaseModel
 
     public const COL_ROUND = 'round';
 
-    public const COL_FK_BIDDER_ROUND = 'fkBidderRound';
+    public const COL_FK_TOPIC = 'fkTopic';
 
     public const COL_FK_USER = 'fkUser';
 
@@ -36,7 +36,7 @@ class Offer extends BaseModel
         self::COL_AMOUNT,
         self::COL_ROUND,
         self::COL_FK_USER,
-        self::COL_FK_BIDDER_ROUND,
+        self::COL_FK_TOPIC,
     ];
 
     public function user(): BelongsTo
@@ -44,9 +44,9 @@ class Offer extends BaseModel
         return $this->belongsTo(User::class, self::COL_FK_USER);
     }
 
-    public function bidderRound(): BelongsTo
+    public function topic(): BelongsTo
     {
-        return $this->belongsTo(BidderRound::class, self::COL_FK_BIDDER_ROUND);
+        return $this->belongsTo(Topic::class, self::COL_FK_TOPIC);
     }
 
     /**
@@ -54,7 +54,7 @@ class Offer extends BaseModel
      */
     public function isOfWinningRound(): bool
     {
-        return $this->exists && $this->bidderRound?->bidderRoundReport?->roundWon === $this->round;
+        return $this->exists && $this->topic?->topicReport?->roundWon === $this->round;
     }
 
     public function getAmountFormattedAttribute(): string

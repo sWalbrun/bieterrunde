@@ -5,7 +5,9 @@ namespace Database\Seeders;
 use App\Enums\EnumContributionGroup;
 use App\Models\BidderRound;
 use App\Models\Offer;
+use App\Models\Share;
 use App\Models\Tenant;
+use App\Models\Topic;
 use App\Models\User;
 use Carbon\Carbon;
 use Database\Factories\OfferFactory;
@@ -41,7 +43,13 @@ class LocalDevelopmentSeeder extends Seeder
             // we do not seed in case there are already users available
             return;
         }
-        $this->seedBidderRoundParticipants($this->seedBidderRound());
+        /** @var Topic $topic */
+        $topic = Topic::factory(state: [Topic::COL_ROUNDS => 3, Topic::COL_TARGET_AMOUNT => 68_000])
+            ->for(BidderRound::factory(state: [
+                BidderRound::COL_START_OF_SUBMISSION => now()->startOfMonth(),
+                BidderRound::COL_END_OF_SUBMISSION => now()->endOfMonth(),
+            ]))->create();
+        $this->seedTopicParticipants($topic);
     }
 
     private function seedAdmin(): void
@@ -56,40 +64,30 @@ class LocalDevelopmentSeeder extends Seeder
         $user->name = 'Admin';
         $user->email_verified_at = Carbon::now();
         $user->contributionGroup = EnumContributionGroup::FULL_MEMBER();
-        $user->countShares = 1;
         $user->save();
         $user->assignRole(Role::findOrCreate(config('filament-shield.super_admin.name')));
         $user->save();
     }
 
-    private function seedBidderRoundParticipants(BidderRound $bidderRound)
+    private function seedTopicParticipants(Topic $topic)
     {
         User::factory()
             ->count(self::USER_COUNT)
             ->create()
-            ->each(function (User $user) use ($bidderRound) {
+            ->each(function (User $user) use ($topic) {
+                Share::factory(state: [
+                    Share::COL_FK_USER => $user->id,
+                    Share::COL_FK_TOPIC => $topic->id,
+                ])->create();
                 OfferFactory::reset();
                 OfferFactory::randomize();
                 Offer::factory()
                     ->count(self::OFFER_COUNT)
                     ->create()
-                    ->each(function (Offer $offer) use ($user, $bidderRound) {
-                        $user->bidderRounds()->syncWithoutDetaching($bidderRound);
-                        $offer->bidderRound()->associate($bidderRound);
+                    ->each(function (Offer $offer) use ($user, $topic) {
+                        $offer->topic()->associate($topic);
                         $offer->user()->associate($user)->save();
                     });
             });
-    }
-
-    private function seedBidderRound(): BidderRound
-    {
-        return BidderRound::query()->create([
-            BidderRound::COL_VALID_FROM => now()->startOfYear(),
-            BidderRound::COL_VALID_TO => now()->startOfYear(),
-            BidderRound::COL_START_OF_SUBMISSION => now()->startOfMonth(),
-            BidderRound::COL_END_OF_SUBMISSION => now()->endOfMonth(),
-            BidderRound::COL_TARGET_AMOUNT => 68_000,
-            BidderRound::COL_COUNT_OFFERS => 3,
-        ]);
     }
 }

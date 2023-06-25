@@ -2,62 +2,55 @@
 
 namespace Tests\Feature\Notification;
 
-use App\BidderRound\Participant;
+use App\Enums\ShareValue;
 use App\Jobs\RememberTheBidderRound;
 use App\Models\BidderRound;
+use App\Models\Offer;
+use App\Models\Share;
+use App\Models\Topic;
 use App\Models\User;
 use App\Notifications\ReminderOfBidderRound;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
-use Tests\TestCase;
 
-/**
- * This test takes care of sending the notifications of {@link RememberTheBidderRound} only to the {@link Participant participants}
- * which did not make the offers yet.
- */
-class RememberTheBidderRoundTest extends TestCase
-{
-    use RefreshDatabase;
+it('Notifies the users with missing offers', function () {
+    User::query()->delete();
 
-    /**
-     * This test makes sure a participant without offers gets notified and one with offers does not get notified.
-     */
-    public function testNotifyParticipants()
-    {
-        Notification::fake();
+    /** @var Topic $topic */
+    $topic = Topic::factory()
+        ->has(Offer::factory()->for(User::factory()))
+        ->for(BidderRound::factory())->create();
 
-        $round = $this->createBidderRound();
-        $participantWithOffers = $this->createParticipantWithOffers($round);
-        $participantWithoutOffers = $this->createParticipantWithoutOffers();
-        $round->users()->sync([$participantWithOffers->id, $participantWithoutOffers->id]);
+    /** @var User $userWithOffer */
+    $userWithOffer = User::query()->first();
+    /** @var Share $share */
+    $share = Share::factory(state: [Share::COL_VALUE => ShareValue::ONE])
+        ->afterMaking(function (Share $share) use ($topic, $userWithOffer) {
+            $share->user()->associate($userWithOffer);
+            $share->topic()->associate($topic);
+        })->create();
+    $share->save();
 
-        $job = new RememberTheBidderRound($round);
-        $job->handle();
+    /** @var User $userWithoutOffer */
+    $userWithoutOffer = User::factory()->afterCreating(function (User $user) use ($topic) {
+        $user->shares()->save(
+            Share::factory()
+                ->afterMaking(function (Share $share) use ($topic, $user) {
+                    $share->user()->associate($user);
+                    $share->topic()->associate($topic);
+                })->create()
+        );
+    })->create();
+    Notification::fake();
+    $job = new RememberTheBidderRound($topic->bidderRound);
+    $job->handle();
+    Notification::assertSentTo(
+        $userWithoutOffer,
+        ReminderOfBidderRound::class,
+        function (ReminderOfBidderRound $reminder) use ($userWithoutOffer) {
+            $mailMessage = $reminder->toMail();
+            $this->assertEquals("Servus $userWithoutOffer->name", $mailMessage->greeting);
 
-        Notification::assertSentTo(
-            $participantWithoutOffers,
-            ReminderOfBidderRound::class,
-            function (ReminderOfBidderRound $reminder) use ($participantWithoutOffers) {
-                $mailMessage = $reminder->toMail();
-                $this->assertEquals("Servus $participantWithoutOffers->name", $mailMessage->greeting);
-
-                return $reminder;
-            });
-        Notification::assertNotSentTo($participantWithOffers, ReminderOfBidderRound::class);
-    }
-
-    private function createParticipantWithOffers(BidderRound $round): User
-    {
-        $participantWithOffers = $this->createAndActAsUser();
-        $this->createOffers($participantWithOffers, $round);
-
-        return $participantWithOffers;
-    }
-
-    private function createParticipantWithoutOffers(): User
-    {
-        $participantWithoutOffers = $this->createAndActAsUser();
-
-        return $participantWithoutOffers;
-    }
-}
+            return $reminder;
+        });
+    Notification::assertNotSentTo($userWithOffer, ReminderOfBidderRound::class);
+});

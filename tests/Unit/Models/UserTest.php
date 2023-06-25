@@ -5,6 +5,7 @@ namespace Tests\Unit\Models;
 use App\Models\BaseModel;
 use App\Models\BidderRound;
 use App\Models\Offer;
+use App\Models\Topic;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -42,25 +43,25 @@ class UserTest extends TestCase
     {
         $user = $this->createAndActAsUser();
 
-        /** @var BidderRound $bidderRound */
-        $bidderRound = BidderRound::factory()->create()->first();
+        /** @var Topic $topic */
+        $topic = Topic::factory()->for(BidderRound::factory())->create();
 
-        $this->assertEmpty($user->offersForRound($bidderRound)->get());
+        $this->assertEmpty($user->offersForTopic($topic)->get());
 
-        $offers = $this->createOffers($user, $bidderRound);
-        $this->assertNotEmpty($user->offersForRound($bidderRound)->get());
-        $this->assertEquals($offers->count(), $offers->intersect($user->offersForRound($bidderRound)->get())->count());
+        $offers = $this->createOffers($user, $topic);
+        $this->assertNotEmpty($user->offersForTopic($topic)->get());
+        $this->assertEquals($offers->count(), $offers->intersect($user->offersForTopic($topic)->get())->count());
     }
 
-    protected function createOffers(User $user, ?BidderRound $bidderRound = null): Collection
+    protected function createOffers(User $user, ?Topic $topic = null): Collection
     {
         return Offer::factory()
             ->count(7)
             ->make()
-            ->each(function (Offer $offer) use ($user, $bidderRound) {
+            ->each(function (Offer $offer) use ($user, $topic) {
                 $offer->user()->associate($user)->save();
-                if (isset($bidderRound)) {
-                    $offer->bidderRound()->associate($bidderRound)->save();
+                if (isset($topic)) {
+                    $offer->topic()->associate($topic)->save();
                 }
             });
     }

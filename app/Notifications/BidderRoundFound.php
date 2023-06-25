@@ -3,24 +3,22 @@
 namespace App\Notifications;
 
 use App\Filament\Pages\OfferPage;
-use App\Models\BidderRound;
-use App\Models\BidderRoundReport;
+use App\Models\Topic;
+use App\Models\TopicReport;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 /**
- * This notification gets created as soon as a round has been found for a {@link BidderRound} which has enough sum amount.
+ * This notification gets created as soon as a round has been found for a {@link Topic} which has enough sum amount.
  */
 class BidderRoundFound extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public const URL = 'url';
-
     public function __construct(
-        private readonly BidderRoundReport $report,
+        private readonly TopicReport $report,
         private readonly string $amountFormatted,
         private readonly int $round,
     ) {
@@ -35,7 +33,8 @@ class BidderRoundFound extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->greeting(trans('Servus'))
-            ->line(trans('Es ist soweit! Die Runde :round wurde als ausreichende Runde ermittelt!', ['round' => $this->round ?? '_']))
+            ->line(trans('Es ist soweit! Für das Produkt :topic steht die Runde fest.', ['topic' => $this->report->name]))
+            ->line(trans('Die Runde :round reicht aus!', ['round' => $this->round]))
             ->line(trans('Damit liegt dein monatlicher Beitrag bei :amount', ['amount' => $this->amountFormatted]))
             ->action(
                 trans('Gebote ansehen'),

@@ -11,32 +11,11 @@ CREATE TABLE `bidderRound` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `createdAt` timestamp NULL DEFAULT NULL,
   `updatedAt` timestamp NULL DEFAULT NULL,
-  `targetAmount` double(8,2) DEFAULT NULL,
   `startOfSubmission` datetime DEFAULT NULL,
   `endOfSubmission` datetime DEFAULT NULL,
-  `validFrom` datetime DEFAULT NULL,
-  `validTo` datetime DEFAULT NULL,
-  `countOffers` int DEFAULT NULL,
   `note` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `tenant_id` varchar(125) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-DROP TABLE IF EXISTS `bidderRoundReport`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `bidderRoundReport` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `roundWon` int unsigned DEFAULT NULL,
-  `countParticipants` int unsigned DEFAULT NULL,
-  `countRounds` int unsigned DEFAULT NULL,
-  `sumAmount` double(8,2) DEFAULT NULL,
-  `fkBidderRound` bigint unsigned DEFAULT NULL,
-  `createdAt` timestamp NULL DEFAULT NULL,
-  `updatedAt` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `bidderroundreport_fkbidderround_foreign` (`fkBidderRound`),
-  CONSTRAINT `bidderroundreport_fkbidderround_foreign` FOREIGN KEY (`fkBidderRound`) REFERENCES `bidderRound` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `domains`;
@@ -144,11 +123,11 @@ CREATE TABLE `offer` (
   `amount` double(8,2) DEFAULT NULL,
   `round` int DEFAULT NULL,
   `fkUser` bigint unsigned DEFAULT NULL,
-  `fkBidderRound` bigint unsigned DEFAULT NULL,
+  `fkTopic` bigint unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `offer_fkbidderround_foreign` (`fkBidderRound`),
   KEY `offer_fkuser_foreign` (`fkUser`),
-  CONSTRAINT `offer_fkbidderround_foreign` FOREIGN KEY (`fkBidderRound`) REFERENCES `bidderRound` (`id`) ON DELETE CASCADE,
+  KEY `offer_fktopic_foreign` (`fkTopic`),
+  CONSTRAINT `offer_fktopic_foreign` FOREIGN KEY (`fkTopic`) REFERENCES `topic` (`id`),
   CONSTRAINT `offer_fkuser_foreign` FOREIGN KEY (`fkUser`) REFERENCES `user` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -233,6 +212,23 @@ CREATE TABLE `sessions` (
   KEY `sessions_last_activity_index` (`last_activity`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `share`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `share` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `createdAt` timestamp NULL DEFAULT NULL,
+  `updatedAt` timestamp NULL DEFAULT NULL,
+  `value` varchar(125) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `fkUser` bigint unsigned NOT NULL,
+  `fkTopic` bigint unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `share_fkuser_foreign` (`fkUser`),
+  KEY `share_fktopic_foreign` (`fkTopic`),
+  CONSTRAINT `share_fktopic_foreign` FOREIGN KEY (`fkTopic`) REFERENCES `topic` (`id`),
+  CONSTRAINT `share_fkuser_foreign` FOREIGN KEY (`fkUser`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `tenant`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -244,6 +240,82 @@ CREATE TABLE `tenant` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `topic`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `topic` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `createdAt` timestamp NULL DEFAULT NULL,
+  `updatedAt` timestamp NULL DEFAULT NULL,
+  `name` varchar(125) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `targetAmount` double(8,2) DEFAULT NULL,
+  `rounds` int DEFAULT NULL,
+  `fkBidderRound` bigint unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `topic_fkbidderround_foreign` (`fkBidderRound`),
+  CONSTRAINT `topic_fkbidderround_foreign` FOREIGN KEY (`fkBidderRound`) REFERENCES `bidderRound` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `topicReport`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `topicReport` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `roundWon` int unsigned DEFAULT NULL,
+  `countParticipants` int unsigned DEFAULT NULL,
+  `countRounds` int unsigned DEFAULT NULL,
+  `sumAmount` double(8,2) DEFAULT NULL,
+  `fkBidderRound` bigint unsigned DEFAULT NULL,
+  `createdAt` timestamp NULL DEFAULT NULL,
+  `updatedAt` timestamp NULL DEFAULT NULL,
+  `fkTopic` bigint unsigned NOT NULL,
+  `name` varchar(125) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `bidderroundreport_fkbidderround_foreign` (`fkBidderRound`),
+  KEY `topicreport_fktopic_foreign` (`fkTopic`),
+  CONSTRAINT `topicreport_fktopic_foreign` FOREIGN KEY (`fkTopic`) REFERENCES `topic` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(125) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(125) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email_verified_at` timestamp NULL DEFAULT NULL,
+  `password` varchar(125) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `two_factor_secret` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `two_factor_recovery_codes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `remember_token` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `contributionGroup` enum('FULL_MEMBER','SUSTAINING_MEMBER') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `paymentInterval` enum('ANNUAL','SEMIANNUAL','MONTHLY') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `joinDate` timestamp NULL DEFAULT NULL,
+  `exitDate` timestamp NULL DEFAULT NULL,
+  `current_team_id` bigint unsigned DEFAULT NULL,
+  `profile_photo_path` varchar(2048) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `createdAt` timestamp NULL DEFAULT NULL,
+  `updatedAt` timestamp NULL DEFAULT NULL,
+  `tenant_id` varchar(125) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `user_topic`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_topic` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `createdAt` timestamp NULL DEFAULT NULL,
+  `updatedAt` timestamp NULL DEFAULT NULL,
+  `fkUser` bigint unsigned NOT NULL,
+  `fkTopic` bigint unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_topic_fkuser_foreign` (`fkUser`),
+  KEY `user_topic_fktopic_foreign` (`fkTopic`),
+  CONSTRAINT `user_topic_fktopic_foreign` FOREIGN KEY (`fkTopic`) REFERENCES `topic` (`id`),
+  CONSTRAINT `user_topic_fkuser_foreign` FOREIGN KEY (`fkUser`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -251,3 +323,23 @@ CREATE TABLE `tenant` (
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
+INSERT INTO `migrations` VALUES (1,'2014_10_12_000000_create_users_table',1);
+INSERT INTO `migrations` VALUES (2,'2014_10_12_100000_create_password_resets_table',1);
+INSERT INTO `migrations` VALUES (3,'2014_10_12_200000_add_two_factor_columns_to_users_table',1);
+INSERT INTO `migrations` VALUES (4,'2019_08_19_000000_create_failed_jobs_table',1);
+INSERT INTO `migrations` VALUES (5,'2019_12_14_000001_create_personal_access_tokens_table',1);
+INSERT INTO `migrations` VALUES (6,'2021_05_27_173757_vegetables',1);
+INSERT INTO `migrations` VALUES (7,'2021_12_10_174624_create_bidder_round',1);
+INSERT INTO `migrations` VALUES (8,'2021_12_10_175210_create_offer',1);
+INSERT INTO `migrations` VALUES (9,'2021_12_10_192501_create_sessions_table',1);
+INSERT INTO `migrations` VALUES (10,'2022_01_04_174227_create_bidder_round_report',1);
+INSERT INTO `migrations` VALUES (11,'2022_01_06_150812_create_notifications_table',1);
+INSERT INTO `migrations` VALUES (12,'2022_01_06_151520_create_jobs_table',1);
+INSERT INTO `migrations` VALUES (13,'2022_04_15_000010_create_tenant_table',1);
+INSERT INTO `migrations` VALUES (14,'2022_04_15_000020_create_domains_table',1);
+INSERT INTO `migrations` VALUES (15,'2022_11_16_193804_relate_user_and_bidder_round',1);
+INSERT INTO `migrations` VALUES (16,'2023_01_04_152317_cascade_delete_bidder_round',1);
+INSERT INTO `migrations` VALUES (17,'2023_01_15_110649_create_permission_tables',1);
+INSERT INTO `migrations` VALUES (18,'2023_02_12_115659_cascade_delete_user',1);
+INSERT INTO `migrations` VALUES (19,'2023_06_08_153046_remove_unused_models',1);
+INSERT INTO `migrations` VALUES (20,'2023_06_16_143322_create_topics',1);

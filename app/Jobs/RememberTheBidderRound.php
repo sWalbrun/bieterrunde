@@ -28,9 +28,7 @@ class RememberTheBidderRound implements ShouldQueue
 
     public function handle()
     {
-        $this->round->users()
-            ->get()
-            ->filter(fn (Participant $participant) => $participant->offersForRound($this->round)->doesntExist())
+        $this->round->usersWithMissingOffers()
             ->filter(fn (Participant $participant) => method_exists($participant, 'notify'))
             ->each(function (Participant $participant) {
                 Log::info("Remember user ({$participant->email()}) about bidder round");

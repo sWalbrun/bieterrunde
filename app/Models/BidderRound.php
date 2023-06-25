@@ -2,96 +2,54 @@
 
 namespace App\Models;
 
-use App\BidderRound\BidderRoundService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 /**
  * @property int id
- * @property float targetAmount
  * @property Carbon startOfSubmission
  * @property Carbon endOfSubmission
- * @property Carbon validFrom
- * @property Carbon validTo
- * @property int countOffers
  * @property string note
  * @property self|Builder started
  * @property string tenant_id
  * @property Collection<Offer> offers
- * @property Collection<User> users
- * @property BidderRoundReport $bidderRoundReport
+ * @property TopicReport $bidderRoundReport
+ * @property-read Collection<Topic> topics
  */
 class BidderRound extends BaseModel
 {
     use HasFactory;
-    use BidderRoundRelations;
     use BelongsToTenant;
 
     public const TABLE = 'bidderRound';
 
     protected $table = self::TABLE;
 
-    public const COL_TARGET_AMOUNT = 'targetAmount';
-
     public const COL_START_OF_SUBMISSION = 'startOfSubmission';
 
     public const COL_END_OF_SUBMISSION = 'endOfSubmission';
 
-    public const COL_VALID_FROM = 'validFrom';
-
-    public const COL_VALID_TO = 'validTo';
-
-    public const COL_COUNT_OFFERS = 'countOffers';
-
     public const COL_NOTE = 'note';
-
-    public const COL_FK_TENANT = 'tenant_id';
 
     protected $casts = [
         self::COL_START_OF_SUBMISSION => 'date',
         self::COL_END_OF_SUBMISSION => 'date',
-        self::COL_VALID_FROM => 'date',
-        self::COL_VALID_TO => 'date',
     ];
 
     protected $fillable = [
-        self::COL_TARGET_AMOUNT,
+        self::COL_NOTE,
         self::COL_START_OF_SUBMISSION,
         self::COL_END_OF_SUBMISSION,
-        self::COL_VALID_FROM,
-        self::COL_VALID_TO,
-        self::COL_COUNT_OFFERS,
     ];
 
-    protected static function boot()
+    public function topics(): HasMany
     {
-        parent::boot();
-        static::created(
-            // Since it is quite elaborate to associate all the users, we simply associate all active ones
-            // and the admin can dissociate afterwards the ones, which should not be part of this round
-            fn (self $bidderRound) => BidderRoundService::syncBidderRoundParticipants($bidderRound)
-        );
-    }
-
-    public function offers(): HasMany
-    {
-        return $this->hasMany(Offer::class, Offer::COL_FK_BIDDER_ROUND);
-    }
-
-    public function users(): BelongsToMany
-    {
-        return $this->belongsToMany(
-            User::class,
-            UserBidderRound::TABLE,
-            UserBidderRound::COL_FK_BIDDER_ROUND,
-            UserBidderRound::COL_FK_USER,
-        );
+        return $this->hasMany(Topic::class, Topic::COL_FK_BIDDER_ROUND);
     }
 
     /**
@@ -99,7 +57,18 @@ class BidderRound extends BaseModel
      */
     public function isOfferStillPossible(): bool
     {
-        return ! $this->bidderRoundReport()->exists()
+        $totalTopics = $this->topics()->count();
+        $completedTopics = $this
+            ->topics()
+            ->whereExists(fn (\Illuminate\Database\Query\Builder $builder) => $builder
+                ->from(TopicReport::TABLE)
+                ->where(
+                    TopicReport::TABLE.'.'.TopicReport::COL_FK_TOPIC,
+                    '=',
+                    DB::raw(Topic::TABLE.'.'.BaseModel::COL_ID)
+                ))->count();
+
+        return ($completedTopics < $totalTopics)
             && $this->bidderRoundBetweenNow();
     }
 
@@ -113,18 +82,27 @@ class BidderRound extends BaseModel
             );
     }
 
-    public function bidderRoundReport(): HasOne
-    {
-        return $this->hasOne(BidderRoundReport::class, BidderRoundReport::COL_FK_BIDDER_ROUND);
-    }
-
     public function bidderRoundBetweenNow(): bool
     {
         return Carbon::now()->isBetween($this->startOfSubmission->startOfDay(), $this->endOfSubmission->endOfDay());
     }
 
+    public function usersWithMissingOffers(): Collection
+    {
+        $missingUserIds = $this->topics->map(function (Topic $topic) {
+            $requiredUserIds = $topic->shares()->pluck(Share::COL_FK_USER);
+            $presentUserIds = $topic->offers()->pluck(Offer::COL_FK_USER);
+
+            return $requiredUserIds->diff($presentUserIds);
+        })
+            ->flatten(1)
+            ->unique();
+
+        return User::query()->whereIn(BaseModel::COL_ID, $missingUserIds)->get();
+    }
+
     public function __toString()
     {
-        return trans('Bieterrunde ').($this->validFrom ? $this->validFrom->format('Y') : '');
+        return trans('Bidder round').' '.$this->endOfSubmission->format('m.Y');
     }
 }

@@ -10,20 +10,23 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Log;
 
 /**
- * This model is the result of the {@link IsTargetAmountReached} and holds all interesting information of the {@link BidderRound}.
+ * This model is the result of the {@link IsTargetAmountReached} and holds all interesting information of the {@link Topic}.
  *
+ * @property string name
  * @property int roundWon
  * @property int countParticipants
  * @property int countRounds
  * @property float sumAmount
  * @property string sumAmountFormatted
- * @property BidderRound bidderRound
+ * @property Topic topic
  */
-class BidderRoundReport extends BaseModel
+class TopicReport extends BaseModel
 {
     use HasFactory;
 
-    public const TABLE = 'bidderRoundReport';
+    public const TABLE = 'topicReport';
+
+    public const COL_NAME = 'name';
 
     public const COL_ROUND_WON = 'roundWon';
 
@@ -33,20 +36,21 @@ class BidderRoundReport extends BaseModel
 
     public const COL_SUM_AMOUNT = 'sumAmount';
 
-    public const COL_FK_BIDDER_ROUND = 'fkBidderRound';
+    public const COL_FK_TOPIC = 'fkTopic';
 
     protected $table = self::TABLE;
 
     protected $fillable = [
+        self::COL_NAME,
         self::COL_ROUND_WON,
         self::COL_COUNT_PARTICIPANTS,
         self::COL_COUNT_ROUNDS,
         self::COL_SUM_AMOUNT,
     ];
 
-    public function bidderRound(): BelongsTo
+    public function topic(): BelongsTo
     {
-        return $this->belongsTo(BidderRound::class, self::COL_FK_BIDDER_ROUND);
+        return $this->belongsTo(Topic::class, self::COL_FK_TOPIC);
     }
 
     public function getSumAmountFormattedAttribute(): string
@@ -56,15 +60,13 @@ class BidderRoundReport extends BaseModel
 
     public function notifyUsers(): void
     {
-        $this->bidderRound->users()
+        $this->topic->users()
             ->get()
             ->filter(fn (Participant $participant) => method_exists($participant, 'notify'))
             ->each(function (Participant $user) {
-                /*
-                 * @var Offer $offer
-                 */
+                /** @var Offer $offer */
                 $offer = $user
-                    ->offersForRound($this->bidderRound)
+                    ->offersForTopic($this->topic)
                     ->where(Offer::COL_ROUND, '=', $this->roundWon)->first();
                 $notification = new BidderRoundFound($this, $offer->amountFormatted ?? '', $offer->round);
                 Log::info("Notifying user ({$user->email()}) about report");

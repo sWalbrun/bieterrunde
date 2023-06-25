@@ -5,25 +5,10 @@ CREATE TABLE `bidderRound` (
   `id` integer  NOT NULL PRIMARY KEY AUTOINCREMENT
 ,  `createdAt` timestamp NULL DEFAULT NULL
 ,  `updatedAt` timestamp NULL DEFAULT NULL
-,  `targetAmount` double(8,2) DEFAULT NULL
 ,  `startOfSubmission` datetime DEFAULT NULL
 ,  `endOfSubmission` datetime DEFAULT NULL
-,  `validFrom` datetime DEFAULT NULL
-,  `validTo` datetime DEFAULT NULL
-,  `countOffers` integer DEFAULT NULL
 ,  `note` text COLLATE BINARY
 ,  `tenant_id` varchar(125) DEFAULT NULL
-);
-CREATE TABLE `bidderRoundReport` (
-  `id` integer  NOT NULL PRIMARY KEY AUTOINCREMENT
-,  `roundWon` integer  DEFAULT NULL
-,  `countParticipants` integer  DEFAULT NULL
-,  `countRounds` integer  DEFAULT NULL
-,  `sumAmount` double(8,2) DEFAULT NULL
-,  `fkBidderRound` integer  DEFAULT NULL
-,  `createdAt` timestamp NULL DEFAULT NULL
-,  `updatedAt` timestamp NULL DEFAULT NULL
-,  CONSTRAINT `bidderroundreport_fkbidderround_foreign` FOREIGN KEY (`fkBidderRound`) REFERENCES `bidderRound` (`id`)
 );
 CREATE TABLE `domains` (
   `id` integer  NOT NULL PRIMARY KEY AUTOINCREMENT
@@ -90,8 +75,8 @@ CREATE TABLE `offer` (
 ,  `amount` double(8,2) DEFAULT NULL
 ,  `round` integer DEFAULT NULL
 ,  `fkUser` integer  DEFAULT NULL
-,  `fkBidderRound` integer  DEFAULT NULL
-,  CONSTRAINT `offer_fkbidderround_foreign` FOREIGN KEY (`fkBidderRound`) REFERENCES `bidderRound` (`id`) ON DELETE CASCADE
+,  `fkTopic` integer  DEFAULT NULL
+,  CONSTRAINT `offer_fktopic_foreign` FOREIGN KEY (`fkTopic`) REFERENCES `topic` (`id`)
 ,  CONSTRAINT `offer_fkuser_foreign` FOREIGN KEY (`fkUser`) REFERENCES `user` (`id`) ON DELETE CASCADE
 );
 CREATE TABLE `password_resets` (
@@ -143,12 +128,45 @@ CREATE TABLE `sessions` (
 ,  `last_activity` integer NOT NULL
 ,  PRIMARY KEY (`id`)
 );
+CREATE TABLE `share` (
+  `id` integer  NOT NULL PRIMARY KEY AUTOINCREMENT
+,  `createdAt` timestamp NULL DEFAULT NULL
+,  `updatedAt` timestamp NULL DEFAULT NULL
+,  `value` varchar(125) DEFAULT NULL
+,  `fkUser` integer  NOT NULL
+,  `fkTopic` integer  NOT NULL
+,  CONSTRAINT `share_fktopic_foreign` FOREIGN KEY (`fkTopic`) REFERENCES `topic` (`id`)
+,  CONSTRAINT `share_fkuser_foreign` FOREIGN KEY (`fkUser`) REFERENCES `user` (`id`)
+);
 CREATE TABLE `tenant` (
   `id` varchar(125) NOT NULL
 ,  `created_at` timestamp NULL DEFAULT NULL
 ,  `updated_at` timestamp NULL DEFAULT NULL
 ,  `data` json DEFAULT NULL
 ,  PRIMARY KEY (`id`)
+);
+CREATE TABLE `topic` (
+  `id` integer  NOT NULL PRIMARY KEY AUTOINCREMENT
+,  `createdAt` timestamp NULL DEFAULT NULL
+,  `updatedAt` timestamp NULL DEFAULT NULL
+,  `name` varchar(125) DEFAULT NULL
+,  `targetAmount` double(8,2) DEFAULT NULL
+,  `rounds` integer DEFAULT NULL
+,  `fkBidderRound` integer  NOT NULL
+,  CONSTRAINT `topic_fkbidderround_foreign` FOREIGN KEY (`fkBidderRound`) REFERENCES `bidderRound` (`id`)
+);
+CREATE TABLE `topicReport` (
+  `id` integer  NOT NULL PRIMARY KEY AUTOINCREMENT
+,  `roundWon` integer  DEFAULT NULL
+,  `countParticipants` integer  DEFAULT NULL
+,  `countRounds` integer  DEFAULT NULL
+,  `sumAmount` double(8,2) DEFAULT NULL
+,  `fkBidderRound` integer  DEFAULT NULL
+,  `createdAt` timestamp NULL DEFAULT NULL
+,  `updatedAt` timestamp NULL DEFAULT NULL
+,  `fkTopic` integer  NOT NULL
+,  `name` varchar(125) DEFAULT NULL
+,  CONSTRAINT `topicreport_fktopic_foreign` FOREIGN KEY (`fkTopic`) REFERENCES `topic` (`id`)
 );
 CREATE TABLE `user` (
   `id` integer  NOT NULL PRIMARY KEY AUTOINCREMENT
@@ -163,17 +181,20 @@ CREATE TABLE `user` (
 ,  `paymentInterval` text  DEFAULT NULL
 ,  `joinDate` timestamp NULL DEFAULT NULL
 ,  `exitDate` timestamp NULL DEFAULT NULL
-,  `countShares` integer  DEFAULT NULL
 ,  `current_team_id` integer  DEFAULT NULL
 ,  `profile_photo_path` varchar(2048) DEFAULT NULL
 ,  `createdAt` timestamp NULL DEFAULT NULL
 ,  `updatedAt` timestamp NULL DEFAULT NULL
 ,  `tenant_id` varchar(125) DEFAULT NULL
 );
-CREATE TABLE `user_bidderround` (
+CREATE TABLE `user_topic` (
   `id` integer  NOT NULL PRIMARY KEY AUTOINCREMENT
+,  `createdAt` timestamp NULL DEFAULT NULL
+,  `updatedAt` timestamp NULL DEFAULT NULL
 ,  `fkUser` integer  NOT NULL
-,  `fkBidderRound` integer  NOT NULL
+,  `fkTopic` integer  NOT NULL
+,  CONSTRAINT `user_topic_fktopic_foreign` FOREIGN KEY (`fkTopic`) REFERENCES `topic` (`id`)
+,  CONSTRAINT `user_topic_fkuser_foreign` FOREIGN KEY (`fkUser`) REFERENCES `user` (`id`)
 );
 INSERT INTO `migrations` VALUES (1,'2014_10_12_000000_create_users_table',1);
 INSERT INTO `migrations` VALUES (2,'2014_10_12_100000_create_password_resets_table',1);
@@ -194,17 +215,24 @@ INSERT INTO `migrations` VALUES (16,'2023_01_04_152317_cascade_delete_bidder_rou
 INSERT INTO `migrations` VALUES (17,'2023_01_15_110649_create_permission_tables',1);
 INSERT INTO `migrations` VALUES (18,'2023_02_12_115659_cascade_delete_user',1);
 INSERT INTO `migrations` VALUES (19,'2023_06_08_153046_remove_unused_models',1);
+INSERT INTO `migrations` VALUES (20,'2023_06_16_143322_create_topics',1);
+CREATE INDEX "idx_user_topic_user_topic_fkuser_foreign" ON "user_topic" (`fkUser`);
+CREATE INDEX "idx_user_topic_user_topic_fktopic_foreign" ON "user_topic" (`fkTopic`);
+CREATE INDEX "idx_topicReport_bidderroundreport_fkbidderround_foreign" ON "topicReport" (`fkBidderRound`);
+CREATE INDEX "idx_topicReport_topicreport_fktopic_foreign" ON "topicReport" (`fkTopic`);
 CREATE INDEX "idx_sessions_sessions_user_id_index" ON "sessions" (`user_id`);
 CREATE INDEX "idx_sessions_sessions_last_activity_index" ON "sessions" (`last_activity`);
 CREATE INDEX "idx_model_has_permissions_model_has_permissions_model_id_model_type_index" ON "model_has_permissions" (`model_id`,`model_type`);
 CREATE INDEX "idx_jobs_jobs_queue_index" ON "jobs" (`queue`);
+CREATE INDEX "idx_topic_topic_fkbidderround_foreign" ON "topic" (`fkBidderRound`);
 CREATE INDEX "idx_notifications_notifications_notifiable_type_notifiable_id_index" ON "notifications" (`notifiable_type`,`notifiable_id`);
 CREATE INDEX "idx_model_has_roles_model_has_roles_model_id_model_type_index" ON "model_has_roles" (`model_id`,`model_type`);
-CREATE INDEX "idx_offer_offer_fkbidderround_foreign" ON "offer" (`fkBidderRound`);
 CREATE INDEX "idx_offer_offer_fkuser_foreign" ON "offer" (`fkUser`);
+CREATE INDEX "idx_offer_offer_fktopic_foreign" ON "offer" (`fkTopic`);
+CREATE INDEX "idx_share_share_fkuser_foreign" ON "share" (`fkUser`);
+CREATE INDEX "idx_share_share_fktopic_foreign" ON "share" (`fkTopic`);
 CREATE INDEX "idx_personal_access_tokens_personal_access_tokens_tokenable_type_tokenable_id_index" ON "personal_access_tokens" (`tokenable_type`,`tokenable_id`);
 CREATE INDEX "idx_domains_domains_tenant_id_foreign" ON "domains" (`tenant_id`);
-CREATE INDEX "idx_bidderRoundReport_bidderroundreport_fkbidderround_foreign" ON "bidderRoundReport" (`fkBidderRound`);
 CREATE INDEX "idx_role_has_permissions_role_has_permissions_role_id_foreign" ON "role_has_permissions" (`role_id`);
 CREATE INDEX "idx_password_resets_password_resets_email_index" ON "password_resets" (`email`);
 END TRANSACTION;

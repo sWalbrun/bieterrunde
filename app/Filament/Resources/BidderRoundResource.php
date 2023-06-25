@@ -2,21 +2,22 @@
 
 namespace App\Filament\Resources;
 
-use App\BidderRound\BidderRoundService;
 use App\Filament\EnumNavigationGroups;
 use App\Filament\Resources\BidderRoundResource\Pages;
-use App\Filament\Resources\BidderRoundResource\RelationManagers\BidderRoundReportRelationManager;
-use App\Filament\Resources\BidderRoundResource\RelationManagers\UsersRelationManager;
+use App\Filament\Resources\BidderRoundResource\RelationManagers\TopicsRelationManager;
 use App\Models\BidderRound;
+use App\Models\Topic;
 use App\Models\User;
+use App\Notifications\ReminderOfBidderRound;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Notifications\Notification;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Illuminate\Support\Facades\Log;
 
 class BidderRoundResource extends Resource
 {
@@ -29,6 +30,11 @@ class BidderRoundResource extends Resource
         return trans('Bidder Rounds');
     }
 
+    public static function getModelLabel(): string
+    {
+        return trans('Bidder round');
+    }
+
     protected static function getNavigationGroup(): ?string
     {
         return trans(EnumNavigationGroups::ADMINISTRATION);
@@ -38,33 +44,17 @@ class BidderRoundResource extends Resource
     {
         return $form
             ->schema([
-                DatePicker::make(BidderRound::COL_VALID_FROM)->required()->label(trans('Valid from')),
-                DatePicker::make(BidderRound::COL_VALID_TO)->required()->label(trans('Valid to')),
                 DatePicker::make(BidderRound::COL_START_OF_SUBMISSION)->required()->label(trans('Start of submission')),
                 DatePicker::make(BidderRound::COL_END_OF_SUBMISSION)->required()->label(trans('End of submission')),
-                TextInput::make(BidderRound::COL_COUNT_OFFERS)->required()->label(trans('Count offers')),
-                TextInput::make(BidderRound::COL_TARGET_AMOUNT)
-                    ->numeric()
-                    ->required()
-                    ->mask(
-                        fn (TextInput\Mask $mask) => $mask
-                            ->numeric()
-                            ->decimalPlaces(2)
-                            ->decimalSeparator(',')
-                            ->minValue(1)
-                            ->maxValue(250_000)
-                            ->normalizeZeros()
-                            ->padFractionalZeros()
-                            ->thousandsSeparator('.')
-                    )->suffix('€')
-                    ->label(trans('Target amount')),
+                Textarea::make(BidderRound::COL_NOTE)->translateLabel()->columnSpan(2),
                 Card::make()->schema([
-                    TextInput::make('currentStatus')
-                        ->label(trans('Current Status'))
+                    TextInput::make('Current status ')
+                        ->translateLabel()
                         ->afterStateHydrated(
                             function (TextInput $component, BidderRound|null $record) {
+                                $topics = $record?->topics()->with('topicReport');
                                 $state = match (true) {
-                                    $record?->bidderRoundReport()->exists() => trans('Die Bieterrunde wurde erfolgreich abgeschlossen'),
+                                    $topics?->count() > $topics?->get()->map(fn (Topic $topic) => $topic->topicReport)->count() => trans('Die Bieterrunde wurde erfolgreich abgeschlossen'),
                                     $record?->bidderRoundBetweenNow() => trans('Die Bieterrunde läuft gerade'),
                                     $record?->startOfSubmission->gt(now()) => trans('Die Bieterrunde hat noch nicht begonnen'),
                                     default => null,
@@ -78,22 +68,6 @@ class BidderRoundResource extends Resource
                         ->disabled()
                         ->hidden()
                         ->reactive(),
-                    TextInput::make('offersGiven')
-                        ->label(trans('Offers given'))
-                        ->disabled()
-                        ->hidden()
-                        ->afterStateHydrated(
-                            function (TextInput $component, BidderRound|null $record) {
-                                if (! isset($record)) {
-                                    return;
-                                }
-                                $component->hidden(false);
-                                $component->state(
-                                    ($record->groupedByRound()->first()?->count() ?? 0).'/'.$record->users()->count()
-                                );
-                            }
-                        )
-                        ->reactive(),
                 ]),
             ]);
     }
@@ -102,54 +76,39 @@ class BidderRoundResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make(BidderRound::COL_TARGET_AMOUNT)
-                    ->formatStateUsing(
-                        fn ($state) => number_format($state, 2, ',', '.').' €'
-                    ),
                 Tables\Columns\TextColumn::make(BidderRound::COL_START_OF_SUBMISSION)
                     ->date('d.m.Y')
-                    ->sortable(),
+                    ->sortable()
+                    ->translateLabel(),
                 Tables\Columns\TextColumn::make(BidderRound::COL_END_OF_SUBMISSION)
                     ->date('d.m.Y')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make(BidderRound::COL_VALID_FROM)
-                    ->date('d.m.Y'),
-                Tables\Columns\TextColumn::make(BidderRound::COL_VALID_TO)
-                    ->date('d.m.Y'),
-                Tables\Columns\TextColumn::make(BidderRound::COL_COUNT_OFFERS),
-                Tables\Columns\TextColumn::make(BidderRound::COL_NOTE),
+                    ->sortable()
+                    ->translateLabel(),
+                Tables\Columns\TextColumn::make(BidderRound::COL_NOTE)
+                    ->translateLabel(),
             ])
-            ->filters([])
-            ->actions([
-                Tables\Actions\Action::make('Add all current members')
-                    ->translateLabel()
-                    ->icon('iconpark-treediagram-o')
-                    ->tooltip(trans('If members have been added or removed, they are also linked or unlinked to this bidding round.'))
-                    ->action(function (BidderRound $record) {
-                        $changes = BidderRoundService::syncBidderRoundParticipants($record);
-
-                        Notification::make('syncMembers')
-                            ->title(trans(
-                                'Synced successfully. Attached (:attached), detached (:detached)',
-                                [
-                                    'attached' => User::query()->whereIn(User::COL_ID, $changes['attached'])->pluck(User::COL_NAME)->implode(', '),
-                                    'detached' => User::query()->whereIn(User::COL_ID, $changes['detached'])->pluck(User::COL_NAME)->implode(', '),
-                                ]
-                            ))
-                            ->success()
-                            ->send();
-                    }),
-                Tables\Actions\EditAction::make(),
-            ])->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
-            ]);
+            ->actions([Tables\Actions\Action::make('RemindParticipants')
+                ->label(trans('Remind participants'))
+                ->icon('iconpark-remind-o')
+                ->action(
+                    fn (BidderRound $record) => $record->usersWithMissingOffers()->each(
+                        function (User $participant) use ($record) {
+                            Log::info("Remind user ({$participant->email()}) about bidder round");
+                            $participant->notify(new ReminderOfBidderRound($record, $participant));
+                            Log::info('User has been reminded');
+                        }
+                    )
+                )
+                ->requiresConfirmation()
+                ->modalSubheading(fn () => trans('Remind all participants with missing offers')),
+            ])
+            ->filters([]);
     }
 
     public static function getRelations(): array
     {
         return [
-            UsersRelationManager::class,
-            BidderRoundReportRelationManager::class,
+            TopicsRelationManager::class,
         ];
     }
 
