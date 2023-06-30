@@ -2,6 +2,7 @@
 
 use App\Enums\EnumContributionGroup;
 use App\Enums\EnumPaymentInterval;
+use App\Enums\ShareValue;
 use App\Filament\Pages\OfferPage;
 use App\Models\BidderRound;
 use App\Models\Offer;
@@ -29,6 +30,7 @@ it('saves the given offers', function () {
     Share::factory()->create([
         Share::COL_FK_USER => $user->id,
         Share::COL_FK_TOPIC => $topic->id,
+        Share::COL_VALUE => ShareValue::ONE,
     ]);
 
     $amount = 52.0;
@@ -36,7 +38,8 @@ it('saves the given offers', function () {
     livewire(OfferPage::class)->fill([
         OfferPage::USER_CONTRIBUTION_GROUP => EnumContributionGroup::FULL_MEMBER,
         OfferPage::USER_PAYMENT_INTERVAL => EnumPaymentInterval::ANNUAL,
-        OfferPage::ROUND_TO_AMOUNT_MAPPING => collect([$topic->id => [1 => $amount]]),
+        OfferPage::ROUND_TO_PARTIAL_AMOUNT_MAPPING => [$topic->id => [1 => $amount]],
+        OfferPage::ROUND_TO_TOTAL_AMOUNT_MAPPING => collect([$topic->id => [1 => $amount]]),
     ])
         ->call('save')
         ->assertValid()

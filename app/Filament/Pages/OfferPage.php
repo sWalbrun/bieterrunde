@@ -37,16 +37,23 @@ class OfferPage extends Page
 
     private const USER = 'user';
 
-    public const ROUND_TO_AMOUNT_MAPPING = 'roundToAmountMapping';
+    public const ROUND_TO_TOTAL_AMOUNT_MAPPING = 'roundToTotalAmountMapping';
+
+    public const ROUND_TO_PARTIAL_AMOUNT_MAPPING = 'roundToPartialAmountMapping';
 
     public const USER_CONTRIBUTION_GROUP = 'userContributionGroup';
 
     public const USER_PAYMENT_INTERVAL = 'userPaymentInterval';
 
     /**
-     * @var Collection<string, float> round to amount mapping
+     * @var Collection<string, int[]>
      */
-    public Collection $roundToAmountMapping;
+    public Collection $roundToTotalAmountMapping;
+
+    /**
+     * @var array<string, int[]>
+     */
+    public array $roundToPartialAmountMapping = [];
 
     /**
      * @var Collection<string, ShareValue>
@@ -66,7 +73,7 @@ class OfferPage extends Page
     public function __construct($id = null)
     {
         parent::__construct($id);
-        $this->roundToAmountMapping = collect();
+        $this->roundToTotalAmountMapping = collect();
         $this->topicToShareMapping = collect();
     }
 
@@ -91,6 +98,40 @@ class OfferPage extends Page
             ->started()
             ->latest(BidderRound::COL_START_OF_SUBMISSION)
             ->first();
+    }
+
+    private function formatAmount(float $value): string
+    {
+        return number_format($value, 2, ',', '.');
+    }
+
+    private function putShareCount(Topic $topic): ShareValue|null
+    {
+        /** @var Share|null $share */
+        $share = $topic
+            ->shares
+            ->first(fn (Share $share) => $share->fkUser === $this->user->id);
+        $shareValue = $share?->value;
+        $this->topicToShareMapping->put(
+            $topic->id,
+            $shareValue
+        );
+
+        return $shareValue;
+    }
+
+    private function putPartialAmount(int $key, int $numberOfRound, float $amount): void
+    {
+        $partialAmounts = $this->roundToPartialAmountMapping[$key] ?? [];
+        $partialAmounts += [$numberOfRound => $this->formatAmount($amount)];
+        $this->roundToPartialAmountMapping[$key] = $partialAmounts;
+    }
+
+    private function putTotalAmount(int $key, int $numberOfRound, float|null $amount): void
+    {
+        $totalAmounts = $this->roundToTotalAmountMapping->get($key) ?? [];
+        $totalAmounts += [$numberOfRound => $amount ?? null];
+        $this->roundToTotalAmountMapping->put($key, $totalAmounts);
     }
 
     protected static function getNavigationLabel(): string
@@ -133,20 +174,23 @@ class OfferPage extends Page
         );
         $fieldSets = $topicsOfInterest->chunkMap(function (Topic $topic) {
             $buildOffer = function (Offer|null $offer, int $numberOfRound) use ($topic) {
-                $amounts = $this->roundToAmountMapping->get(
-                    $topic->id) ?? [];
-                $amounts += [$numberOfRound => $offer->amount ?? null];
-                $this->roundToAmountMapping->put($topic->id, $amounts);
-                $this->topicToShareMapping->put(
-                    $topic->id,
-                    $topic
-                        ->shares
-                        ->first(fn (Share $share) => $share->fkUser === $this->user->id)?->value
-                );
+                $shareValue = $this->putShareCount($topic);
+                $amount = $offer?->amount;
+                if (isset($shareValue) && isset($amount)) {
+                    $this->putTotalAmount($topic->id, $numberOfRound, $offer->amount * $shareValue->calculable());
+                    $this->putPartialAmount($topic->id, $numberOfRound, $offer->amount);
+                }
 
-                return TextInput::make("roundToAmountMapping.$topic->id.$numberOfRound")
-                    ->label(trans('Offer :numberOfRound', ['numberOfRound' => $numberOfRound]))
+                return [TextInput::make("roundToTotalAmountMapping.$topic->id.$numberOfRound")
+                    ->label(trans('Total offer :numberOfRound', ['numberOfRound' => $numberOfRound]))
                     ->numeric()
+                    ->reactive()
+                    ->afterStateUpdated(
+                        fn ($state, $set) => $set(
+                            "roundToPartialAmountMapping.$topic->id.$numberOfRound",
+                            $this->formatAmount($state / $this->topicToShareMapping->get($topic->id)->calculable())
+                        )
+                    )
                     ->mask(
                         fn (TextInput\Mask $mask) => $mask
                             ->numeric()
@@ -164,7 +208,11 @@ class OfferPage extends Page
                             : null
                     )->hintColor('success')
                     ->suffix('€')
-                    ->required();
+                    ->required(),
+                    TextInput::make("roundToPartialAmountMapping.$topic->id.$numberOfRound")
+                        ->label(trans('Partial offer :numberOfRound', ['numberOfRound' => $numberOfRound]))
+                        ->disabled()
+                        ->suffix('€')];
             };
 
             return Fieldset::make($topic->name)
@@ -174,7 +222,12 @@ class OfferPage extends Page
                             ->label(trans('Count shares'))
                             ->options(ForFilamentTranslator::enum(ShareValue::getInstances()))
                             ->disabled(),
-                        Card::make(TopicService::getOffers($topic, $this->user)->map($buildOffer)->toArray())
+                        Card::make(
+                            TopicService::getOffers($topic, $this->user)
+                                ->map($buildOffer)
+                                ->flatten(1)
+                                ->toArray()
+                        )
                             ->columns(2)
                             ->disabled(fn () => ! $topic->isOfferStillPossible()),
                     ]);
@@ -205,7 +258,7 @@ class OfferPage extends Page
     {
         $this->validate();
         $atLeastOneChange = false;
-        collect($this->roundToAmountMapping)->each(function (array $rounds, $topicId) use (&$atLeastOneChange) {
+        collect($this->roundToPartialAmountMapping)->each(function (array $rounds, $topicId) use (&$atLeastOneChange) {
             collect($rounds)->each(function ($amountOfRound, $numberOfRound) use ($topicId, &$atLeastOneChange) {
                 /** @var Topic $topic */
                 $topic = Topic::query()->findOrFail($topicId);
@@ -217,7 +270,7 @@ class OfferPage extends Page
                     ->where(Offer::COL_FK_TOPIC, '=', $topic->id)
                     ->first() ?? new Offer();
                 $offer->round = $numberOfRound;
-                $offer->amount = $amountOfRound;
+                $offer->amount = floatval($amountOfRound);
                 $offer->topic()->associate($topicId);
                 $offer->user()->associate($this->user);
                 $atLeastOneChange |= $offer->isDirty();
