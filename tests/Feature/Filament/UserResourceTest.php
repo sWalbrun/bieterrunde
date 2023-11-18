@@ -7,8 +7,9 @@ use App\Filament\Resources\UserResource\Pages\EditUser;
 use App\Filament\Resources\UserResource\Pages\ListUsers;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use function Pest\Livewire\livewire;
 use Spatie\Permission\Models\Permission;
+
+use function Pest\Livewire\livewire;
 
 it('shows all existing users', function () {
 

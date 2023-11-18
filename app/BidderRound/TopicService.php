@@ -22,7 +22,7 @@ class TopicService
      * This method fetches all existing offers and fills with empty ones if there are more offers
      * defined in the {@link Topic::$rounds} than are currently given.
      */
-    public static function getOffers(Topic|null $topic, User $user): Collection
+    public static function getOffers(?Topic $topic, User $user): Collection
     {
         if (! isset($topic)) {
             return collect();

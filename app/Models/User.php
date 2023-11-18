@@ -46,12 +46,12 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
  * @property Collection<Role> roles
  * @property-read Collection<Topic> topics
  */
-class User extends Authenticatable implements MustVerifyEmail, Participant, FilamentUser
+class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Participant
 {
-    use HasFilamentShield;
-    use HasFactory;
-    use Notifiable;
     use BelongsToTenant;
+    use HasFactory;
+    use HasFilamentShield;
+    use Notifiable;
 
     public const TABLE = 'user';
 

@@ -15,7 +15,7 @@ class TargetAmountReachedReport
          */
         public EnumTargetAmountReachedStatus $status,
         private readonly Topic $topic,
-        private readonly TopicReport|null $topicReport,
+        private readonly ?TopicReport $topicReport,
     ) {
     }
 

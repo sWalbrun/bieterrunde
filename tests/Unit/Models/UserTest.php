@@ -53,7 +53,7 @@ class UserTest extends TestCase
         $this->assertEquals($offers->count(), $offers->intersect($user->offersForTopic($topic)->get())->count());
     }
 
-    protected function createOffers(User $user, ?Topic $topic = null): Collection
+    protected function createOffers(User $user, Topic $topic = null): Collection
     {
         return Offer::factory()
             ->count(7)

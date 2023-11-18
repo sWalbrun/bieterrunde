@@ -17,9 +17,9 @@ use Spatie\Permission\Models\Role;
 
 abstract class TestCase extends BaseTestCase
 {
+    use BidderRoundEntities;
     use CreatesApplication;
     use RefreshDatabase;
-    use BidderRoundEntities;
 
     public const TARGET_AMOUNT = 68_000;
 

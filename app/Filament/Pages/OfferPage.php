@@ -60,7 +60,7 @@ class OfferPage extends Page
      */
     public Collection $topicToShareMapping;
 
-    public User|null $user = null;
+    public ?User $user = null;
 
     public EnumPaymentInterval|string|null $userPaymentInterval = null;
 
@@ -92,7 +92,7 @@ class OfferPage extends Page
         return trans(EnumNavigationGroups::YOUR_OFFERS);
     }
 
-    public function getFormModel(): BidderRound|null
+    public function getFormModel(): ?BidderRound
     {
         return BidderRound::query()
             ->started()
@@ -105,7 +105,7 @@ class OfferPage extends Page
         return number_format($value, 2, ',', '.');
     }
 
-    private function putShareCount(Topic $topic): ShareValue|null
+    private function putShareCount(Topic $topic): ?ShareValue
     {
         /** @var Share|null $share */
         $share = $topic
@@ -127,7 +127,7 @@ class OfferPage extends Page
         $this->roundToPartialAmountMapping[$key] = $partialAmounts;
     }
 
-    private function putTotalAmount(int $key, int $numberOfRound, float|null $amount): void
+    private function putTotalAmount(int $key, int $numberOfRound, ?float $amount): void
     {
         $totalAmounts = $this->roundToTotalAmountMapping->get($key) ?? [];
         $totalAmounts += [$numberOfRound => $amount ?? null];
@@ -173,7 +173,7 @@ class OfferPage extends Page
             fn (Builder $query) => $query->where(Share::COL_FK_USER, '=', $this->user->id)
         );
         $fieldSets = $topicsOfInterest->chunkMap(function (Topic $topic) {
-            $buildOffer = function (Offer|null $offer, int $numberOfRound) use ($topic) {
+            $buildOffer = function (?Offer $offer, int $numberOfRound) use ($topic) {
                 $shareValue = $this->putShareCount($topic);
                 $amount = $offer?->amount;
                 if (isset($shareValue) && isset($amount)) {

@@ -80,11 +80,11 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make(User::COL_CONTRIBUTION_GROUP)
                     ->translateLabel()
-                    ->formatStateUsing(fn (EnumContributionGroup|null $state) => isset($state) ? trans($state->value) : null),
+                    ->formatStateUsing(fn (?EnumContributionGroup $state) => isset($state) ? trans($state->value) : null),
                 Tables\Columns\TextColumn::make(User::COL_JOIN_DATE)->label(trans('Join date'))
-                    ->formatStateUsing(fn (Carbon|null $state) => $state?->format('d.m.Y')),
+                    ->formatStateUsing(fn (?Carbon $state) => $state?->format('d.m.Y')),
                 Tables\Columns\TextColumn::make(User::COL_EXIT_DATE)->label(trans('Exit date'))
-                    ->formatStateUsing(fn (Carbon|null $state) => $state?->format('d.m.Y')),
+                    ->formatStateUsing(fn (?Carbon $state) => $state?->format('d.m.Y')),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make(User::COL_CONTRIBUTION_GROUP)->options(

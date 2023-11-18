@@ -51,7 +51,7 @@ class BidderRoundResource extends Resource
                     TextInput::make('Current status ')
                         ->translateLabel()
                         ->afterStateHydrated(
-                            function (TextInput $component, BidderRound|null $record) {
+                            function (TextInput $component, ?BidderRound $record) {
                                 $topics = $record?->topics()->with('topicReport');
                                 $state = match (true) {
                                     $topics?->count() > $topics?->get()->map(fn (Topic $topic) => $topic->topicReport)->count() => trans('Die Bieterrunde wurde erfolgreich abgeschlossen'),

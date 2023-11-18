@@ -84,7 +84,7 @@ class UsersRelationManager extends RelationManager
                             User $record,
                         ) => $component->state(
                             TopicService::getOffers($livewire->ownerRecord, $record)
-                                ->map(fn (Offer|null $offer) => $offer?->amount)
+                                ->map(fn (?Offer $offer) => $offer?->amount)
                         )
                     )->columnSpan(2)
                     ->afterStateUpdated(fn (
@@ -106,7 +106,7 @@ class UsersRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make(User::COL_EMAIL)->searchable(),
                 Tables\Columns\TextColumn::make(User::COL_CONTRIBUTION_GROUP)
                     ->translateLabel()
-                    ->formatStateUsing(fn (EnumContributionGroup|null $state) => isset($state) ? trans($state->value) : null),
+                    ->formatStateUsing(fn (?EnumContributionGroup $state) => isset($state) ? trans($state->value) : null),
                 Tables\Columns\BadgeColumn::make(Share::COL_VALUE)->label(trans('Count shares'))->formatStateUsing(fn ($state) => isset($state) ? trans($state) : null),
                 Tables\Columns\BadgeColumn::make('Offers given')
                     ->translateLabel()
@@ -120,7 +120,7 @@ class UsersRelationManager extends RelationManager
                     ),
                 Tables\Columns\TextColumn::make(User::COL_PAYMENT_INTERVAL)
                     ->translateLabel()
-                    ->formatStateUsing(fn (EnumPaymentInterval|null $state) => isset($state) ? trans($state->value) : null),
+                    ->formatStateUsing(fn (?EnumPaymentInterval $state) => isset($state) ? trans($state->value) : null),
                 Tables\Columns\TextColumn::make('Round=Amount')
                     ->getStateUsing(
                         fn (User $record, self $livewire) => $record->offersAsStringFor($livewire->ownerRecord)

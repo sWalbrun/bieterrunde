@@ -76,7 +76,7 @@ class TopicResource extends Resource
                 ->disabled()
                 ->hidden()
                 ->afterStateHydrated(
-                    function (TextInput $component, Topic|null $record) {
+                    function (TextInput $component, ?Topic $record) {
                         if (! isset($record)) {
                             return;
                         }
