@@ -40,7 +40,7 @@ manuel Gebote eingetragen werden):
 
 
 Mitglieder können über einen weiteren Dialog ihre Gebote abgeben. Dabei können sie ausschließlich ihre eigenen Gebote
-einsehen. Dabei wird ein Gebotsvorschlag berechnet, der sich aus Mitgliederzahl und Zielbetrag über eine Mittlung berechnet:
+einsehen. Dabei wird ein Gebotsvorschlag berechnet, der sich aus Mitgliederzahl und Richtwert über eine Mittlung berechnet:
 ![2023-01-08 16_42_32-Offer Page - Bieterrunde – Mozilla Firefox](https://user-images.githubusercontent.com/38902857/211205688-bdace1a5-7987-458d-9cc8-30075e778f8a.png)
 
 Sobald alle Gebote abgeben werden konnten, wird die passende Runde ermittelt. Im gleichen Zug werden E-Mails an alle

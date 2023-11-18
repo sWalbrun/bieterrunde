@@ -140,7 +140,7 @@ it('warns about insufficient money', function () {
         ->assertNotified(
             Notification::make()
                 ->danger()
-                ->title(trans('Leider konnte mit keiner einzigen Runde der Zielbetrag ermittelt werden.')));
+                ->title(trans('Leider konnte mit keiner einzigen Runde der Richtwert ermittelt werden.')));
 });
 
 it('warns about error', function () {

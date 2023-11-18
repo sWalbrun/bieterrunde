@@ -74,7 +74,7 @@ class EditTopic extends EditRecord
 
                 case EnumTargetAmountReachedStatus::NOT_ENOUGH_MONEY:
                     Notification::make()
-                        ->title(trans('Leider konnte mit keiner einzigen Runde der Zielbetrag ermittelt werden.'))
+                        ->title(trans('Leider konnte mit keiner einzigen Runde der Richtwert ermittelt werden.'))
                         ->danger()
                         ->send();
                     break;
