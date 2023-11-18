@@ -8,9 +8,9 @@
  </a>
 </p>
 
-# SolaWi|Bieterrunde
+# SolaWi|Beitragsrunde
 
-Dieser Standalone-Webserver bietet umfangreiche Funktionen für die Abwicklung einer Bieterrunde.
+Dieser Standalone-Webserver bietet umfangreiche Funktionen für die Abwicklung einer Beitragsrunde.
 
 # Requirements|Installation
 
@@ -28,9 +28,9 @@ können beliebige Accounts noch zu Admins gemacht werden.
 
 ## Features
 
-## Verwaltung eine Bieterrunde
+## Verwaltung eine Beitragsrunde
 
-Für ein Gartenjahr kann eine Bieterrunde organisiert werden. Dabei wird vom Admin eine neue Bieterrunde angelegt:
+Für ein Gartenjahr kann eine Beitragsrunde organisiert werden. Dabei wird vom Admin eine neue Beitragsrunde angelegt:
 ![2023-01-08 16_38_57-Bidder Round bearbeiten - Bieterrunde – Mozilla Firefox](https://user-images.githubusercontent.com/38902857/211205521-e2668fb5-bcb9-4f36-ac53-9540d2fbfb7b.png)
 
 Zusätzlich gibt es für die Verwaltung noch einen Übersichtsdialog über alle abgegeben Gebote (hier können außerdem

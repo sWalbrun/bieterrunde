@@ -52,7 +52,7 @@ class EditTopic extends EditRecord
                 case EnumTargetAmountReachedStatus::SUCCESS:
                     Notification::make()
                         ->title(trans('Es konnte eine Runde ermittelt werden!'))
-                        ->body(trans("Bieterrunde {$report->roundWon()} mit dem Betrag {$report->sumAmountFormatted()}€ deckt die Kosten"))
+                        ->body(trans("Beitragsrunde {$report->roundWon()} mit dem Betrag {$report->sumAmountFormatted()}€ deckt die Kosten"))
                         ->success()
                         ->send();
                     break;
@@ -60,7 +60,7 @@ class EditTopic extends EditRecord
                 case EnumTargetAmountReachedStatus::ROUND_ALREADY_PROCESSED:
                     Notification::make()
                         ->title(trans('Die Runde wurde bereits ermittelt!'))
-                        ->body(trans("Bieterrunde {$report->roundWon()} mit dem Betrag {$report->sumAmountFormatted()}€ deckt die Kosten"))
+                        ->body(trans("Beitragsrunde {$report->roundWon()} mit dem Betrag {$report->sumAmountFormatted()}€ deckt die Kosten"))
                         ->success()
                         ->send();
                     break;

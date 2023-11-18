@@ -54,9 +54,9 @@ class BidderRoundResource extends Resource
                             function (TextInput $component, ?BidderRound $record) {
                                 $topics = $record?->topics()->with('topicReport');
                                 $state = match (true) {
-                                    $topics?->count() > $topics?->get()->map(fn (Topic $topic) => $topic->topicReport)->count() => trans('Die Bieterrunde wurde erfolgreich abgeschlossen'),
-                                    $record?->bidderRoundBetweenNow() => trans('Die Bieterrunde läuft gerade'),
-                                    $record?->startOfSubmission->gt(now()) => trans('Die Bieterrunde hat noch nicht begonnen'),
+                                    $topics?->count() > $topics?->get()->map(fn (Topic $topic) => $topic->topicReport)->count() => trans('Die Beitragsrunde wurde erfolgreich abgeschlossen'),
+                                    $record?->bidderRoundBetweenNow() => trans('Die Beitragsrunde läuft gerade'),
+                                    $record?->startOfSubmission->gt(now()) => trans('Die Beitragsrunde hat noch nicht begonnen'),
                                     default => null,
                                 };
                                 if (isset($state)) {
