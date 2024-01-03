@@ -68,7 +68,7 @@ it('successfully calculates a report', function () {
             Notification::make()
                 ->success()
                 ->title(trans('Es konnte eine Runde ermittelt werden!'))
-                ->body(trans('Bieterrunde 1 mit dem Betrag wayne€ deckt die Kosten'))
+                ->body(trans('Beitragsrunde 1 mit dem Betrag wayne€ deckt die Kosten'))
         );
 });
 
@@ -94,7 +94,7 @@ it('successfully reports about the existing report', function () {
             Notification::make()
                 ->success()
                 ->title(trans('Die Runde wurde bereits ermittelt!'))
-                ->body(trans('Bieterrunde 1 mit dem Betrag wayne€ deckt die Kosten'))
+                ->body(trans('Beitragsrunde 1 mit dem Betrag wayne€ deckt die Kosten'))
         );
 });
 
