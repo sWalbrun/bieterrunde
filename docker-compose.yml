@@ -4,9 +4,6 @@ services:
   init:
     build:
       dockerfile: Dockerfile
-      args:
-        WWWGROUP: '${WWWGROUP}'
-        XDEBUG: '${XDEBUG}'
     container_name: solawi_php_init
     command: 'bash ./installPhp.sh'
     environment:
@@ -16,7 +13,7 @@ services:
       SERVICE_NAME: app
       SERVICE_TAGS: dev
     volumes:
-      - '.:/var/www/html'
+      - '.:/app'
     networks:
       - backend-network
     depends_on:
@@ -26,19 +23,17 @@ services:
   app:
     build:
       dockerfile: Dockerfile
-      args:
-        WWWGROUP: '${WWWGROUP}'
-        XDEBUG: '${XDEBUG}'
     container_name: solawi_php_app
     ports:
-      - '${APP_PORT:-80}:80'
+      - '80:80'
+      - '443:443'
     environment:
       WWWUSER: '${WWWUSER}'
       LARAVEL_SAIL: 1
       SERVICE_NAME: app
       SERVICE_TAGS: dev
     volumes:
-      - '.:/var/www/html'
+      - '.:/app'
     networks:
       - backend-network
     depends_on:
@@ -48,48 +43,6 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
-
-  queue-worker:
-    build:
-      dockerfile: Dockerfile
-      args:
-        WWWGROUP: '${WWWGROUP}'
-        XDEBUG: '${XDEBUG}'
-    container_name: solawi_php_queue_worker
-    entrypoint: [ "php", "artisan", "queue:work" ]
-    environment:
-      WWWUSER: '${WWWUSER}'
-      LARAVEL_SAIL: 1
-      SERVICE_NAME: app
-      SERVICE_TAGS: dev
-    volumes:
-      - '.:/var/www/html'
-    networks:
-      - backend-network
-    depends_on:
-      init:
-        condition: service_completed_successfully
-
-  schedule-worker:
-    build:
-      dockerfile: Dockerfile
-      args:
-        WWWGROUP: '${WWWGROUP}'
-        XDEBUG: '${XDEBUG}'
-    container_name: solawi_php_schedule_worker
-    entrypoint: [ "php", "artisan", "schedule:work" ]
-    environment:
-      WWWUSER: '${WWWUSER}'
-      LARAVEL_SAIL: 1
-      SERVICE_NAME: app
-      SERVICE_TAGS: dev
-    volumes:
-      - '.:/var/www/html'
-    networks:
-      - backend-network
-    depends_on:
-      init:
-        condition: service_completed_successfully
 
   mysql:
     image: 'mysql:8.0'
