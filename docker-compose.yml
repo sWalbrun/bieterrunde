@@ -3,7 +3,10 @@ services:
 
   init:
     build:
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.init
+      args:
+        WWWGROUP: '${WWWGROUP}'
+        XDEBUG: '${XDEBUG}'
     container_name: solawi_php_init
     command: 'bash ./installPhp.sh'
     environment:
@@ -13,7 +16,7 @@ services:
       SERVICE_NAME: app
       SERVICE_TAGS: dev
     volumes:
-      - '.:/app'
+      - '.:/var/www/html'
     networks:
       - backend-network
     depends_on:
@@ -51,6 +54,7 @@ services:
       - '3307:3306'
     environment:
       MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_DATABASE: '${DB_DATABASE}'
     volumes:
       - dbdata:/var/lib/mysql/
       - ./mysql/init:/docker-entrypoint-initdb.d
@@ -80,3 +84,4 @@ volumes:
     driver: local
   dbdata-ut:
     driver: local
+

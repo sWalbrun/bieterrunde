@@ -22,11 +22,12 @@ fi;
 
 sudo chown -R "$(id -u)":"$(id -g)" .
 
-docker-compose stop
+docker compose stop
 
-# We have to export the REFRESH to access it via the docker-compose
+# We have to export the REFRESH to access it via the docker compose
 export REFRESH="$REFRESH"
-docker-compose up -d --build
+docker compose up -d --build
 
 # #2 Double Tap - Just to make sure
 sudo chown -R "$(id -u)":"$(id -g)" .
+
