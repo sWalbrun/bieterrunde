@@ -3,8 +3,9 @@
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
-use function Pest\Livewire\livewire;
 use SWalbrun\FilamentModelImport\Filament\Pages\ImportPage;
+
+use function Pest\Livewire\livewire;
 
 it('can create an user and roles by import', function () {
     $fileToImport = getDefaultXlsx('UserImport.xlsx');
