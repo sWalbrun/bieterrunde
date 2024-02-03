@@ -10,7 +10,6 @@ use App\Models\Share;
 use App\Models\Topic;
 use App\Models\User;
 use Carbon\Carbon;
-
 use function Pest\Livewire\livewire;
 
 it('saves the given offers', function () {

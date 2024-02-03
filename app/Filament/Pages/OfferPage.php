@@ -176,13 +176,15 @@ class OfferPage extends Page
             $buildOffer = function (?Offer $offer, int $numberOfRound) use ($topic) {
                 $shareValue = $this->putShareCount($topic);
                 $amount = $offer?->amount;
-                if (isset($shareValue) && isset($amount)) {
-                    $this->putTotalAmount($topic->id, $numberOfRound, $offer->amount * $shareValue->calculable());
-                    $this->putPartialAmount($topic->id, $numberOfRound, $offer->amount);
+                if (isset($shareValue)) {
+                    $this->putTotalAmount($topic->id, $numberOfRound, $amount ? $amount * $shareValue->calculable() : null);
+                    if (isset($amount)) {
+                        $this->putPartialAmount($topic->id, $numberOfRound, $amount);
+                    }
                 }
 
                 return [TextInput::make("roundToTotalAmountMapping.$topic->id.$numberOfRound")
-                    ->label(trans('Total offer :numberOfRound', ['numberOfRound' => $numberOfRound]))
+                    ->label(trans('Total :numberOfRound offer', ['numberOfRound' => $numberOfRound]))
                     ->numeric()
                     ->reactive()
                     ->afterStateUpdated(
@@ -210,7 +212,7 @@ class OfferPage extends Page
                     ->suffix('€')
                     ->required(),
                     TextInput::make("roundToPartialAmountMapping.$topic->id.$numberOfRound")
-                        ->label(trans('Partial offer :numberOfRound', ['numberOfRound' => $numberOfRound]))
+                        ->label(trans('Partial :numberOfRound offer', ['numberOfRound' => $numberOfRound]))
                         ->disabled()
                         ->suffix('€')];
             };

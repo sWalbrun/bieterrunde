@@ -3,10 +3,9 @@
 namespace App\Jobs;
 
 use App\Models\User;
+use function cookie;
 use Illuminate\Auth\Events\Authenticated;
 use Illuminate\Support\Facades\Cookie;
-
-use function cookie;
 
 /**
  * This middleware is setting the tenant id as a cookie. The current logic is allowing you only to be part of one
