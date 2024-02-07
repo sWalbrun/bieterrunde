@@ -50,6 +50,7 @@ class UserResource extends Resource
                     ->label(trans('E-Mail')),
                 Forms\Components\Select::make(User::COL_CONTRIBUTION_GROUP)
                     ->label(trans('Contribution group'))
+                    ->required()
                     ->options(ForFilamentTranslator::enum(EnumContributionGroup::getInstances())),
                 Forms\Components\Select::make(User::COL_PAYMENT_INTERVAL)
                     ->translateLabel()
