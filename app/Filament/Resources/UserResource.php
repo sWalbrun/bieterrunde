@@ -42,9 +42,11 @@ class UserResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make(User::COL_NAME)
-                    ->label(trans('Name')),
+                    ->label(trans('Name'))
+                    ->required(),
                 Forms\Components\TextInput::make(User::COL_EMAIL)
                     ->email()
+                    ->required()
                     ->label(trans('E-Mail')),
                 Forms\Components\Select::make(User::COL_CONTRIBUTION_GROUP)
                     ->label(trans('Contribution group'))
