@@ -149,6 +149,9 @@ class OfferPage extends Page
             Action::make('Save')
                 ->translateLabel()
                 ->disabled(! $this->getFormModel()?->isOfferStillPossible())
+                ->requiresConfirmation()
+                ->modalHeading(trans('Make an offer'))
+                ->modalSubheading(trans('Subscribe now with obligation to pay'))
                 ->action(fn () => $this->save()),
         ];
     }
