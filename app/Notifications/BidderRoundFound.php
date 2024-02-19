@@ -32,6 +32,7 @@ class BidderRoundFound extends Notification implements ShouldQueue
     public function toMail(): MailMessage
     {
         return (new MailMessage)
+            ->subject(trans('Solawi - Your share is fixed!'))
             ->greeting(trans('Servus'))
             ->line(trans('Es ist soweit! Für das Produkt :topic steht die Runde fest.', ['topic' => $this->report->name]))
             ->line(trans('Die Runde :round reicht aus!', ['round' => $this->round]))
