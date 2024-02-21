@@ -13,7 +13,7 @@
         </x-filament::button>
     @else
         <p>
-            {{ __('filament-passwordless::filament-passwordless.messages.magic_link_sent') }}
+            {{ __('If you have an account with us, you will receive a login link via email shortly.') }}
         </p>
     @endif
 </form>
