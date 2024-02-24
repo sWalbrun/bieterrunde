@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beitragsrunde - Getting started</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<h1>Beitragsrunde - Getting started</h1>
+
+<div class="container">
+    <div class="cards">
+        <!-- Card 1 -->
+        <div class="card-header" onclick="toggleCard(1)">
+            <h2>
+                Anmeldung <span><i id="icon1" class="fa-solid fa-chevron-down"></i></span>
+            </h2>
+        </div>
+        <div class="card-header" onclick="toggleCard(3)">
+            <h2>
+                Benutzer anlegen <span><i id="icon3" class="fa-solid fa-chevron-down"></i></span>
+            </h2>
+        </div>
+        <div class="card-header" onclick="toggleCard(4)">
+            <h2>
+                Benutzer anlegen - Massenimport <span><i id="icon4" class="fa-solid fa-chevron-down"></i></span>
+            </h2>
+        </div>
+        <div class="card-header" onclick="toggleCard(2)">
+            <h2>
+                Beitragsrunde anlegen <span><i id="icon2" class="fa-solid fa-chevron-down"></i></span>
+            </h2>
+        </div>
+        <div class="card-header" onclick="toggleCard(9)">
+            <h2>
+                Gebote abgeben <span><i id="icon9" class="fa-solid fa-chevron-down"></i></span>
+            </h2>
+        </div>
+        <div class="card-header" onclick="toggleCard(8)">
+            <h2>
+                Gebote für Benutzer abgeben <span><i id="icon8" class="fa-solid fa-chevron-down"></i></span>
+            </h2>
+        </div>
+        <div class="card-header" onclick="toggleCard(6)">
+            <h2>
+                Benutzer aus Beitragsrunde entfernen <span><i id="icon6" class="fa-solid fa-chevron-down"></i></span>
+            </h2>
+        </div>
+        <div class="card-header" onclick="toggleCard(7)">
+            <h2>
+                Runde ermitteln<span><i id="icon7" class="fa-solid fa-chevron-down"></i></span>
+            </h2>
+        </div>
+        <div class="card-header" onclick="toggleCard(5)">
+            <h2>
+                Gebote exportieren <span><i id="icon5" class="fa-solid fa-chevron-down"></i></span>
+            </h2>
+        </div>
+    </div>
+
+    <div class="card-detail" id="card-detail1">
+        <h2>Anmeldung</h2>
+        <p>Die Beitragsrunde benötigt keine Passwörter. Einfach die E-Mail-Adresse angeben und den Anmeldelink im
+            Postfach öffnen.</p>
+        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/wIeyCU7ovfw?si=UGILX_sgn3Q1ts-4"
+                title="YouTube video player" frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen></iframe>
+    </div>
+
+    <div class="card-detail" id="card-detail2">
+        <h2>Beitragsrunde anlegen</h2>
+        <p>Eine Beitragsrunde hat einen Abstimmungszeitraum und beliebig viele Produkte.</p>
+        <h3>Produkte</h3>
+        <ul>
+            <li>
+                Sobald der Abstimmungszeitraum beginnt, können die Mitglieder ihre Gebote abgeben
+            </li>
+            <li>Die Mitglieder können pro Produkt so viele Gebote abgeben, wie Anzahl an Runden konfiguriert werden. Es
+                können im Nachhinein noch weitere Runden hinzugefügt werden
+            </li>
+            <li>
+                Der Richtwert ist der benötigte Betrag für das Gartenjahr
+            </li>
+            <li>
+                Alle zuvor angelegten Benutzer werden automatisch eingeladen
+            </li>
+            <li>
+                Es kann immer nur eine Beitragsrunde durchgeführt werden. Eine Beitragsrunde kann aber beliebig viele
+                Produkte enthalten
+            </li>
+        </ul>
+        <div class="video">
+            <iframe width="1120" height="630"
+                    src="https://www.youtube-nocookie.com/embed/VrrHMvJKSCM?si=PuTluCSQrKEtpl9r"
+                    title="YouTube video player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <div class="card-detail" id="card-detail3">
+        <h2>Benutzer anlegen</h2>
+        <p>Um einen Benutzer anlegen zu können, ist nur ein Name und eine E-Mail-Adresse notwendig. Sonst nichts.</p>
+        <h3>Benutzerrollen</h3>
+        <ul>
+            <li><b>Admin</b>: Kann Beitragsrunde und Benutzer verwalten</li>
+            <li><b>Benutzer</b>: Kann an einer Beitragsrunde teilnehmen</li>
+        </ul>
+        <div class="video">
+            <iframe width="1120" height="630"
+                    src="https://www.youtube-nocookie.com/embed/c7WePLOemM0?si=gf3P1ejZgU-tw4L2"
+                    title="YouTube video player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen></iframe>
+        </div>
+    </div>
+    <div class="card-detail" id="card-detail4">
+        <h2>Benutzer anlegen - Massenimport</h2>
+        <p>Benutzer können auch via <code>xlsx</code> oder <code>csv</code> importiert werden.</p>
+        <p>Einfach diese Vorlage befüllen und importieren:
+            <i><a href="assets/UserImportTemplate.xlsx">Benutzervorlage</a></i>
+        </p>
+        <span class="caution"><i class="fa-solid fa-triangle-exclamation"></i> Bei doppelten E-Mail-Adressen wird nur ein Benutzer angelegt.</span>
+        <div class="video">
+            <iframe width="1120" height="630"
+                    src="https://www.youtube-nocookie.com/embed/cCFyekiHvN0?si=khKeEzf7pjlA17Bo"
+                    title="YouTube video player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <div class="card-detail" id="card-detail9">
+        <h2>Gebote abgeben</h2>
+        <p>
+            Der Benutzer kann die Gebote abgeben, sobald der Abstimmungszeitraum begonnen hat. Der Benutzer sieht die
+            Produkte und Anzahl an Runden, die zuvor konfiguriert wurden.</p>
+        <p>
+            Solange noch keine Runde ermittelt wurde, kann der Benutzer seine Gebote neu abgeben.
+        </p>
+        <div class="video">
+            <iframe width="1120" height="630"
+                    src="https://www.youtube-nocookie.com/embed/2vwVpV3bP2E?si=Lk8bl1_gvWy0Pjrc"
+                    title="YouTube video player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <div class="card-detail" id="card-detail8">
+        <h2>Gebote für Benutzer abgeben</h2>
+        <p>Admins können im Namen der Benutzer Gebote abgeben.</p>
+        <div class="video">
+            <iframe width="1120" height="630"
+                    src="https://www.youtube-nocookie.com/embed/2atIXa9w9Vo?si=nvKdPNolDDxLRHiq"
+                    title="YouTube video player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <div class="card-detail" id="card-detail7">
+        <h2>Runde ermitteln</h2>
+        <p>Sobald alle Gebote abgegeben wurden, ermittelt das System die Runde mit genügend Umsatz.</p>
+        <div class="video">
+            <iframe width="1120" height="630"
+                    src="https://www.youtube-nocookie.com/embed/WrS7YvwuYy8?si=Fb4UcvrQCr2ywRKR"
+                    title="YouTube video player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <div class="card-detail" id="card-detail5">
+        <h2>Gebote exportieren</h2>
+        <p>Um die Gebote weiter verarbeiten zu können, können sie exportiert werden. Folgende Formate sind dabei
+            möglich:</p>
+        <ul>
+            <li><code>xlsx</code></li>
+            <li><code>csv</code></li>
+            <li><code>pdf</code></li>
+        </ul>
+        <div class="video">
+            <iframe width="1120" height="630"
+                    src="https://www.youtube-nocookie.com/embed/lEmnAM9YGDk?si=rKpJ4Htowl9oRVUK"
+                    title="YouTube video player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <div class="card-detail" id="card-detail6">
+        <h2>Benutzer aus Beitragsrunde entfernen</h2>
+        <p>Um irrtümlich hinzugefügte Benutzer zu entfernen, kann der Admin die Benutzer aus der Beitragsrunde
+            entfernen.</p>
+        <div class="video">
+            <iframe width="1120" height="630"
+                    src="https://www.youtube-nocookie.com/embed/H09DlgM6Gvc?si=REBI3vXW9rjS0nEO"
+                    title="YouTube video player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen></iframe>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+<script src="https://kit.fontawesome.com/e29d3151fd.js" crossorigin="anonymous"></script>
+</body>
+</html>
