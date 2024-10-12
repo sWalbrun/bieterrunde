@@ -29,7 +29,7 @@ class DatabasePropertyValidationTest extends TestCase
      */
     public function testDatabasePropertyAndValidation()
     {
-        $finder = new Finder();
+        $finder = new Finder;
         $finder->depth('== 0');
         $finder->files()->in(app_path().DIRECTORY_SEPARATOR.'Models');
 

@@ -33,7 +33,7 @@ class ReminderOfBidderRound extends Notification
 
     public function toMail(): MailMessage
     {
-        return (new MailMessage())
+        return (new MailMessage)
             ->subject(trans('Solawi - Friendly reminder for missing offers'))
             ->greeting(trans('Servus :name', ['name' => $this->participant->name()]))
             ->line(trans(

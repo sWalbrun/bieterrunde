@@ -58,7 +58,7 @@ class LocalDevelopmentSeeder extends Seeder
         $email = sprintf('admin%s@solawi.de', tenant()->id);
         $user = User::query()->where(User::COL_EMAIL, '=', $email)->first();
 
-        $user ??= new User();
+        $user ??= new User;
         $user->email = $email;
         $user->password = Hash::make('password');
         $user->name = 'Admin';

@@ -21,8 +21,7 @@ class BidderRoundFound extends Notification implements ShouldQueue
         private readonly TopicReport $report,
         private readonly string $amountFormatted,
         private readonly int $round,
-    ) {
-    }
+    ) {}
 
     public function via(): array
     {

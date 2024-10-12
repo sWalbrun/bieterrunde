@@ -273,7 +273,7 @@ class OfferPage extends Page
                     ->offers()
                     ->where(Offer::COL_ROUND, '=', $numberOfRound)
                     ->where(Offer::COL_FK_TOPIC, '=', $topic->id)
-                    ->first() ?? new Offer();
+                    ->first() ?? new Offer;
                 $offer->round = $numberOfRound;
                 $offer->amount = floatval($amountOfRound);
                 $offer->topic()->associate($topicId);

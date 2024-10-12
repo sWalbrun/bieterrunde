@@ -12,7 +12,7 @@ class UserMapper extends BaseMapper implements Relator
 {
     public function __construct()
     {
-        parent::__construct(new User());
+        parent::__construct(new User);
     }
 
     public function uniqueColumns(): array

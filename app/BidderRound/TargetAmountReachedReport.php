@@ -16,8 +16,7 @@ class TargetAmountReachedReport
         public EnumTargetAmountReachedStatus $status,
         private readonly Topic $topic,
         private readonly ?TopicReport $topicReport,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws NoRoundFoundException

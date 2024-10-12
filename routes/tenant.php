@@ -8,5 +8,4 @@ Route::middleware([
     'auth',
     'verified',
     'web',
-])->group(function () {
-});
+])->group(function () {});

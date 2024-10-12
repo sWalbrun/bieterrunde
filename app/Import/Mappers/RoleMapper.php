@@ -10,7 +10,7 @@ class RoleMapper extends BaseMapper
 {
     public function __construct()
     {
-        parent::__construct(new Role());
+        parent::__construct(new Role);
     }
 
     public function uniqueColumns(): array
