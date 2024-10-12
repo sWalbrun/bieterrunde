@@ -1,214 +1,276 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beitragsrunde - Dokumentation</title>
-    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Entfernen des standardmäßigen Accordion-Icons */
+        .accordion-button::after {
+            display: none;
+        }
+        .accordion-button.collapsed::before {
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            content: "\f078"; /* Chevron-down */
+            margin-right: 10px;
+        }
+        .accordion-button:not(.collapsed)::before {
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            content: "\f077"; /* Chevron-up */
+            margin-right: 10px;
+        }
+        .responsive-iframe {
+            position: relative;
+            overflow: hidden;
+            padding-top: 56.25%;
+        }
+        .responsive-iframe iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .caution {
+            display: block;
+            margin: 10px 0;
+            color: #d9534f;
+            font-weight: bold;
+        }
+        .caution i {
+            margin-right: 5px;
+        }
+        .header-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header-container img.logo {
+            max-width: 200px;
+            height: auto;
+        }
+    </style>
 </head>
 <body>
-<h1>Beitragsrunde - Getting started</h1>
-
-<div class="container">
-    <div class="cards">
-        <!-- Card 1 -->
-        <div class="card-header" onclick="toggleCard(1)">
-            <h2>
-                Anmeldung <span><i id="icon1" class="fa-solid fa-chevron-down"></i></span>
-            </h2>
-        </div>
-        <div class="card-header" onclick="toggleCard(3)">
-            <h2>
-                Benutzer anlegen <span><i id="icon3" class="fa-solid fa-chevron-down"></i></span>
-            </h2>
-        </div>
-        <div class="card-header" onclick="toggleCard(4)">
-            <h2>
-                Benutzer anlegen - Massenimport <span><i id="icon4" class="fa-solid fa-chevron-down"></i></span>
-            </h2>
-        </div>
-        <div class="card-header" onclick="toggleCard(2)">
-            <h2>
-                Beitragsrunde anlegen <span><i id="icon2" class="fa-solid fa-chevron-down"></i></span>
-            </h2>
-        </div>
-        <div class="card-header" onclick="toggleCard(9)">
-            <h2>
-                Gebote abgeben <span><i id="icon9" class="fa-solid fa-chevron-down"></i></span>
-            </h2>
-        </div>
-        <div class="card-header" onclick="toggleCard(8)">
-            <h2>
-                Gebote für Benutzer abgeben <span><i id="icon8" class="fa-solid fa-chevron-down"></i></span>
-            </h2>
-        </div>
-        <div class="card-header" onclick="toggleCard(6)">
-            <h2>
-                Benutzer aus Beitragsrunde entfernen <span><i id="icon6" class="fa-solid fa-chevron-down"></i></span>
-            </h2>
-        </div>
-        <div class="card-header" onclick="toggleCard(7)">
-            <h2>
-                Runde ermitteln<span><i id="icon7" class="fa-solid fa-chevron-down"></i></span>
-            </h2>
-        </div>
-        <div class="card-header" onclick="toggleCard(5)">
-            <h2>
-                Gebote exportieren <span><i id="icon5" class="fa-solid fa-chevron-down"></i></span>
-            </h2>
-        </div>
+<div class="container my-5">
+    <div class="header-container">
+        <a href="https://www.solidarische-landwirtschaft.org/startseite/">
+            <img src="https://www.solidarische-landwirtschaft.org/typo3conf/ext/csa/Resources/Public/Global/Web/Icons/logo-solawi.svg" alt="Solidarische Landwirtschaft Logo" class="logo">
+        </a>
+        <h1 class="mb-4">Beitragsrunde - Erste Schritte</h1>
     </div>
+    <div class="accordion" id="dokumentationAccordion">
 
-    <div class="card-detail" id="card-detail1">
-        <h2>Anmeldung</h2>
-        <p>Die Beitragsrunde benötigt keine Passwörter. Einfach die E-Mail-Adresse angeben und den Anmeldelink im
-            Postfach öffnen.</p>
-        <div class="responsive-iframe">
-            <iframe
-                    src="https://www.youtube-nocookie.com/embed/wIeyCU7ovfw?si=UGILX_sgn3Q1ts-4"
-                    title="YouTube video player" frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowfullscreen></iframe>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingAnmeldung">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseAnmeldung" aria-expanded="false" aria-controls="collapseAnmeldung">
+                    Anmeldung
+                </button>
+            </h2>
+            <div id="collapseAnmeldung" class="accordion-collapse collapse" aria-labelledby="headingAnmeldung"
+                 data-bs-parent="#dokumentationAccordion">
+                <div class="accordion-body">
+                    <p>Für die Beitragsrunde brauchst du kein Passwort. Gib einfach deine E-Mail-Adresse ein und öffne den Anmeldelink, der in dein E-Mail-Postfach geschickt wird.</p>
+                    <div class="responsive-iframe">
+                        <iframe src="https://www.youtube-nocookie.com/embed/wIeyCU7ovfw?si=UGILX_sgn3Q1ts-4"
+                                title="Anmeldeanleitung" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <div class="card-detail" id="card-detail2">
-        <h2>Beitragsrunde anlegen</h2>
-        <p>Eine Beitragsrunde hat einen Abstimmungszeitraum und beliebig viele Produkte.</p>
-        <h3>Produkte</h3>
-        <ul>
-            <li>
-                Sobald der Abstimmungszeitraum beginnt, können die Mitglieder ihre Gebote abgeben
-            </li>
-            <li>Die Mitglieder können pro Produkt so viele Gebote abgeben, wie Anzahl an Runden konfiguriert werden. Es
-                können im Nachhinein noch weitere Runden hinzugefügt werden
-            </li>
-            <li>
-                Der Richtwert ist der benötigte Betrag für das Gartenjahr
-            </li>
-            <li>
-                Alle zuvor angelegten Benutzer werden automatisch eingeladen
-            </li>
-            <li>
-                Es kann immer nur eine Beitragsrunde durchgeführt werden. Eine Beitragsrunde kann aber beliebig viele
-                Produkte enthalten
-            </li>
-        </ul>
-        <div class="responsive-iframe">
-            <iframe width="100%" height="100%"
-                    src="https://www.youtube-nocookie.com/embed/VrrHMvJKSCM?si=PuTluCSQrKEtpl9r"
-                    title="YouTube video player" frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowfullscreen></iframe>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingBenutzerAnlegen">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseBenutzerAnlegen" aria-expanded="false"
+                        aria-controls="collapseBenutzerAnlegen">
+                    Benutzer anlegen
+                </button>
+            </h2>
+            <div id="collapseBenutzerAnlegen" class="accordion-collapse collapse"
+                 aria-labelledby="headingBenutzerAnlegen" data-bs-parent="#dokumentationAccordion">
+                <div class="accordion-body">
+                    <p>Um einen neuen Benutzer anzulegen, brauchst du nur den Namen und die E-Mail-Adresse der Person - mehr nicht.</p>
+                    <h3>Benutzerrollen</h3>
+                    <ul>
+                        <li><strong>Admin</strong>: Kann Beitragsrunden und Benutzer verwalten.</li>
+                        <li><strong>Benutzer</strong>: Kann an einer Beitragsrunde teilnehmen.</li>
+                    </ul>
+                    <div class="responsive-iframe">
+                        <iframe src="https://www.youtube-nocookie.com/embed/c7WePLOemM0?si=gf3P1ejZgU-tw4L2"
+                                title="Anleitung zum Anlegen von Benutzern" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <div class="card-detail" id="card-detail3">
-        <h2>Benutzer anlegen</h2>
-        <p>Um einen Benutzer anlegen zu können, ist nur ein Name und eine E-Mail-Adresse notwendig. Sonst nichts.</p>
-        <h3>Benutzerrollen</h3>
-        <ul>
-            <li><b>Admin</b>: Kann Beitragsrunde und Benutzer verwalten</li>
-            <li><b>Benutzer</b>: Kann an einer Beitragsrunde teilnehmen</li>
-        </ul>
-        <div class="responsive-iframe">
-            <iframe width="100%" height="100%"
-                    src="https://www.youtube-nocookie.com/embed/c7WePLOemM0?si=gf3P1ejZgU-tw4L2"
-                    title="YouTube video player" frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowfullscreen></iframe>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingMassenimport">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseMassenimport" aria-expanded="false"
+                        aria-controls="collapseMassenimport">
+                    Benutzer anlegen - Massenimport
+                </button>
+            </h2>
+            <div id="collapseMassenimport" class="accordion-collapse collapse" aria-labelledby="headingMassenimport"
+                 data-bs-parent="#dokumentationAccordion">
+                <div class="accordion-body">
+                    <p>Benutzer können auch über <code>.xlsx</code>- oder <code>.csv</code>-Dateien importiert werden.</p>
+                    <p>Fülle einfach diese Vorlage aus und importiere sie:</p>
+                    <p><i><a href="assets/UserImportTemplate.xlsx">Benutzervorlage</a></i></p>
+                    <span class="caution"><i class="fa-solid fa-triangle-exclamation"></i> Hinweis: Bei doppelten E-Mail-Adressen wird nur ein Benutzer angelegt.</span>
+                    <div class="responsive-iframe">
+                        <iframe src="https://www.youtube-nocookie.com/embed/cCFyekiHvN0?si=khKeEzf7pjlA17Bo"
+                                title="Anleitung zum Massenimport von Benutzern" frameborder="0"
+                                allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="card-detail" id="card-detail4">
-        <h2>Benutzer anlegen - Massenimport</h2>
-        <p>Benutzer können auch via <code>xlsx</code> oder <code>csv</code> importiert werden.</p>
-        <p>Einfach diese Vorlage befüllen und importieren:
-            <i><a href="assets/UserImportTemplate.xlsx">Benutzervorlage</a></i>
-        </p>
-        <span class="caution"><i class="fa-solid fa-triangle-exclamation"></i> Bei doppelten E-Mail-Adressen wird nur ein Benutzer angelegt.</span>
-        <div class="responsive-iframe">
-            <iframe width="100%" height="100%"
-                    src="https://www.youtube-nocookie.com/embed/cCFyekiHvN0?si=khKeEzf7pjlA17Bo"
-                    title="YouTube video player" frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowfullscreen></iframe>
-        </div>
-    </div>
 
-    <div class="card-detail" id="card-detail9">
-        <h2>Gebote abgeben</h2>
-        <p>
-            Der Benutzer kann die Gebote abgeben, sobald der Abstimmungszeitraum begonnen hat. Der Benutzer sieht die
-            Produkte und Anzahl an Runden, die zuvor konfiguriert wurden.</p>
-        <p>
-            Solange noch keine Runde ermittelt wurde, kann der Benutzer seine Gebote neu abgeben.
-        </p>
-        <div class="responsive-iframe">
-            <iframe width="100%" height="100%"
-                    src="https://www.youtube-nocookie.com/embed/2vwVpV3bP2E?si=Lk8bl1_gvWy0Pjrc"
-                    title="YouTube video player" frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowfullscreen></iframe>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingBeitragsrundeAnlegen">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseBeitragsrundeAnlegen" aria-expanded="false"
+                        aria-controls="collapseBeitragsrundeAnlegen">
+                    Beitragsrunde anlegen
+                </button>
+            </h2>
+            <div id="collapseBeitragsrundeAnlegen" class="accordion-collapse collapse"
+                 aria-labelledby="headingBeitragsrundeAnlegen" data-bs-parent="#dokumentationAccordion">
+                <div class="accordion-body">
+                    <p>Eine Beitragsrunde hat einen Abstimmungszeitraum und beliebig viele Produkte.</p>
+                    <h3>Produkte</h3>
+                    <ul>
+                        <li>Sobald der Abstimmungszeitraum beginnt, können die Mitglieder ihre Gebote abgeben.</li>
+                        <li>Die Mitglieder können pro Produkt so viele Gebote abgeben, wie Runden konfiguriert wurden. Weitere Runden können nachträglich hinzugefügt werden.</li>
+                        <li>Der Richtwert ist der benötigte Betrag für das Gartenjahr.</li>
+                        <li>Alle zuvor angelegten Benutzer werden automatisch eingeladen.</li>
+                        <li>Es kann immer nur eine Beitragsrunde durchgeführt werden, diese kann jedoch mehrere Produkte enthalten.</li>
+                    </ul>
+                    <div class="responsive-iframe">
+                        <iframe src="https://www.youtube-nocookie.com/embed/VrrHMvJKSCM?si=PuTluCSQrKEtpl9r"
+                                title="Anleitung zum Anlegen einer Beitragsrunde" frameborder="0"
+                                allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <div class="card-detail" id="card-detail8">
-        <h2>Gebote für Benutzer abgeben</h2>
-        <p>Admins können im Namen der Benutzer Gebote abgeben.</p>
-        <div class="responsive-iframe">
-            <iframe width="100%" height="100%"
-                    src="https://www.youtube-nocookie.com/embed/2atIXa9w9Vo?si=nvKdPNolDDxLRHiq"
-                    title="YouTube video player" frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowfullscreen></iframe>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingGeboteAbgeben">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseGeboteAbgeben" aria-expanded="false"
+                        aria-controls="collapseGeboteAbgeben">
+                    Gebote abgeben
+                </button>
+            </h2>
+            <div id="collapseGeboteAbgeben" class="accordion-collapse collapse" aria-labelledby="headingGeboteAbgeben"
+                 data-bs-parent="#dokumentationAccordion">
+                <div class="accordion-body">
+                    <p>Du kannst deine Gebote abgeben, sobald der Abstimmungszeitraum begonnen hat. Du siehst die Produkte und die Anzahl der konfigurierten Runden.</p>
+                    <p>Solange noch keine Runde ermittelt wurde, kannst du deine Gebote erneut abgeben.</p>
+                    <div class="responsive-iframe">
+                        <iframe src="https://www.youtube-nocookie.com/embed/2vwVpV3bP2E?si=Lk8bl1_gvWy0Pjrc"
+                                title="Anleitung zum Abgeben von Geboten" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <div class="card-detail" id="card-detail7">
-        <h2>Runde ermitteln</h2>
-        <p>Sobald alle Gebote abgegeben wurden, ermittelt das System die Runde mit genügend Umsatz.</p>
-        <div class="responsive-iframe">
-            <iframe width="100%" height="100%"
-                    src="https://www.youtube-nocookie.com/embed/WrS7YvwuYy8?si=Fb4UcvrQCr2ywRKR"
-                    title="YouTube video player" frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowfullscreen></iframe>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingGeboteFuerBenutzer">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseGeboteFuerBenutzer" aria-expanded="false"
+                        aria-controls="collapseGeboteFuerBenutzer">
+                    Gebote für Benutzer abgeben
+                </button>
+            </h2>
+            <div id="collapseGeboteFuerBenutzer" class="accordion-collapse collapse"
+                 aria-labelledby="headingGeboteFuerBenutzer" data-bs-parent="#dokumentationAccordion">
+                <div class="accordion-body">
+                    <p>Admins können bei Bedarf Gebote im Namen der Benutzer abgeben.</p>
+                    <div class="responsive-iframe">
+                        <iframe src="https://www.youtube-nocookie.com/embed/2atIXa9w9Vo?si=nvKdPNolDDxLRHiq"
+                                title="Anleitung für Admins zum Abgeben von Geboten für Benutzer" frameborder="0"
+                                allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <div class="card-detail" id="card-detail5">
-        <h2>Gebote exportieren</h2>
-        <p>Um die Gebote weiter verarbeiten zu können, können sie exportiert werden. Folgende Formate sind dabei
-            möglich:</p>
-        <ul>
-            <li><code>xlsx</code></li>
-            <li><code>csv</code></li>
-            <li><code>pdf</code></li>
-        </ul>
-        <div class="responsive-iframe">
-            <iframe width="100%" height="100%"
-                    src="https://www.youtube-nocookie.com/embed/lEmnAM9YGDk?si=rKpJ4Htowl9oRVUK"
-                    title="YouTube video player" frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowfullscreen></iframe>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingBenutzerEntfernen">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseBenutzerEntfernen" aria-expanded="false"
+                        aria-controls="collapseBenutzerEntfernen">
+                    Benutzer aus Beitragsrunde entfernen
+                </button>
+            </h2>
+            <div id="collapseBenutzerEntfernen" class="accordion-collapse collapse"
+                 aria-labelledby="headingBenutzerEntfernen" data-bs-parent="#dokumentationAccordion">
+                <div class="accordion-body">
+                    <p>Falls Benutzer irrtümlich hinzugefügt wurden, können Admins diese aus der Beitragsrunde entfernen.</p>
+                    <div class="responsive-iframe">
+                        <iframe src="https://www.youtube-nocookie.com/embed/H09DlgM6Gvc?si=REBI3vXW9rjS0nEO"
+                                title="Anleitung zum Entfernen von Benutzern aus der Beitragsrunde" frameborder="0"
+                                allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <div class="card-detail" id="card-detail6">
-        <h2>Benutzer aus Beitragsrunde entfernen</h2>
-        <p>Um irrtümlich hinzugefügte Benutzer zu entfernen, kann der Admin die Benutzer aus der Beitragsrunde
-            entfernen.</p>
-        <div class="responsive-iframe">
-            <iframe width="100%" height="100%"
-                    src="https://www.youtube-nocookie.com/embed/H09DlgM6Gvc?si=REBI3vXW9rjS0nEO"
-                    title="YouTube video player" frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowfullscreen></iframe>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingRundeErmitteln">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseRundeErmitteln" aria-expanded="false"
+                        aria-controls="collapseRundeErmitteln">
+                    Runde ermitteln
+                </button>
+            </h2>
+            <div id="collapseRundeErmitteln" class="accordion-collapse collapse" aria-labelledby="headingRundeErmitteln"
+                 data-bs-parent="#dokumentationAccordion">
+                <div class="accordion-body">
+                    <p>Sobald alle Gebote abgegeben wurden, ermittelt das System die Runde mit genügend Umsatz.</p>
+                    <div class="responsive-iframe">
+                        <iframe src="https://www.youtube-nocookie.com/embed/WrS7YvwuYy8?si=Fb4UcvrQCr2ywRKR"
+                                title="Anleitung zum Ermitteln der Runde" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingGeboteExportieren">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseGeboteExportieren" aria-expanded="false"
+                        aria-controls="collapseGeboteExportieren">
+                    Gebote exportieren
+                </button>
+            </h2>
+            <div id="collapseGeboteExportieren" class="accordion-collapse collapse"
+                 aria-labelledby="headingGeboteExportieren" data-bs-parent="#dokumentationAccordion">
+                <div class="accordion-body">
+                    <p>Um die Gebote weiterverarbeiten zu können, kannst du sie in verschiedenen Formaten exportieren:</p>
+                    <ul>
+                        <li><code>.xlsx</code></li>
+                        <li><code>.csv</code></li>
+                        <li><code>.pdf</code></li>
+                    </ul>
+                    <div class="responsive-iframe">
+                        <iframe src="https://www.youtube-nocookie.com/embed/lEmnAM9YGDk?si=rKpJ4Htowl9oRVUK"
+                                title="Anleitung zum Exportieren von Geboten" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<script src="script.js"></script>
-<script src="https://kit.fontawesome.com/e29d3151fd.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
