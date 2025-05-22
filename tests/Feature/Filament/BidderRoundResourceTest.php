@@ -6,11 +6,16 @@ use App\Filament\Resources\BidderRoundResource\Pages\CreateBidderRound;
 use App\Filament\Resources\BidderRoundResource\Pages\EditBidderRound;
 use App\Filament\Resources\BidderRoundResource\RelationManagers\TopicsRelationManager;
 use App\Models\BidderRound;
+use App\Models\Offer;
+use App\Models\Share;
 use App\Models\Topic;
+use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Permission;
 
 use function beforeEach;
+use function expect;
 
 beforeEach(function () {
     $userToLogin = $this->createAndActAsUser();
@@ -67,6 +72,33 @@ it('deletes a bidder round', function () {
         ->callAction('delete')
         ->assertHasNoErrors();
     expect(BidderRound::query()->first())->toBeNull();
+});
+
+it('deletes a bidder round and topics and shares and offers cascading', function () {
+    /** @var BidderRound $bidderRound */
+    $bidderRound = BidderRound::factory()->has(Topic::factory())->create();
+    /** @var Topic $topic */
+    $topic = Topic::factory()->create([
+        Topic::COL_FK_BIDDER_ROUND => $bidderRound->id,
+    ]);
+    /** @var User $user */
+    $user = User::factory()->create();
+    /** @var Offer $offer */
+    $offer = Offer::factory()->create([
+        Offer::COL_FK_TOPIC => $topic->id,
+        Offer::COL_FK_USER => $user->id,
+    ]);
+    $share = Share::factory()->create([
+        Share::COL_FK_USER => $user->id,
+        Share::COL_FK_TOPIC => $topic->id,
+    ]);
+    Livewire::test(EditBidderRound::class, ['record' => $bidderRound->id])
+        ->callAction('delete')
+        ->assertHasNoErrors();
+    expect(fn () => $bidderRound->refresh())->toThrow(ModelNotFoundException::class)
+        ->and(fn () => $topic->refresh())->toThrow(ModelNotFoundException::class)
+        ->and(fn () => $offer->refresh())->toThrow(ModelNotFoundException::class)
+        ->and(fn () => $share->refresh())->toThrow(ModelNotFoundException::class);
 });
 
 it('adds a topic to bidder round', function () {

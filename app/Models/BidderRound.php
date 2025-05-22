@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Observers\BidderRoundObserver;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -21,6 +23,7 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
  * @property TopicReport $bidderRoundReport
  * @property-read Collection<Topic> topics
  */
+#[ObservedBy([BidderRoundObserver::class])]
 class BidderRound extends BaseModel
 {
     use BelongsToTenant;
