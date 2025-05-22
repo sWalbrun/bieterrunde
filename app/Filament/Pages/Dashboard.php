@@ -6,7 +6,7 @@ use Filament\Pages\Dashboard as BasePage;
 
 class Dashboard extends BasePage
 {
-    protected function getColumns(): int
+    public function getColumns(): int
     {
         return 2;
     }

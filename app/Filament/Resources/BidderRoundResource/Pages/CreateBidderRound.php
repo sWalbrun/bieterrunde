@@ -9,7 +9,7 @@ class CreateBidderRound extends CreateRecord
 {
     protected static string $resource = BidderRoundResource::class;
 
-    protected static function canCreateAnother(): bool
+    public static function canCreateAnother(): bool
     {
         return false;
     }

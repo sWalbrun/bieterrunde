@@ -4,8 +4,8 @@ namespace App\Filament\Resources\TopicResource\RelationManagers;
 
 use App\Models\TopicReport;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Table;
 
 class TopicReportRelationManager extends RelationManager
 {
@@ -20,7 +20,12 @@ class TopicReportRelationManager extends RelationManager
         return trans('Report');
     }
 
-    public static function table(Table $table): Table
+    public function getPageClass(): string
+    {
+        return RelationManager::class;
+    }
+
+    public function table(Table $table): Table
     {
         return $table
             ->columns([

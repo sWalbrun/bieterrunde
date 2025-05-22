@@ -7,17 +7,29 @@ use App\Filament\Resources\BidderRoundResource\Pages\EditBidderRound;
 use App\Filament\Resources\BidderRoundResource\RelationManagers\TopicsRelationManager;
 use App\Models\BidderRound;
 use App\Models\Topic;
-use Filament\Resources\Resource;
 use Livewire\Livewire;
+use Spatie\Permission\Models\Permission;
 
-beforeAll(fn () => Resource::ignorePolicies());
+use function beforeEach;
+
+beforeEach(function () {
+    $userToLogin = $this->createAndActAsUser();
+    $userToLogin->givePermissionTo(
+        Permission::create(['name' => 'create_bidder::round']),
+        Permission::create(['name' => 'view_bidder::round']),
+        Permission::create(['name' => 'update_bidder::round']),
+        Permission::create(['name' => 'view_any_bidder::round']),
+        Permission::create(['name' => 'delete_bidder::round']),
+    );
+});
 
 it('creates a bidder round', function () {
     /** @var BidderRound $bidderRound */
     $bidderRound = BidderRound::factory()->make();
-    Livewire::test(CreateBidderRound::class)->fillForm(
-        $bidderRound->getAttributes()
-    )->call('create')->assertHasNoErrors();
+    Livewire::test(CreateBidderRound::class)
+        ->fillForm($bidderRound->getAttributes())
+        ->call('create')
+        ->assertHasNoErrors();
 
     /** @var BidderRound $persistedBidderRound */
     $persistedBidderRound = BidderRound::query()->first();
@@ -39,7 +51,7 @@ it('updates a bidder round', function () {
 });
 
 it('fails because of validation', function () {
-    Livewire::test(CreateBidderRound::class)->fillForm()->call('create')->assertHasErrors(
+    Livewire::test(CreateBidderRound::class)->call('create')->assertHasErrors(
         [
             'data.'.BidderRound::COL_START_OF_SUBMISSION,
             'data.'.BidderRound::COL_END_OF_SUBMISSION,
@@ -51,11 +63,13 @@ it('fails because of validation', function () {
 it('deletes a bidder round', function () {
     /** @var BidderRound $bidderRound */
     $bidderRound = BidderRound::factory()->create();
-    Livewire::test(EditBidderRound::class, ['record' => $bidderRound->id])->call('delete')->assertHasNoErrors();
+    Livewire::test(EditBidderRound::class, ['record' => $bidderRound->id])
+        ->callAction('delete')
+        ->assertHasNoErrors();
     expect(BidderRound::query()->first())->toBeNull();
 });
 
-it('Adds a topic to bidder round', function () {
+it('adds a topic to bidder round', function () {
     $this->markTestSkipped('Filament has no documented way of testing header actions');
     /** @var BidderRound $bidderRound */
     $bidderRound = BidderRound::factory()->create();
@@ -72,7 +86,7 @@ it('Adds a topic to bidder round', function () {
         ->and($topic->bidderRound)->toBe($bidderRound);
 });
 
-it('Shows a topic for a bidder round', function () {
+it('shows a topic for a bidder round', function () {
     /** @var BidderRound $bidderRound */
     $bidderRound = BidderRound::factory()->has(Topic::factory())->create();
 

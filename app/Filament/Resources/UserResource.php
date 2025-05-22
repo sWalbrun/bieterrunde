@@ -11,10 +11,10 @@ use App\Filament\Utils\ForFilamentTranslator;
 use App\Models\User;
 use Carbon\Carbon;
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Table;
 
 class UserResource extends Resource
 {
@@ -32,7 +32,7 @@ class UserResource extends Resource
         return trans('User');
     }
 
-    protected static function getNavigationGroup(): ?string
+    public static function getNavigationGroup(): ?string
     {
         return trans(EnumNavigationGroups::ADMINISTRATION);
     }

@@ -7,14 +7,15 @@ use App\Filament\Resources\TopicResource\RelationManagers\TopicReportRelationMan
 use App\Filament\Resources\TopicResource\RelationManagers\UsersRelationManager;
 use App\Models\Topic;
 use Filament\Forms\Components\TextInput;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\RawJs;
 
 class TopicResource extends Resource
 {
     protected static ?string $model = Topic::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static bool $shouldRegisterNavigation = false;
 
@@ -59,17 +60,11 @@ class TopicResource extends Resource
             TextInput::make(Topic::COL_TARGET_AMOUNT)
                 ->numeric()
                 ->required()
-                ->mask(
-                    fn (TextInput\Mask $mask) => $mask
-                        ->numeric()
-                        ->decimalPlaces(2)
-                        ->decimalSeparator(',')
-                        ->minValue(1)
-                        ->maxValue(250_000)
-                        ->normalizeZeros()
-                        ->padFractionalZeros()
-                        ->thousandsSeparator('.')
-                )->suffix('€')
+                ->mask(RawJs::make(
+                    <<<'JS'
+                    $money($input, ',', '.', 2);
+                    JS
+                ))
                 ->label(trans('Target amount')),
             TextInput::make('offersGiven')
                 ->label(trans('Offers given'))

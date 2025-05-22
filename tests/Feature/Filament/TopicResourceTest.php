@@ -14,10 +14,17 @@ use App\Models\TopicReport;
 use App\Models\User;
 use App\Notifications\BidderRoundFound;
 use Filament\Notifications\Notification;
-use Filament\Resources\Resource;
 use Livewire\Livewire;
+use Spatie\Permission\Models\Permission;
 
-beforeAll(fn () => Resource::ignorePolicies());
+beforeEach(function () {
+    $userToLogin = $this->createAndActAsUser();
+    $userToLogin->givePermissionTo(
+        Permission::create(['name' => 'update_topic']),
+        Permission::create(['name' => 'view_topic']),
+        Permission::create(['name' => 'view_any_topic']),
+    );
+});
 
 it('shows the active members', function () {
     $activeUsers = User::factory()->count(2)->create([
@@ -47,7 +54,6 @@ it('does not show former members', function () {
 });
 
 it('successfully calculates a report', function () {
-
     $reportMock = Mockery::mock(TargetAmountReachedReport::class)->makePartial();
     $reportMock->status = EnumTargetAmountReachedStatus::SUCCESS();
     $reportMock->shouldReceive('sumAmountFormatted')->andReturn('wayne');
@@ -62,7 +68,7 @@ it('successfully calculates a report', function () {
     /** @var Topic $topic */
     $topic = Topic::factory()->for(BidderRound::factory())->create();
     Livewire::test(EditTopic::class, ['record' => $topic->id])
-        ->callPageAction(EditTopic::CALCULATE_BIDDER_ROUND_ACTION)
+        ->callAction(EditTopic::CALCULATE_BIDDER_ROUND_ACTION)
         ->assertHasNoErrors()
         ->assertNotified(
             Notification::make()
@@ -88,7 +94,7 @@ it('successfully reports about the existing report', function () {
     /** @var Topic $topic */
     $topic = Topic::factory()->for(BidderRound::factory())->create();
     Livewire::test(EditTopic::class, ['record' => $topic->id])
-        ->callPageAction(EditTopic::CALCULATE_BIDDER_ROUND_ACTION)
+        ->callAction(EditTopic::CALCULATE_BIDDER_ROUND_ACTION)
         ->assertHasNoErrors()
         ->assertNotified(
             Notification::make()
@@ -112,7 +118,7 @@ it('warns about missing offers', function () {
     /** @var Topic $topic */
     $topic = Topic::factory()->for(BidderRound::factory())->create();
     Livewire::test(EditTopic::class, ['record' => $topic->id])
-        ->callPageAction(EditTopic::CALCULATE_BIDDER_ROUND_ACTION)
+        ->callAction(EditTopic::CALCULATE_BIDDER_ROUND_ACTION)
         ->assertHasNoErrors()
         ->assertNotified(
             Notification::make()
@@ -135,7 +141,7 @@ it('warns about insufficient money', function () {
     /** @var Topic $topic */
     $topic = Topic::factory()->for(BidderRound::factory())->create();
     Livewire::test(EditTopic::class, ['record' => $topic->id])
-        ->callPageAction(EditTopic::CALCULATE_BIDDER_ROUND_ACTION)
+        ->callAction(EditTopic::CALCULATE_BIDDER_ROUND_ACTION)
         ->assertHasNoErrors()
         ->assertNotified(
             Notification::make()
@@ -158,7 +164,7 @@ it('warns about error', function () {
     /** @var Topic $topic */
     $topic = Topic::factory()->for(BidderRound::factory())->create();
     Livewire::test(EditTopic::class, ['record' => $topic->id])
-        ->callPageAction(EditTopic::CALCULATE_BIDDER_ROUND_ACTION)
+        ->callAction(EditTopic::CALCULATE_BIDDER_ROUND_ACTION)
         ->assertHasNoErrors()
         ->assertNotified(
             Notification::make()

@@ -1,4 +1,3 @@
-version: '3'
 services:
 
   init:
@@ -28,7 +27,7 @@ services:
       dockerfile: Dockerfile
     container_name: solawi_php_app
     ports:
-      - '80:80'
+      - '8000:80'
       - '443:443'
     environment:
       WWWUSER: '${WWWUSER}'

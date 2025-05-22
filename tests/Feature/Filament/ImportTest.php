@@ -12,16 +12,16 @@ it('can create an user and roles by import', function () {
 
     livewire(ImportPage::class)
         ->fillForm([
-            ImportPage::IMPORT => [uuid_create() => $fileToImport],
+            ImportPage::IMPORT => $fileToImport,
         ])
-        ->callPageAction('save')
+        ->callAction('save')
         ->send();
 
     /** @var User $importedUser */
     $importedUser = User::query()->where(User::COL_NAME, '=', 'Sebastian')->first();
     expect($importedUser)->not->toBeNull()
         ->and($importedUser->hasRole('admin'))->toBeTruthy()
-        ->and($importedUser->hasRole('user'))->toBeTruthy();
+        ->and($importedUser->hasRole('bidderRoundParticipant'))->toBeTruthy();
 });
 
 it('can update an user by import', function () {
@@ -34,9 +34,9 @@ it('can update an user by import', function () {
     $fileToImport = getDefaultXlsx('UserImport.xlsx');
     livewire(ImportPage::class)
         ->fillForm([
-            ImportPage::IMPORT => [uuid_create() => $fileToImport],
+            ImportPage::IMPORT => $fileToImport,
         ])
-        ->callPageAction('save')
+        ->callAction('save')
         ->send();
 
     /** @var User $importedUser */
@@ -48,11 +48,16 @@ it('can update an user by import', function () {
 
 function getDefaultXlsx(string $fileName): UploadedFile
 {
-    return new UploadedFile(
+    $uploaded = new UploadedFile(
         base_path('tests/assets/'.$fileName),
         $fileName,
         null,
         null,
         true
     );
+
+    // Livewire’s Testable expects a public->name
+    $uploaded->name = $fileName;
+
+    return $uploaded;
 }

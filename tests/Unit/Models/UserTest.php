@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Models;
 
+use App\Enums\EnumContributionGroup;
 use App\Models\BaseModel;
 use App\Models\BidderRound;
 use App\Models\Offer;
@@ -9,15 +10,28 @@ use App\Models\Topic;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
+
+use function config;
 
 /**
  * This test takes care of all methods and business logic of the {@link User}.
  */
 class UserTest extends TestCase
 {
-    use RefreshDatabase;
+    protected function createAndActAsUser(): User
+    {
+        /** @var User $user */
+        $user = User::factory()->create([
+            User::COL_CONTRIBUTION_GROUP => EnumContributionGroup::FULL_MEMBER,
+        ]);
+
+        $user->assignRole(Role::findOrCreate(config('filament-shield.super_admin.name')));
+        $this->actingAs($user);
+
+        return $user;
+    }
 
     public function testIsNewMember()
     {

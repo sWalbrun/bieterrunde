@@ -14,14 +14,14 @@ use App\Models\Share;
 use App\Models\Topic;
 use App\Models\User;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
-use Filament\Pages\Actions\Action;
 use Filament\Pages\Page;
-use Filament\Support\Actions\Concerns\HasForm;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -30,9 +30,8 @@ use Illuminate\Support\Collection;
  * Members can submit their bids via this page. Bids can only be submitted
  * within the {@link BidderRound::$startOfSubmission configured time period}.
  */
-class OfferPage extends Page
+class OfferPage extends Page implements HasForms
 {
-    use HasForm;
     use HasPageShield;
 
     private const USER = 'user';
@@ -45,6 +44,8 @@ class OfferPage extends Page
 
     public const USER_PAYMENT_INTERVAL = 'userPaymentInterval';
 
+    public const PERMISSION_NAME = 'page_OfferPage';
+
     /**
      * @var Collection<string, int[]>
      */
@@ -56,7 +57,7 @@ class OfferPage extends Page
     public array $roundToPartialAmountMapping = [];
 
     /**
-     * @var Collection<string, ShareValue>
+     * @var Collection<string, string> Holds the share keys for the topics
      */
     public Collection $topicToShareMapping;
 
@@ -70,9 +71,8 @@ class OfferPage extends Page
 
     protected static string $view = 'filament.pages.offer-page';
 
-    public function __construct($id = null)
+    public function __construct()
     {
-        parent::__construct($id);
         $this->roundToTotalAmountMapping = collect();
         $this->topicToShareMapping = collect();
     }
@@ -82,12 +82,17 @@ class OfferPage extends Page
         return url('/main/offer-page');
     }
 
+    protected static function getPermissionName(): string
+    {
+        return static::PERMISSION_NAME;
+    }
+
     public function getHeading(): string|Htmlable
     {
         return static::getNavigationLabel();
     }
 
-    protected static function getNavigationGroup(): ?string
+    public static function getNavigationGroup(): ?string
     {
         return trans(EnumNavigationGroups::YOUR_OFFERS);
     }
@@ -114,7 +119,7 @@ class OfferPage extends Page
         $shareValue = $share?->value;
         $this->topicToShareMapping->put(
             $topic->id,
-            $shareValue
+            $shareValue?->key
         );
 
         return $shareValue;
@@ -134,7 +139,7 @@ class OfferPage extends Page
         $this->roundToTotalAmountMapping->put($key, $totalAmounts);
     }
 
-    protected static function getNavigationLabel(): string
+    public static function getNavigationLabel(): string
     {
         return BidderRound::query()
             ->started()
@@ -158,7 +163,6 @@ class OfferPage extends Page
 
     public function mount(): void
     {
-        parent::mount();
         $this->user = auth()->user();
         $this->userContributionGroup = isset($this->user->contributionGroup) ? trans($this->user->contributionGroup->value) : null;
         $this->userPaymentInterval = $this->user->paymentInterval?->value;
@@ -193,19 +197,24 @@ class OfferPage extends Page
                     ->afterStateUpdated(
                         fn ($state, $set) => $set(
                             "roundToPartialAmountMapping.$topic->id.$numberOfRound",
-                            $this->formatAmount($state / $this->topicToShareMapping->get($topic->id)->calculable())
+                            $this->formatAmount($state / ShareValue::fromKey($this->topicToShareMapping->get($topic->id))->calculable())
                         )
                     )
                     ->mask(
-                        fn (TextInput\Mask $mask) => $mask
-                            ->numeric()
-                            ->decimalPlaces(2)
-                            ->decimalSeparator(',')
-                            ->minValue(1)
-                            ->maxValue(200)
-                            ->normalizeZeros()
-                            ->padFractionalZeros()
-                            ->thousandsSeparator('.')
+                        <<<'JS'
+                IMask($el, {
+                    mask: Number,
+                    scale: 2,
+                    signed: false,
+                    thousandsSeparator: '.',
+                    padFractionalZeros: true,
+                    normalizeZeros: true,
+                    radix: ',',
+                    mapToRadix: [','],
+                    min: 1,
+                    max: 200,
+                });
+                JS
                     )
                     ->hint(
                         $offer?->isOfWinningRound()

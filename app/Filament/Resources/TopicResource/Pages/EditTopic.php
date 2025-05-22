@@ -7,28 +7,27 @@ use App\Enums\EnumTargetAmountReachedStatus;
 use App\Exceptions\NoRoundFoundException;
 use App\Filament\Resources\TopicResource;
 use App\Models\Topic;
+use Filament\Actions;
 use Filament\Notifications\Notification;
-use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
 
+/**
+ * @property Topic $record
+ */
 class EditTopic extends EditRecord
 {
-    public const CALCULATE_BIDDER_ROUND_ACTION = 'calculateBidderRound';
+    public const CALCULATE_BIDDER_ROUND_ACTION = 'calculateReport';
 
     protected static string $resource = TopicResource::class;
 
     private TopicService $bidderRoundService;
 
-    /** @var Topic */
-    public $record;
-
-    public function __construct($id = null)
+    public function __construct()
     {
-        parent::__construct($id);
         $this->bidderRoundService = resolve(TopicService::class);
     }
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\DeleteAction::make(),
@@ -40,10 +39,7 @@ class EditTopic extends EditRecord
         ];
     }
 
-    /**
-     * @throws NoRoundFoundException
-     */
-    private function calculateReport(Topic $topic)
+    private function calculateReport(Topic $topic): void
     {
         $report = $this->bidderRoundService->calculateReportForTopic($topic);
 

@@ -10,7 +10,7 @@ class ListTopics extends ListRecords
 {
     protected static string $resource = TopicResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\CreateAction::make(),

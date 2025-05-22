@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "ext-intl": "*",
         "alperenersoy/filament-export": "^3.0",
         "bensampo/laravel-enum": "^6.1",
         "bezhansalleh/filament-shield": "^3.0",
@@ -21,7 +22,8 @@
         "laravel/framework": "^11.0",
         "laravel/tinker": "^2.8",
         "maatwebsite/excel": "^3.1",
-        "stancl/tenancy": "^3.5"
+        "stancl/tenancy": "^3.5",
+        "swalbrun/filament-regex-import": "^2.0"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.0",
@@ -73,12 +75,6 @@
             "@php vendor/bin/pint"
         ]
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/sWalbrun/filament-passwordless"
-        }
-    ],
     "extra": {
         "laravel": {
             "dont-discover": [

@@ -5,9 +5,10 @@ namespace App\Models;
 use App\BidderRound\Participant;
 use App\Enums\EnumContributionGroup;
 use App\Enums\EnumPaymentInterval;
-use BezhanSalleh\FilamentShield\Traits\HasFilamentShield;
+use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
 use Carbon\Carbon;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,6 +20,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Traits\HasRoles;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 /**
@@ -50,7 +52,8 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Par
 {
     use BelongsToTenant;
     use HasFactory;
-    use HasFilamentShield;
+    use HasPanelShield;
+    use HasRoles;
     use Notifiable;
 
     public const TABLE = 'user';
@@ -157,7 +160,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Par
         return self::TABLE;
     }
 
-    public function canAccessFilament(): bool
+    public function canAccessPanel(Panel $panel): bool
     {
         return true;
     }

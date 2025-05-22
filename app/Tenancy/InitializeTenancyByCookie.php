@@ -18,6 +18,8 @@ use Illuminate\Support\Str;
 use Stancl\Tenancy\Exceptions\TenantCouldNotBeIdentifiedById;
 use Stancl\Tenancy\Middleware\InitializeTenancyByRequestData;
 
+use function json_encode;
+
 /**
  * This class is initializing the tenant using the corresponding tenant id given by the cookie.
  */
@@ -56,7 +58,7 @@ class InitializeTenancyByCookie extends InitializeTenancyByRequestData
             if (Tenant::query()->where(Tenant::COL_ID, $tenantId)->doesntExist()) {
                 Log::info("There is no tenant existing for the given id ($tenantId)");
                 Auth::logout();
-                throw new TenantCouldNotBeIdentifiedById($tenantId ?? 'null');
+                throw new TenantCouldNotBeIdentifiedById($tenantId);
             }
 
             $response = $this->initializeTenancy(
@@ -83,6 +85,10 @@ class InitializeTenancyByCookie extends InitializeTenancyByRequestData
 
     protected function isWhiteListed(Request $request): bool
     {
-        return Str::contains($request->getUri(), static::$whiteListRoutes);
+        // TODO whitelist the post route for the login not this way
+        return Str::contains($request->getUri(), static::$whiteListRoutes)
+            || (Str::contains($request->getUri(), 'livewire/update')
+                && Str::contains(json_encode($request->get('components')), 'main\\\\\/login')
+            );
     }
 }

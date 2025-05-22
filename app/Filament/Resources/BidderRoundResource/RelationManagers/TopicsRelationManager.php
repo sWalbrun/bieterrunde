@@ -5,11 +5,11 @@ namespace App\Filament\Resources\BidderRoundResource\RelationManagers;
 use App\BidderRound\TopicService;
 use App\Filament\Resources\TopicResource;
 use App\Models\Topic;
+use Filament\Forms\Form;
 use Filament\Notifications\Notification;
-use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Table;
 
 class TopicsRelationManager extends RelationManager
 {
@@ -27,12 +27,17 @@ class TopicsRelationManager extends RelationManager
         return trans('Topic');
     }
 
-    public static function form(Form $form): Form
+    public function getPageClass(): string
+    {
+        return RelationManager::class;
+    }
+
+    public function form(Form $form): Form
     {
         return $form->schema(TopicResource::formSchema());
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
             ->columns([

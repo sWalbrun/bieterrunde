@@ -10,6 +10,7 @@ use App\Models\Share;
 use App\Models\Topic;
 use App\Models\User;
 use Carbon\Carbon;
+use Spatie\Permission\Models\Permission;
 
 use function Pest\Livewire\livewire;
 
@@ -19,6 +20,7 @@ it('saves the given offers', function () {
 
     /** @var User $user */
     $user = $this->createAndActAsUser();
+    $user->givePermissionTo(Permission::findOrCreate(OfferPage::PERMISSION_NAME));
 
     /** @var Topic $topic */
     $topic = Topic::factory(state: [Topic::COL_ROUNDS => 1])

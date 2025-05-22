@@ -39,8 +39,6 @@ it('shows one user', function () {
             User::COL_EMAIL => $userToLogin->email,
             User::COL_CONTRIBUTION_GROUP => $userToLogin->contributionGroup,
             User::COL_PAYMENT_INTERVAL => $userToLogin->paymentInterval,
-            User::COL_JOIN_DATE => $userToLogin->joinDate,
-            User::COL_EXIT_DATE => $userToLogin->exitDate,
         ]);
 });
 
@@ -62,7 +60,7 @@ it('creates one user', function () {
         User::COL_JOIN_DATE => '2020-01-01 00:00:00',
         User::COL_EXIT_DATE => '2021-01-01 00:00:00',
     ];
-    livewire(CreateUser::class, ['record' => $userToLogin->id])
+    livewire(CreateUser::class)
         ->fillForm($attributes)
         ->call('create')
         ->assertSuccessful();
@@ -103,7 +101,7 @@ it('deletes one user', function () {
         Permission::create(['name' => 'delete_user']),
     );
     livewire(EditUser::class, ['record' => $userToLogin->id])
-        ->call('delete')
+        ->callAction('delete')
         ->assertSuccessful();
     expect(fn () => $userToLogin->refresh())->toThrow(ModelNotFoundException::class);
 });

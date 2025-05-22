@@ -10,7 +10,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Database\Factories\OfferFactory;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
@@ -19,7 +19,7 @@ abstract class TestCase extends BaseTestCase
 {
     use BidderRoundEntities;
     use CreatesApplication;
-    use RefreshDatabase;
+    use DatabaseMigrations;
 
     public const TARGET_AMOUNT = 68_000;
 
@@ -44,12 +44,6 @@ abstract class TestCase extends BaseTestCase
         /** @var User $user */
         $user = User::factory()->create([
             User::COL_CONTRIBUTION_GROUP => EnumContributionGroup::FULL_MEMBER,
-        ]);
-
-        // TODO delete possibly
-        $this->withoutMiddleware([
-            //            InitializeTenancyByCookie::class,
-            //            SetTenantCookie::class,
         ]);
 
         $user->assignRole(Role::findOrCreate(config('filament-shield.super_admin.name')));

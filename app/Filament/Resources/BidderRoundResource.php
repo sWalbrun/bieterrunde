@@ -13,10 +13,10 @@ use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Table;
 use Illuminate\Support\Facades\Log;
 
 class BidderRoundResource extends Resource
@@ -35,7 +35,7 @@ class BidderRoundResource extends Resource
         return trans('Bidder round');
     }
 
-    protected static function getNavigationGroup(): ?string
+    public static function getNavigationGroup(): ?string
     {
         return trans(EnumNavigationGroups::ADMINISTRATION);
     }
