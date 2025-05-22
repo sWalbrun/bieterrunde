@@ -151,11 +151,11 @@ return [
     'rolesGuiMiddleware' => env('ROLES_GUI_MIDDLEWARE', 'role:admin'),
 
     // User Permissions or Role needed to create a new role
-    'rolesGuiCreateNewRolesMiddlewareType' => env('ROLES_GUI_CREATE_ROLE_MIDDLEWARE_TYPE', 'role'), //permissions or roles
+    'rolesGuiCreateNewRolesMiddlewareType' => env('ROLES_GUI_CREATE_ROLE_MIDDLEWARE_TYPE', 'role'), // permissions or roles
     'rolesGuiCreateNewRolesMiddleware' => env('ROLES_GUI_CREATE_ROLE_MIDDLEWARE', 'admin'), // admin, XXX. ... or perms.XXX
 
     // User Permissions or Role needed to create a new permission
-    'rolesGuiCreateNewPermissionMiddlewareType' => env('ROLES_GUI_CREATE_PERMISSION_MIDDLEWARE_TYPE', 'role'), //permissions or roles
+    'rolesGuiCreateNewPermissionMiddlewareType' => env('ROLES_GUI_CREATE_PERMISSION_MIDDLEWARE_TYPE', 'role'), // permissions or roles
     'rolesGuiCreateNewPermissionsMiddleware' => env('ROLES_GUI_CREATE_PERMISSION_MIDDLEWARE', 'admin'), // admin, XXX. ... or perms.XXX
 
     // The parent blade file
@@ -220,11 +220,11 @@ return [
     'rolesAPIMiddleware' => env('ROLES_API_MIDDLEWARE', 'role:admin'),
 
     // User Permissions or Role needed to create a new role
-    'rolesAPICreateNewRolesMiddlewareType' => env('ROLES_API_CREATE_ROLE_MIDDLEWARE_TYPE', 'role'), //permissions or roles
+    'rolesAPICreateNewRolesMiddlewareType' => env('ROLES_API_CREATE_ROLE_MIDDLEWARE_TYPE', 'role'), // permissions or roles
     'rolesAPICreateNewRolesMiddleware' => env('ROLES_API_CREATE_ROLE_MIDDLEWARE', 'admin'), // admin, XXX. ... or perms.XXX
 
     // User Permissions or Role needed to create a new permission
-    'rolesAPICreateNewPermissionMiddlewareType' => env('ROLES_API_CREATE_PERMISSION_MIDDLEWARE_TYPE', 'role'), //permissions or roles
+    'rolesAPICreateNewPermissionMiddlewareType' => env('ROLES_API_CREATE_PERMISSION_MIDDLEWARE_TYPE', 'role'), // permissions or roles
     'rolesAPICreateNewPermissionsMiddleware' => env('ROLES_API_CREATE_PERMISSION_MIDDLEWARE', 'admin'), // admin, XXX. ... or perms.XXX
 
     /*

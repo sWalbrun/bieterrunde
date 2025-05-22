@@ -33,7 +33,7 @@ class UserTest extends TestCase
         return $user;
     }
 
-    public function testIsNewMember()
+    public function test_is_new_member()
     {
         /** @var User $user */
         $user = User::factory()->create()->first();
@@ -42,7 +42,7 @@ class UserTest extends TestCase
         $this->assertTrue($user->isNewMember);
     }
 
-    public function testOffers()
+    public function test_offers()
     {
         $user = $this->createAndActAsUser();
 
@@ -53,7 +53,7 @@ class UserTest extends TestCase
         $this->assertSame($offers->first()->{BaseModel::COL_ID}, $user->offers->first()->{BaseModel::COL_ID});
     }
 
-    public function testOffersForRound()
+    public function test_offers_for_round()
     {
         $user = $this->createAndActAsUser();
 

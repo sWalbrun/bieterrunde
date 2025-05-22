@@ -27,7 +27,7 @@ class DatabasePropertyValidationTest extends TestCase
     /**
      * @throws ReflectionException
      */
-    public function testDatabasePropertyAndValidation()
+    public function test_database_property_and_validation()
     {
         $finder = new Finder;
         $finder->depth('== 0');
@@ -69,7 +69,7 @@ class DatabasePropertyValidationTest extends TestCase
                 if (substr($dbColumn, 0, 2) == 'fk') {
                     // do nothing since this is a foreign key
                 } elseif (in_array($dbColumn, self::IGNORE_COLUMNS_ALL)) {
-                    //do nothing -- ignore column
+                    // do nothing -- ignore column
                 } elseif ($propertyAnnotations->has($dbColumn)) {
                     unset($propertyAnnotations[$dbColumn]);
                 } else {

@@ -15,7 +15,7 @@ class DeleteTenantCommandTest extends TestCase
     /**
      * This test ensures the default case by checking if a tenant gets deleted successfully.
      */
-    public function testTenantTenantSuccessfully(): void
+    public function test_tenant_tenant_successfully(): void
     {
         $tenantId = 'Tenor';
         Tenant::query()->create([Tenant::COL_ID => $tenantId]);
@@ -30,7 +30,7 @@ class DeleteTenantCommandTest extends TestCase
     /**
      * This test ensures the default case by checking if a tenant gets deleted successfully with prompting.
      */
-    public function testTenantTenantSuccessfullyWithPrompting(): void
+    public function test_tenant_tenant_successfully_with_prompting(): void
     {
         $tenantId = 'Tenor';
         Tenant::query()->create([Tenant::COL_ID => $tenantId]);
@@ -46,7 +46,7 @@ class DeleteTenantCommandTest extends TestCase
     /**
      * This test ensures no tenant gets deleted in case the confirmation has not been given.
      */
-    public function testTenantTenantWithoutConfirmation(): void
+    public function test_tenant_tenant_without_confirmation(): void
     {
         $tenantId = 'Tenor';
         Tenant::query()->create([Tenant::COL_ID => $tenantId]);
@@ -62,7 +62,7 @@ class DeleteTenantCommandTest extends TestCase
     /**
      * This test makes sure no tenant gets deleted which is not existing beforehand.
      */
-    public function testDeleteNonExistingTenant(): void
+    public function test_delete_non_existing_tenant(): void
     {
         Tenant::query()->create([Tenant::COL_ID => 'anotherTenant']);
         Tenant::query()->create([Tenant::COL_ID => 'andAFurtherOne']);

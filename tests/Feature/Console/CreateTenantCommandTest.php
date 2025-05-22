@@ -18,7 +18,7 @@ class CreateTenantCommandTest extends TestCase
      *
      * @throws TenantCouldNotBeIdentifiedById
      */
-    public function testCreateTenantSuccessfully(): void
+    public function test_create_tenant_successfully(): void
     {
         $tenantId = 'Tenor';
         $this->artisan(CreateTenantCommand::SIGNATURE_WITHOUT_PARAMS, [CreateTenantCommand::TENANT_ID => $tenantId])
@@ -32,7 +32,7 @@ class CreateTenantCommandTest extends TestCase
      *
      * @throws TenantCouldNotBeIdentifiedById
      */
-    public function testCreateTenantSuccessfullyWithPrompting(): void
+    public function test_create_tenant_successfully_with_prompting(): void
     {
         $tenantId = 'aNewOne';
         $this->artisan(CreateTenantCommand::SIGNATURE_WITHOUT_PARAMS)
@@ -45,7 +45,7 @@ class CreateTenantCommandTest extends TestCase
     /**
      * This test ensures no tenant gets created in case there is already one existing.
      */
-    public function testCreateTenantAndFail(): void
+    public function test_create_tenant_and_fail(): void
     {
         $tenantId = 'aNewOne';
 

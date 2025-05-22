@@ -18,7 +18,7 @@ class EnumPaymentIntervalTest extends TestCase
      *
      * @throws InvalidEnumKeyException
      */
-    public function testDetermine(bool $throws, ...$intervals)
+    public function test_determine(bool $throws, ...$intervals)
     {
         if ($throws) {
             $this->expectException(InvalidEnumKeyException::class);
