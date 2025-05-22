@@ -5,11 +5,13 @@ namespace App\Models;
 use App\BidderRound\Participant;
 use App\Enums\EnumContributionGroup;
 use App\Enums\EnumPaymentInterval;
+use App\Observers\UserObserver;
 use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
 use Carbon\Carbon;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -17,8 +19,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
@@ -48,6 +48,7 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
  * @property Collection<Role> roles
  * @property-read Collection<Topic> topics
  */
+#[ObservedBy([UserObserver::class])]
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Participant
 {
     use BelongsToTenant;
@@ -138,12 +139,6 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Par
         self::COL_CONTRIBUTION_GROUP => EnumContributionGroup::class,
         self::COL_PAYMENT_INTERVAL => EnumPaymentInterval::class,
     ];
-
-    protected static function boot()
-    {
-        parent::boot();
-        self::creating(fn (User $user) => $user->password ??= Hash::make(Str::random(10)));
-    }
 
     public function name(): string
     {

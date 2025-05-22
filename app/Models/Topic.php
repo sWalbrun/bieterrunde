@@ -63,6 +63,11 @@ class Topic extends BaseModel
         return $this->hasMany(Share::class, Share::COL_FK_TOPIC);
     }
 
+    public function sharesForUser(User $user): HasMany
+    {
+        return $this->shares()->where(Share::COL_FK_USER, '=', $user->id);
+    }
+
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(

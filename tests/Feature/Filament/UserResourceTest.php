@@ -5,6 +5,10 @@ use App\Enums\EnumPaymentInterval;
 use App\Filament\Resources\UserResource\Pages\CreateUser;
 use App\Filament\Resources\UserResource\Pages\EditUser;
 use App\Filament\Resources\UserResource\Pages\ListUsers;
+use App\Models\BidderRound;
+use App\Models\Offer;
+use App\Models\Share;
+use App\Models\Topic;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Spatie\Permission\Models\Permission;
@@ -104,4 +108,37 @@ it('deletes one user', function () {
         ->callAction('delete')
         ->assertSuccessful();
     expect(fn () => $userToLogin->refresh())->toThrow(ModelNotFoundException::class);
+});
+
+it('deletes one user and shares and offers cascading', function () {
+    /** @var User $userToLogin */
+    $userToLogin = $this->createAndActAsUser();
+    $userToLogin->givePermissionTo(
+        Permission::create(['name' => 'update_user']),
+        Permission::create(['name' => 'view_user']),
+        Permission::create(['name' => 'view_any_user']),
+        Permission::create(['name' => 'delete_user']),
+    );
+
+    /** @var BidderRound $bidderRound */
+    $bidderRound = BidderRound::factory()->create();
+    /** @var Topic $topic */
+    $topic = Topic::factory()->create([
+        Topic::COL_FK_BIDDER_ROUND => $bidderRound->id,
+    ]);
+    $offer = Offer::factory()->create([
+        Offer::COL_FK_USER => $userToLogin->id,
+        Offer::COL_FK_TOPIC => $topic->id,
+    ]);
+    /** @var Share $share */
+    $share = Share::factory()->create([
+        Share::COL_FK_USER => $userToLogin->id,
+        Share::COL_FK_TOPIC => $topic->id,
+    ]);
+    livewire(EditUser::class, ['record' => $userToLogin->id])
+        ->callAction('delete')
+        ->assertSuccessful();
+    expect(fn () => $userToLogin->refresh())->toThrow(ModelNotFoundException::class)
+        ->and(fn () => $share->refresh())->toThrow(ModelNotFoundException::class)
+        ->and(fn () => $offer->refresh())->toThrow(ModelNotFoundException::class);
 });
