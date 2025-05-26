@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Events\UserDetachedFromTopicEvent;
 use App\Jobs\SetTenantCookie;
+use App\Listeners\DeleteAbandonedSharesAndOffers;
 use Illuminate\Auth\Events\Authenticated;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -21,6 +23,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         Authenticated::class => [
             SetTenantCookie::class,
+        ],
+        UserDetachedFromTopicEvent::class => [
+            DeleteAbandonedSharesAndOffers::class,
         ],
     ];
 

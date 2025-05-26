@@ -7,6 +7,7 @@ use App\BidderRound\TopicService;
 use App\Enums\EnumContributionGroup;
 use App\Enums\EnumPaymentInterval;
 use App\Enums\ShareValue;
+use App\Events\UserDetachedFromTopicEvent;
 use App\Models\Offer;
 use App\Models\Share;
 use App\Models\Topic;
@@ -20,7 +21,10 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+
+use function event;
 
 class UsersRelationManager extends RelationManager
 {
@@ -96,7 +100,7 @@ class UsersRelationManager extends RelationManager
                         self $livewire,
                         Forms\Components\KeyValue $component,
                         User $record,
-                        array $state,
+                        Collection $state,
                     ) => $livewire->updateOffers($state, $livewire, $record))
                     ->disableAddingRows()
                     ->disableDeletingRows(),
@@ -157,18 +161,28 @@ class UsersRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DetachAction::make(),
+                Tables\Actions\DetachAction::make()->after(
+                    fn (User $record) => event(new UserDetachedFromTopicEvent(
+                        $record,
+                        $this->ownerRecord,
+                    ))
+                ),
             ])
             ->bulkActions([
                 FilamentExportBulkAction::make('Export'),
-                Tables\Actions\DetachBulkAction::make(),
+                Tables\Actions\DetachBulkAction::make()->after(
+                    fn (Collection $records) => event(new UserDetachedFromTopicEvent(
+                        $records->unique(),
+                        $this->ownerRecord,
+                    ))
+                ),
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 
-    private function updateOffers(array $state, UsersRelationManager $livewire, User $record): void
+    private function updateOffers(Collection $state, UsersRelationManager $livewire, User $record): void
     {
-        collect($state)
+        $state
             ->filter(fn (mixed $state) => isset($state))
             ->map(fn (string $amount) => floatval($amount))
             // Re-adjust potentially wrong order of offers
