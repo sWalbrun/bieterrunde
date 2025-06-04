@@ -693,5 +693,7 @@
     "Subscribe now with obligation to pay": "Jetzt zahlungspflichtig Gebot zeichnen",
     "Solawi - Friendly reminder for missing offers": "Solawi - da fehlen noch Gebote",
     "Solawi - Your share is fixed!": "Solawi - Dein Anteil ist steht fest!",
-    "If you have an account with us, you will receive a login link via email shortly.": "Wenn du ein Konto bei uns hast, erhältst du in Kürze einen Anmelde-Link per E-Mail."
+    "If you have an account with us, you will receive a login link via email shortly.": "Wenn du ein Konto bei uns hast, erhältst du in Kürze einen Anmelde-Link per E-Mail.",
+    "Overlapping Bidder Round": "Überschneidende Beitragsrunden",
+    "This bidder round overlaps with an existing one.": "Es gibt bereits eine Beitragsrunde, die sich mit dieser überschneidet."
 }

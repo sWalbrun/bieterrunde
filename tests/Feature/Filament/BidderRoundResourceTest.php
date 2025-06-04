@@ -10,12 +10,16 @@ use App\Models\Offer;
 use App\Models\Share;
 use App\Models\Topic;
 use App\Models\User;
+use Carbon\Carbon;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Permission;
 
 use function beforeEach;
 use function expect;
+use function it;
+use function trans;
 
 beforeEach(function () {
     $userToLogin = $this->createAndActAsUser();
@@ -41,6 +45,71 @@ it('creates a bidder round', function () {
     expect($persistedBidderRound->startOfSubmission)->toEqual($bidderRound->startOfSubmission)
         ->and($persistedBidderRound->endOfSubmission)->toEqual($bidderRound->endOfSubmission)
         ->and($persistedBidderRound->note)->toEqual($bidderRound->note);
+});
+
+it('shows a validation error for start overlap while creating', function () {
+    BidderRound::factory()->create([
+        BidderRound::COL_START_OF_SUBMISSION => Carbon::parse('2023-10-01'),
+        BidderRound::COL_END_OF_SUBMISSION => Carbon::parse('2023-10-31'),
+    ]);
+    Livewire::test(CreateBidderRound::class)
+        ->fillForm([
+            BidderRound::COL_START_OF_SUBMISSION => Carbon::parse('2023-09-18'),
+            BidderRound::COL_END_OF_SUBMISSION => Carbon::parse('2023-10-01'),
+        ])
+        ->call('create')
+        ->assertNotified(
+            Notification::make()
+                ->title(trans('Overlapping Bidder Round'))
+                ->body(trans('This bidder round overlaps with an existing one.'))
+                ->danger()
+                ->persistent()
+        );
+    expect(BidderRound::query()->count())->toBe(1);
+});
+
+it('shows a validation error for end overlap while creating', function () {
+    BidderRound::factory()->create([
+        BidderRound::COL_START_OF_SUBMISSION => Carbon::parse('2023-10-01'),
+        BidderRound::COL_END_OF_SUBMISSION => Carbon::parse('2023-10-31'),
+    ]);
+    Livewire::test(CreateBidderRound::class)
+        ->fillForm([
+            BidderRound::COL_START_OF_SUBMISSION => Carbon::parse('2023-10-31'),
+            BidderRound::COL_END_OF_SUBMISSION => Carbon::parse('2023-11-30'),
+        ])
+        ->call('create')
+        ->assertNotified(
+            Notification::make()
+                ->title(trans('Overlapping Bidder Round'))
+                ->body(trans('This bidder round overlaps with an existing one.'))
+                ->danger()
+                ->persistent()
+        );
+    expect(BidderRound::query()->count())->toBe(1);
+});
+
+it('shows a validation error for overlap while updating', function () {
+    BidderRound::factory()->create([
+        BidderRound::COL_START_OF_SUBMISSION => Carbon::parse('2023-10-01'),
+        BidderRound::COL_END_OF_SUBMISSION => Carbon::parse('2023-10-31'),
+    ]);
+    /** @var BidderRound $bidderRound */
+    $bidderRound = BidderRound::factory()->create();
+    Livewire::test(EditBidderRound::class, ['record' => $bidderRound->id])->fillForm(
+        [
+            BidderRound::COL_START_OF_SUBMISSION => '2023-09-18',
+            BidderRound::COL_END_OF_SUBMISSION => '2023-10-01',
+        ]
+    )
+        ->call('save')
+        ->assertNotified(
+            Notification::make()
+                ->title(trans('Overlapping Bidder Round'))
+                ->body(trans('This bidder round overlaps with an existing one.'))
+                ->danger()
+                ->persistent()
+        );
 });
 
 it('updates a bidder round', function () {

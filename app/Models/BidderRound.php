@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Exceptions\OverlappingBidderRoundException;
 use App\Observers\BidderRoundObserver;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -107,5 +108,20 @@ class BidderRound extends BaseModel
     public function __toString()
     {
         return trans('Bidder round').' '.$this->endOfSubmission->format('m.Y');
+    }
+
+    /**
+     * @throws OverlappingBidderRoundException
+     */
+    public function assertNoOverlapWithExistingBidderRounds(): void
+    {
+        $isOverlapping = BidderRound::query()
+            ->where(self::COL_END_OF_SUBMISSION, '>=', $this->startOfSubmission)
+            ->where(self::COL_START_OF_SUBMISSION, '<=', $this->endOfSubmission)
+            ->when($this->exists, fn ($query) => $query->where(BaseModel::COL_ID, '!=', $this->id))
+            ->exists();
+        if ($isOverlapping) {
+            throw new OverlappingBidderRoundException;
+        }
     }
 }
