@@ -2,7 +2,6 @@
 
 namespace App\Notifications;
 
-use App\Filament\Pages\OfferPage;
 use App\Models\Topic;
 use App\Models\TopicReport;
 use Illuminate\Bus\Queueable;
@@ -38,7 +37,7 @@ class BidderRoundFound extends Notification implements ShouldQueue
             ->line(trans('Damit liegt dein monatlicher Beitrag bei :amount', ['amount' => $this->amountFormatted]))
             ->action(
                 trans('Gebote ansehen'),
-                OfferPage::url(),
+                route('offers'),
             )
             ->line(trans('Vielen Dank, dass du deine Gebote eingereicht hast!'));
     }

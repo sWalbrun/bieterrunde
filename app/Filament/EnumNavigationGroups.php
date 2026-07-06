@@ -10,6 +10,4 @@ use BenSampo\Enum\Enum;
 class EnumNavigationGroups extends Enum
 {
     public const ADMINISTRATION = 'Administration';
-
-    public const YOUR_OFFERS = 'Your offers';
 }

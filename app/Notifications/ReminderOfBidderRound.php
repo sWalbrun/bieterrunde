@@ -3,7 +3,6 @@
 namespace App\Notifications;
 
 use App\BidderRound\Participant;
-use App\Filament\Pages\OfferPage;
 use App\Models\BidderRound;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -43,7 +42,7 @@ class ReminderOfBidderRound extends Notification
             ->line(trans('Please still enter your offer.'))
             ->action(
                 trans('Offer!'),
-                OfferPage::url(),
+                route('offers'),
             )
             ->line(trans('Thanks for participating'));
     }
