@@ -14,7 +14,6 @@ use Carbon\Carbon;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Livewire\Livewire;
-use Spatie\Permission\Models\Permission;
 
 use function beforeEach;
 use function expect;
@@ -23,13 +22,6 @@ use function trans;
 
 beforeEach(function () {
     $userToLogin = $this->createAndActAsUser();
-    $userToLogin->givePermissionTo(
-        Permission::create(['name' => 'create_bidder::round']),
-        Permission::create(['name' => 'view_bidder::round']),
-        Permission::create(['name' => 'update_bidder::round']),
-        Permission::create(['name' => 'view_any_bidder::round']),
-        Permission::create(['name' => 'delete_bidder::round']),
-    );
 });
 
 it('creates a bidder round', function () {

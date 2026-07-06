@@ -1,6 +1,5 @@
 <?php
 
-use App\Import\Mappers\RoleMapper;
 use App\Import\Mappers\UserMapper;
 
 return [
@@ -13,7 +12,6 @@ return [
     ],
     'mappers' => [
         UserMapper::class,
-        RoleMapper::class,
     ],
     'navigation_group' => 'Verwaltung',
 ];

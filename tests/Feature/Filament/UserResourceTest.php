@@ -11,7 +11,6 @@ use App\Models\Share;
 use App\Models\Topic;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Spatie\Permission\Models\Permission;
 
 use function Pest\Livewire\livewire;
 
@@ -20,7 +19,6 @@ it('shows all existing users', function () {
     $users = User::factory()->count(5)->create();
     /** @var User $userToLogin */
     $userToLogin = $this->createAndActAsUser();
-    $userToLogin->givePermissionTo(Permission::create(['name' => 'view_any_user']));
 
     livewire(ListUsers::class)
         ->assertCanSeeTableRecords(collect([...$users, $userToLogin]));
@@ -30,11 +28,6 @@ it('shows one user', function () {
 
     /** @var User $userToLogin */
     $userToLogin = $this->createAndActAsUser();
-    $userToLogin->givePermissionTo(
-        Permission::create(['name' => 'update_user']),
-        Permission::create(['name' => 'view_user']),
-        Permission::create(['name' => 'view_any_user']),
-    );
 
     livewire(EditUser::class, ['record' => $userToLogin->id])
         ->assertSuccessful()
@@ -49,11 +42,6 @@ it('shows one user', function () {
 it('creates one user', function () {
     /** @var User $userToLogin */
     $userToLogin = $this->createAndActAsUser();
-    $userToLogin->givePermissionTo(
-        Permission::create(['name' => 'create_user']),
-        Permission::create(['name' => 'view_user']),
-        Permission::create(['name' => 'view_any_user']),
-    );
 
     $email = 'foo@baz.de';
     $attributes = [
@@ -74,11 +62,6 @@ it('creates one user', function () {
 it('updates one user', function () {
     /** @var User $userToLogin */
     $userToLogin = $this->createAndActAsUser();
-    $userToLogin->givePermissionTo(
-        Permission::create(['name' => 'update_user']),
-        Permission::create(['name' => 'view_user']),
-        Permission::create(['name' => 'view_any_user']),
-    );
 
     $changedAttributes = [
         User::COL_NAME => 'Harald Schmidt',
@@ -98,12 +81,6 @@ it('updates one user', function () {
 it('deletes one user', function () {
     /** @var User $userToLogin */
     $userToLogin = $this->createAndActAsUser();
-    $userToLogin->givePermissionTo(
-        Permission::create(['name' => 'update_user']),
-        Permission::create(['name' => 'view_user']),
-        Permission::create(['name' => 'view_any_user']),
-        Permission::create(['name' => 'delete_user']),
-    );
     livewire(EditUser::class, ['record' => $userToLogin->id])
         ->callAction('delete')
         ->assertSuccessful();
@@ -113,12 +90,6 @@ it('deletes one user', function () {
 it('deletes one user and shares and offers cascading', function () {
     /** @var User $userToLogin */
     $userToLogin = $this->createAndActAsUser();
-    $userToLogin->givePermissionTo(
-        Permission::create(['name' => 'update_user']),
-        Permission::create(['name' => 'view_user']),
-        Permission::create(['name' => 'view_any_user']),
-        Permission::create(['name' => 'delete_user']),
-    );
 
     /** @var BidderRound $bidderRound */
     $bidderRound = BidderRound::factory()->create();

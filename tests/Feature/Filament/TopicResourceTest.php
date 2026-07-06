@@ -15,15 +15,9 @@ use App\Models\User;
 use App\Notifications\BidderRoundFound;
 use Filament\Notifications\Notification;
 use Livewire\Livewire;
-use Spatie\Permission\Models\Permission;
 
 beforeEach(function () {
     $userToLogin = $this->createAndActAsUser();
-    $userToLogin->givePermissionTo(
-        Permission::create(['name' => 'update_topic']),
-        Permission::create(['name' => 'view_topic']),
-        Permission::create(['name' => 'view_any_topic']),
-    );
 });
 
 it('shows the active members', function () {

@@ -10,10 +10,7 @@ use App\Models\Topic;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
-use Spatie\Permission\Models\Role;
 use Tests\TestCase;
-
-use function config;
 
 /**
  * This test takes care of all methods and business logic of the {@link User}.
@@ -27,7 +24,6 @@ class UserTest extends TestCase
             User::COL_CONTRIBUTION_GROUP => EnumContributionGroup::FULL_MEMBER,
         ]);
 
-        $user->assignRole(Role::findOrCreate(config('filament-shield.super_admin.name')));
         $this->actingAs($user);
 
         return $user;

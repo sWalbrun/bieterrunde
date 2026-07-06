@@ -10,7 +10,6 @@ use App\Models\User;
 use Carbon\Carbon;
 use Database\Factories\OfferFactory;
 use Illuminate\Database\Eloquent\Collection;
-use Spatie\Permission\Models\Role;
 
 trait BidderRoundEntities
 {
@@ -20,7 +19,6 @@ trait BidderRoundEntities
         $user = User::factory()->superAdmin()->create([
             User::COL_CONTRIBUTION_GROUP => EnumContributionGroup::FULL_MEMBER,
         ]);
-        $user->assignRole(Role::findOrCreate(config('filament-shield.super_admin.name')));
         $this->actingAs($user);
 
         return $user;

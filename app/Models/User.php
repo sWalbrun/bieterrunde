@@ -7,7 +7,6 @@ use App\Enums\EnumContributionGroup;
 use App\Enums\EnumPaymentInterval;
 use App\Enums\EnumRole;
 use App\Observers\UserObserver;
-use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
 use Carbon\Carbon;
 use Filament\Facades\Filament;
 use Filament\Models\Contracts\FilamentUser;
@@ -21,8 +20,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Traits\HasRoles;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
 /**
@@ -48,7 +45,6 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
  * @property Carbon $updatedAt
  * @property Collection<Offer> offers
  * @property Tenant $tenant
- * @property Collection<Role> roles
  * @property-read Collection<Topic> topics
  */
 #[ObservedBy([UserObserver::class])]
@@ -56,8 +52,6 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Par
 {
     use BelongsToTenant;
     use HasFactory;
-    use HasPanelShield;
-    use HasRoles;
     use Notifiable;
 
     public const TABLE = 'user';

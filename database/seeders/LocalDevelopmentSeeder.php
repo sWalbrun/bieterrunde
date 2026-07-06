@@ -14,7 +14,6 @@ use Carbon\Carbon;
 use Database\Factories\OfferFactory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
 
 class LocalDevelopmentSeeder extends Seeder
 {
@@ -35,8 +34,6 @@ class LocalDevelopmentSeeder extends Seeder
 
             return;
         }
-        Role::findOrCreate(config('filament-shield.super_admin.name'));
-        Role::findOrCreate(config('filament-shield.filament_user.name'));
 
         $this->seedAdmin();
         if (User::query()->count() > 1) {
@@ -66,8 +63,6 @@ class LocalDevelopmentSeeder extends Seeder
         $user->email_verified_at = Carbon::now();
         $user->contributionGroup = EnumContributionGroup::FULL_MEMBER();
         $user->role = EnumRole::SUPER_ADMIN;
-        $user->save();
-        $user->assignRole(Role::findOrCreate(config('filament-shield.super_admin.name')));
         $user->save();
     }
 

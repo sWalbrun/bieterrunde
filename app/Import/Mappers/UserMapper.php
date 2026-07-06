@@ -4,11 +4,9 @@ namespace App\Import\Mappers;
 
 use App\Models\User;
 use Illuminate\Support\Collection;
-use Spatie\Permission\Models\Role;
 use SWalbrun\FilamentModelImport\Import\ModelMapping\BaseMapper;
-use SWalbrun\FilamentModelImport\Import\ModelMapping\Relator;
 
-class UserMapper extends BaseMapper implements Relator
+class UserMapper extends BaseMapper
 {
     public function __construct()
     {
@@ -30,13 +28,6 @@ class UserMapper extends BaseMapper implements Relator
             User::COL_JOIN_DATE => '/Beitrittsdatum/i',
             User::COL_CONTRIBUTION_GROUP => '/Beitragsgruppe/i',
             User::COL_CREATED_AT => '/Angelegt am/i',
-        ]);
-    }
-
-    public function relatingClosures(): Collection
-    {
-        return collect([
-            fn (User $user, Role $role) => $user->assignRole($role),
         ]);
     }
 }

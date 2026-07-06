@@ -3,11 +3,14 @@
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use SWalbrun\FilamentModelImport\Filament\Pages\ImportPage;
 
 use function Pest\Livewire\livewire;
 
-it('can create an user and roles by import', function () {
+beforeEach(fn () => Storage::fake('tmp-for-tests'));
+
+it('can create an user by import', function () {
     $fileToImport = getDefaultXlsx('UserImport.xlsx');
 
     livewire(ImportPage::class)
@@ -19,9 +22,8 @@ it('can create an user and roles by import', function () {
 
     /** @var User $importedUser */
     $importedUser = User::query()->where(User::COL_NAME, '=', 'Sebastian')->first();
-    expect($importedUser)->not->toBeNull()
-        ->and($importedUser->hasRole('admin'))->toBeTruthy()
-        ->and($importedUser->hasRole('bidderRoundParticipant'))->toBeTruthy();
+    // The 'Rolle' column of the xlsx is deliberately ignored since roles are managed in the admin panel
+    expect($importedUser)->not->toBeNull();
 });
 
 it('can update an user by import', function () {

@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -29,8 +28,6 @@ abstract class TestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        Role::findOrCreate(config('filament-shield.super_admin.name'));
-        Role::findOrCreate(config('filament-shield.filament_user.name'));
         /** @var User $user */
         $user = User::query()->create([
             'name' => 'Sebastian12',
@@ -48,7 +45,6 @@ abstract class TestCase extends BaseTestCase
             User::COL_CONTRIBUTION_GROUP => EnumContributionGroup::FULL_MEMBER,
         ]);
 
-        $user->assignRole(Role::findOrCreate(config('filament-shield.super_admin.name')));
         $this->actingAs($user);
 
         return $user;

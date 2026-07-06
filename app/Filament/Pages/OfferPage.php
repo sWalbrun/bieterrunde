@@ -13,7 +13,6 @@ use App\Models\Offer;
 use App\Models\Share;
 use App\Models\Topic;
 use App\Models\User;
-use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Fieldset;
@@ -33,8 +32,6 @@ use Illuminate\Support\Collection;
  */
 class OfferPage extends Page implements HasForms
 {
-    use HasPageShield;
-
     private const USER = 'user';
 
     public const ROUND_TO_TOTAL_AMOUNT_MAPPING = 'roundToTotalAmountMapping';
@@ -44,8 +41,6 @@ class OfferPage extends Page implements HasForms
     public const USER_CONTRIBUTION_GROUP = 'userContributionGroup';
 
     public const USER_PAYMENT_INTERVAL = 'userPaymentInterval';
-
-    public const PERMISSION_NAME = 'page_OfferPage';
 
     /**
      * @var Collection<string, int[]>
@@ -85,11 +80,6 @@ class OfferPage extends Page implements HasForms
     public static function url(): string
     {
         return url('/main/offer-page');
-    }
-
-    protected static function getPermissionName(): string
-    {
-        return static::PERMISSION_NAME;
     }
 
     public function getHeading(): string|Htmlable

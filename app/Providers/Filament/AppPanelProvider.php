@@ -4,7 +4,6 @@ namespace App\Providers\Filament;
 
 use App\Http\Middleware\EnsureUserIsAdmin;
 use App\Http\Middleware\FilamentAuthenticate;
-use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -37,7 +36,6 @@ class AppPanelProvider extends PanelProvider
             ->authMiddleware([
                 FilamentAuthenticate::class,
                 EnsureUserIsAdmin::class,
-            ])->plugin(FilamentShieldPlugin::make())
-            ->plugin(FilamentRegexImportPlugin::make());
+            ])->plugin(FilamentRegexImportPlugin::make());
     }
 }
