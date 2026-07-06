@@ -18,7 +18,7 @@ class AppPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('app')
-            ->path('main')
+            ->path('admin')
             ->brandLogo('/logo-solawi.svg')
             ->colors([
                 'primary' => Color::Amber,

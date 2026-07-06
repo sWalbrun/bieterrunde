@@ -16,7 +16,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', fn () => redirect('main'));
+// Until the livewire user area claims the root url it points at the panel
+Route::get('/', fn () => redirect('admin'));
+
+// The panel moved from /main to /admin — keep old bookmarks working
+Route::redirect('/main', '/admin', 301);
+Route::get('/main/{any}', fn (string $any) => redirect("/admin/$any", 301))->where('any', '.*');
 
 Route::get('/login', Login::class)->name('login');
 

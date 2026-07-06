@@ -18,9 +18,9 @@ it('denies members access to the admin panel', function (string $route) {
         ->call('GET', $route, cookies: [SetTenantCookie::TENANT_ID => $tenant->id])
         ->assertForbidden();
 })->with([
-    ['/main'],
-    ['/main/users'],
-    ['/main/users/create'],
+    ['/admin'],
+    ['/admin/users'],
+    ['/admin/users/create'],
 ]);
 
 it('allows super admins to access the user resource', function () {

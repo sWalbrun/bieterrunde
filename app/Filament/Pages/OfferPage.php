@@ -79,7 +79,7 @@ class OfferPage extends Page implements HasForms
 
     public static function url(): string
     {
-        return url('/main/offer-page');
+        return url('/admin/offer-page');
     }
 
     public function getHeading(): string|Htmlable
