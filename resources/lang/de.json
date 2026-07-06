@@ -787,5 +787,12 @@
     "You can change your offers until the end of the submission period.": "Bis zum Ende des Abgabezeitraums kannst du deine Gebote noch ändern.",
     "Export final amounts": "Beiträge exportieren",
     "Amount per share": "Betrag pro Anteil",
-    "Monthly amount": "Monatlicher Betrag"
+    "Monthly amount": "Monatlicher Betrag",
+    "Announce start": "Start ankündigen",
+    "Personal message (optional)": "Persönliche Nachricht (optional)",
+    "Gets included in the mail to all participants.": "Wird in die E-Mail an alle Teilnehmenden übernommen.",
+    "Informs all participants by mail that the bidder round has started.": "Informiert alle Teilnehmenden per E-Mail, dass die Beitragsrunde begonnen hat.",
+    ":count participants have been informed.": ":count Teilnehmende wurden informiert.",
+    "Solawi - The bidder round has started!": "Solawi - Die Beitragsrunde hat begonnen!",
+    "The bidder round is open — you can submit your offers from now until :endOfSubmission.": "Die Beitragsrunde ist eröffnet — du kannst deine Gebote ab sofort bis zum :endOfSubmission abgeben."
 }

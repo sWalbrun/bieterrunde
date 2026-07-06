@@ -11,6 +11,7 @@ use App\Filament\Resources\BidderRoundResource\RelationManagers\TopicsRelationMa
 use App\Models\BidderRound;
 use App\Models\Topic;
 use App\Models\User;
+use App\Notifications\BidderRoundStarted;
 use App\Notifications\ReminderOfBidderRound;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
@@ -92,6 +93,31 @@ class BidderRoundResource extends Resource
                     ->translateLabel(),
             ])
             ->actions([
+                Tables\Actions\Action::make('AnnounceStart')
+                    ->label(trans('Announce start'))
+                    ->icon('heroicon-o-megaphone')
+                    // Announcing an already ended round makes no sense
+                    ->hidden(fn (BidderRound $record) => $record->endOfSubmission->endOfDay()->isPast())
+                    ->form([
+                        Textarea::make('message')
+                            ->label(trans('Personal message (optional)'))
+                            ->helperText(trans('Gets included in the mail to all participants.')),
+                    ])
+                    ->requiresConfirmation()
+                    ->modalSubheading(fn () => trans('Informs all participants by mail that the bidder round has started.'))
+                    ->action(function (BidderRound $record, array $data) {
+                        $participants = $record->participants();
+                        $participants->each(
+                            fn (User $participant) => $participant->notify(
+                                new BidderRoundStarted($record, $participant, $data['message'] ?? null)
+                            )
+                        );
+
+                        Notification::make()
+                            ->title(trans(':count participants have been informed.', ['count' => $participants->count()]))
+                            ->success()
+                            ->send();
+                    }),
                 Tables\Actions\Action::make('RemindParticipants')
                     ->label(trans('Remind participants'))
                     ->icon('iconpark-remind-o')

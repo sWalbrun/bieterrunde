@@ -91,6 +91,19 @@ class BidderRound extends BaseModel
         return Carbon::now()->isBetween($this->startOfSubmission->startOfDay(), $this->endOfSubmission->endOfDay());
     }
 
+    /**
+     * All users holding at least one share in any topic of this round.
+     */
+    public function participants(): Collection
+    {
+        $participantIds = Share::query()
+            ->whereIn(Share::COL_FK_TOPIC, $this->topics()->pluck(BaseModel::COL_ID))
+            ->pluck(Share::COL_FK_USER)
+            ->unique();
+
+        return User::query()->whereIn(BaseModel::COL_ID, $participantIds)->get();
+    }
+
     public function usersWithMissingOffers(): Collection
     {
         $missingUserIds = $this->topics->map(function (Topic $topic) {
