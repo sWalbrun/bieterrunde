@@ -2,6 +2,10 @@
 
 @plugin '@tailwindcss/forms';
 
+[x-cloak] {
+    display: none !important;
+}
+
 /* The user area uses the same amber branding as the Filament admin panel. */
 @theme inline {
     --color-primary-50: var(--color-amber-50);
