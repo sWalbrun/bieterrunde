@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Jobs\CreateStorageDirectories;
+use App\Jobs\DeleteTenantData;
 use App\Tenancy\InitializeTenancyByCookie;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\Facades\Event;
@@ -50,7 +51,8 @@ class TenancyServiceProvider extends ServiceProvider
             Events\DeletingTenant::class => [],
             Events\TenantDeleted::class => [
                 JobPipeline::make([
-                    Jobs\DeleteDatabase::class,
+                    // Single database setup: delete the tenant's rows, not a database
+                    DeleteTenantData::class,
                 ])->send(function (Events\TenantDeleted $event) {
                     return $event->tenant;
                 })
