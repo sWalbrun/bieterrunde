@@ -1,3 +1,4 @@
+@props(['title' => null])
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
@@ -15,6 +16,10 @@
         <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-950/5 sm:p-8">
             {{ $slot }}
         </div>
+        <footer class="mt-6 flex justify-center gap-4 text-xs text-gray-400">
+            <a href="{{ route('imprint') }}" class="hover:text-gray-600">{{ trans('Imprint') }}</a>
+            <a href="{{ route('privacy') }}" class="hover:text-gray-600">{{ trans('Privacy policy') }}</a>
+        </footer>
     </main>
 </body>
 </html>

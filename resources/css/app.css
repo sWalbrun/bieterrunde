@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 
 @plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
 
 [x-cloak] {
     display: none !important;

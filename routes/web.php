@@ -25,6 +25,9 @@ Route::get('/login', Login::class)->name('login');
 
 Route::get('/request-account', RequestTestAccount::class)->name('request-account');
 
+Route::view('/impressum', 'legal.imprint')->name('imprint');
+Route::view('/datenschutz', 'legal.privacy')->name('privacy');
+
 // Not /login/magic-link/… — that path is (still) taken by the filament-passwordless package routes.
 Route::get('/login/link/{user}', MagicLinkController::class)
     ->middleware(['signed', 'throttle:10,1'])

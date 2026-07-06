@@ -770,5 +770,7 @@
     "The tenant has been created and the requester received a welcome mail.": "Die Solawi wurde angelegt und die anfragende Person hat eine Willkommens-Mail erhalten.",
     "Your test account request for :app": "Deine Testzugang-Anfrage für :app",
     "Thanks for your interest in :app! Unfortunately we cannot offer you a test account at the moment.": "Danke für dein Interesse an :app! Leider können wir dir aktuell keinen Testzugang anbieten.",
-    "Feel free to get in touch if you have any questions.": "Melde dich gerne, falls du Fragen hast."
+    "Feel free to get in touch if you have any questions.": "Melde dich gerne, falls du Fragen hast.",
+    "Imprint": "Impressum",
+    "Privacy policy": "Datenschutzerklärung"
 }

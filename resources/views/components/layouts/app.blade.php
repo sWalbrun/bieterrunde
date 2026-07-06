@@ -27,5 +27,9 @@
     <main class="mx-auto w-full max-w-xl px-4 py-6">
         {{ $slot }}
     </main>
+    <footer class="mx-auto flex w-full max-w-xl justify-center gap-4 px-4 pb-6 text-xs text-gray-400">
+        <a href="{{ route('imprint') }}" class="hover:text-gray-600">{{ trans('Imprint') }}</a>
+        <a href="{{ route('privacy') }}" class="hover:text-gray-600">{{ trans('Privacy policy') }}</a>
+    </footer>
 </body>
 </html>

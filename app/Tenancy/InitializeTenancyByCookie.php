@@ -35,6 +35,8 @@ class InitializeTenancyByCookie extends InitializeTenancyByRequestData
     public static array $whiteListRoutes = [
         '/login',
         '/request-account',
+        '/impressum',
+        '/datenschutz',
         'assets',
     ];
 
