@@ -34,6 +34,7 @@ class UserFactory extends Factory
             User::COL_REMEMBER_TOKEN => Str::random(10),
             User::COL_PAYMENT_INTERVAL => $this->faker->randomElement(EnumPaymentInterval::getValues()),
             User::COL_CONTRIBUTION_GROUP => $this->faker->randomElement(EnumContributionGroup::getValues()),
+            User::COL_ROLE => EnumRole::MEMBER,
             User::COL_JOIN_DATE => $this->faker->dateTimeBetween('-1 years'),
         ];
     }

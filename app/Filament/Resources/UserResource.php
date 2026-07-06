@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 use App\Enums\EnumContributionGroup;
 use App\Enums\EnumPaymentInterval;
+use App\Enums\EnumRole;
 use App\Filament\EnumNavigationGroups;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Utils\ForFilamentTranslator;
@@ -59,11 +60,11 @@ class UserResource extends Resource
                     ->label(trans('Join date')),
                 Forms\Components\DatePicker::make(User::COL_EXIT_DATE)
                     ->label(trans('Exit date')),
-                Forms\Components\Select::make('roles')
-                    ->multiple()
-                    ->relationship('roles', 'name')
-                    ->label(trans('Roles'))
-                    ->preload(),
+                Forms\Components\Select::make(User::COL_ROLE)
+                    ->label(trans('Role'))
+                    ->options(EnumRole::class)
+                    ->default(EnumRole::MEMBER->value)
+                    ->required(),
             ]);
     }
 
@@ -84,6 +85,9 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make(User::COL_CONTRIBUTION_GROUP)
                     ->translateLabel()
                     ->formatStateUsing(fn (?EnumContributionGroup $state) => isset($state) ? trans($state->value) : null),
+                Tables\Columns\TextColumn::make(User::COL_ROLE)
+                    ->label(trans('Role'))
+                    ->badge(),
                 Tables\Columns\TextColumn::make(User::COL_JOIN_DATE)->label(trans('Join date'))
                     ->formatStateUsing(fn (?Carbon $state) => $state?->format('d.m.Y')),
                 Tables\Columns\TextColumn::make(User::COL_EXIT_DATE)->label(trans('Exit date'))

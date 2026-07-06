@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Http\Middleware\EnsureUserIsAdmin;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use BradyRenting\FilamentPasswordless\Http\Livewire\Auth\Login;
 use Filament\Http\Middleware\Authenticate;
@@ -37,6 +38,7 @@ class AppPanelProvider extends PanelProvider
             ->middleware(config('filament.middleware.base'))
             ->authMiddleware([
                 Authenticate::class,
+                EnsureUserIsAdmin::class,
             ])->plugin(FilamentShieldPlugin::make())
             ->plugin(FilamentRegexImportPlugin::make());
     }

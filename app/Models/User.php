@@ -163,7 +163,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Par
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return true;
+        return $this->role?->isAdmin() ?? false;
     }
 
     public function topics(): BelongsToMany
