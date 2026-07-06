@@ -10,6 +10,7 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets;
+use SWalbrun\FilamentModelImport\FilamentRegexImportPlugin;
 
 class AppPanelProvider extends PanelProvider
 {
@@ -36,6 +37,7 @@ class AppPanelProvider extends PanelProvider
             ->middleware(config('filament.middleware.base'))
             ->authMiddleware([
                 Authenticate::class,
-            ])->plugin(FilamentShieldPlugin::make());
+            ])->plugin(FilamentShieldPlugin::make())
+            ->plugin(FilamentRegexImportPlugin::make());
     }
 }

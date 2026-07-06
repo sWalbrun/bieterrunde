@@ -17,6 +17,7 @@ use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Contracts\HasForms;
@@ -63,6 +64,10 @@ class OfferPage extends Page implements HasForms
 
     public ?User $user = null;
 
+    public ?string $userName = null;
+
+    public ?string $userEmail = null;
+
     public EnumPaymentInterval|string|null $userPaymentInterval = null;
 
     public EnumContributionGroup|string|null $userContributionGroup = null;
@@ -105,7 +110,7 @@ class OfferPage extends Page implements HasForms
             ->first();
     }
 
-    private function formatAmount(float $value): string
+    private function formatAmount(string|float $value): string
     {
         return number_format($value, 2, ',', '.');
     }
@@ -164,6 +169,8 @@ class OfferPage extends Page implements HasForms
     public function mount(): void
     {
         $this->user = auth()->user();
+        $this->userName = $this->user->name;
+        $this->userEmail = $this->user->email;
         $this->userContributionGroup = isset($this->user->contributionGroup) ? trans($this->user->contributionGroup->value) : null;
         $this->userPaymentInterval = $this->user->paymentInterval?->value;
     }
@@ -200,22 +207,6 @@ class OfferPage extends Page implements HasForms
                             $this->formatAmount($state / ShareValue::fromKey($this->topicToShareMapping->get($topic->id))->calculable())
                         )
                     )
-                    ->mask(
-                        <<<'JS'
-                IMask($el, {
-                    mask: Number,
-                    scale: 2,
-                    signed: false,
-                    thousandsSeparator: '.',
-                    padFractionalZeros: true,
-                    normalizeZeros: true,
-                    radix: ',',
-                    mapToRadix: [','],
-                    min: 1,
-                    max: 200,
-                });
-                JS
-                    )
                     ->hint(
                         $offer?->isOfWinningRound()
                             ? trans('Round with enough turnover')
@@ -251,9 +242,9 @@ class OfferPage extends Page implements HasForms
             // We have to make a workaround for this value since the contribution group is a
             // bensampo enum and the arrayble casts (Enum::toArray()) is making problems combined
             // with filament
-            Card::make([
-                TextInput::make(self::USER.'.'.User::COL_NAME)->disabled(),
-                TextInput::make(self::USER.'.'.User::COL_EMAIL)->disabled(),
+            Section::make([
+                TextInput::make('userName')->label(trans('Name'))->disabled(),
+                TextInput::make('userEmail')->label(trans('E-Mail'))->disabled(),
                 TextInput::make(self::USER_CONTRIBUTION_GROUP)
                     ->label(trans('Contribution group'))
                     ->disabled(),

@@ -25,6 +25,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 use function event;
+use function is_array;
 
 class UsersRelationManager extends RelationManager
 {
@@ -93,15 +94,15 @@ class UsersRelationManager extends RelationManager
                             User $record,
                         ) => $component->state(
                             TopicService::getOffers($livewire->ownerRecord, $record)
-                                ->map(fn (?Offer $offer) => $offer?->amount)
+                                ->map(fn (?Offer $offer) => $offer?->amount)->toArray()
                         )
                     )->columnSpan(2)
                     ->afterStateUpdated(fn (
                         self $livewire,
                         Forms\Components\KeyValue $component,
                         User $record,
-                        Collection $state,
-                    ) => $livewire->updateOffers($state, $livewire, $record))
+                        Collection|array $state,
+                    ) => $livewire->updateOffers(is_array($state) ? collect($state) : $state, $livewire, $record))
                     ->disableAddingRows()
                     ->disableDeletingRows(),
             ]);
