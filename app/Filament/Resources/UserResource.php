@@ -48,6 +48,8 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make(User::COL_EMAIL)
                     ->email()
                     ->required()
+                    // Globally unique across all tenants — required by the magic-link login
+                    ->unique(table: User::TABLE, ignoreRecord: true)
                     ->label(trans('E-Mail')),
                 Forms\Components\Select::make(User::COL_CONTRIBUTION_GROUP)
                     ->label(trans('Contribution group'))
