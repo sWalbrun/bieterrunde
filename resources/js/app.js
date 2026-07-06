@@ -1,6 +1,1 @@
-import Alpine from 'alpinejs'
-
-
-window.Alpine = Alpine
-
-Alpine.start()
+// Livewire 3 ships and boots its own Alpine instance — do not start Alpine here.

@@ -5,18 +5,10 @@
         "build": "vite build"
     },
     "devDependencies": {
-        "@tailwindcss/forms": "^0.3.4",
-        "@tailwindcss/typography": "^0.4.1",
-        "alpinejs": "^3.10.5",
-        "laravel-mix": "^6.0.6",
-        "laravel-vite-plugin": "^0.7.0",
-        "postcss": "^8.2.1",
-        "postcss-import": "^14.0.1",
-        "tailwindcss": "^2.2.19",
-        "tippy.js": "^6.3.7",
-        "vite": "^3.2.4"
-    },
-    "dependencies": {
-        "@themesberg/flowbite": "^1.3.0"
+        "@tailwindcss/forms": "^0.5.10",
+        "@tailwindcss/vite": "^4.1.0",
+        "laravel-vite-plugin": "^1.2.0",
+        "tailwindcss": "^4.1.0",
+        "vite": "^6.3.0"
     }
 }
