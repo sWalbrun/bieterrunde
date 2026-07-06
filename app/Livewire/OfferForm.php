@@ -10,6 +10,7 @@ use App\Models\Offer;
 use App\Models\Share;
 use App\Models\Topic;
 use App\Models\User;
+use App\Notifications\OfferReceipt;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Validation\Rule;
@@ -116,8 +117,34 @@ class OfferForm extends Component
             }
         }
 
-        app(OfferService::class)->saveOffers($user, $perShareAmountsByTopic, $this->paymentInterval);
+        $changed = app(OfferService::class)->saveOffers($user, $perShareAmountsByTopic, $this->paymentInterval);
+        if ($changed) {
+            $user->notify(new OfferReceipt($this->offerSummary(), $this->roundName ?? trans('Bidder round')));
+        }
         $this->saved = true;
+    }
+
+    /**
+     * The submitted totals per topic, formatted for the receipt mail.
+     *
+     * @return array<string, array<int|string, string>>
+     */
+    private function offerSummary(): array
+    {
+        $summary = [];
+        foreach ($this->topics as $topicId => $topic) {
+            if (! $topic['editable']) {
+                continue;
+            }
+            foreach ($this->amounts[$topicId] ?? [] as $round => $value) {
+                $amount = OfferService::parseGermanAmount($value);
+                if (isset($amount)) {
+                    $summary[$topic['name']][$round] = number_format($amount, 2, ',', '.');
+                }
+            }
+        }
+
+        return $summary;
     }
 
     public function render(): View

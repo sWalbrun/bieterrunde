@@ -153,6 +153,40 @@ it('highlights the winning round', function () {
         ->assertSee(trans('Round with enough turnover'));
 });
 
+it('sends a receipt mail when offers changed', function () {
+    \Illuminate\Support\Facades\Notification::fake();
+    $user = $this->createAndActAsUser();
+    $topic = createTopicWithShare($user, ShareValue::ONE());
+
+    livewire(OfferForm::class)
+        ->set("amounts.$topic->id.1", '52')
+        ->set('paymentInterval', EnumPaymentInterval::ANNUAL)
+        ->call('save')
+        ->assertHasNoErrors();
+
+    \Illuminate\Support\Facades\Notification::assertSentTo($user, \App\Notifications\OfferReceipt::class);
+});
+
+it('sends no receipt mail when nothing changed', function () {
+    $user = $this->createAndActAsUser();
+    $topic = createTopicWithShare($user, ShareValue::ONE());
+
+    livewire(OfferForm::class)
+        ->set("amounts.$topic->id.1", '52')
+        ->set('paymentInterval', EnumPaymentInterval::ANNUAL)
+        ->call('save');
+
+    \Illuminate\Support\Facades\Notification::fake();
+
+    livewire(OfferForm::class)
+        ->set("amounts.$topic->id.1", '52')
+        ->set('paymentInterval', EnumPaymentInterval::ANNUAL)
+        ->call('save')
+        ->assertHasNoErrors();
+
+    \Illuminate\Support\Facades\Notification::assertNothingSent();
+});
+
 it('shows an empty state without a running bidder round', function () {
     $this->createAndActAsUser();
 

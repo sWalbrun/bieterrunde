@@ -780,5 +780,9 @@
     ":topic: offers are still missing": ":topic: es fehlen noch Gebote",
     ":topic: no round reaches the target amount": ":topic: keine Runde erreicht den Richtwert",
     ":topic: already calculated": ":topic: bereits ermittelt",
-    ":success of :total topics got a result": ":success von :total Themen haben ein Ergebnis"
+    ":success of :total topics got a result": ":success von :total Themen haben ein Ergebnis",
+    "Your offers for :round": "Deine Gebote für :round",
+    "thanks for your offers! Here is what you submitted:": "danke für deine Gebote! Das hast du abgegeben:",
+    "Round :round: :amount € per month": "Runde :round: :amount € monatlich",
+    "You can change your offers until the end of the submission period.": "Bis zum Ende des Abgabezeitraums kannst du deine Gebote noch ändern."
 }
