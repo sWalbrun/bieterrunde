@@ -22,6 +22,12 @@ class SetTenantCookie
             return;
         }
 
+        // An existing cookie stays untouched — super admins may have switched
+        // to another tenant and must not be reset on every request
+        if (request()->cookie(self::TENANT_ID) !== null) {
+            return;
+        }
+
         Cookie::queue(cookie(self::TENANT_ID, $authenticated->user->tenant->id));
     }
 }

@@ -8,7 +8,9 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets;
+use Illuminate\Support\Facades\Blade;
 use SWalbrun\FilamentModelImport\FilamentRegexImportPlugin;
 
 class AppPanelProvider extends PanelProvider
@@ -36,6 +38,14 @@ class AppPanelProvider extends PanelProvider
             ->authMiddleware([
                 FilamentAuthenticate::class,
                 EnsureUserIsAdmin::class,
-            ])->plugin(FilamentRegexImportPlugin::make());
+            ])
+            // Shows the active tenant so (switching) super admins never act on the wrong one
+            ->renderHook(
+                PanelsRenderHook::TOPBAR_START,
+                fn (): string => tenant() !== null
+                    ? Blade::render('<x-filament::badge color="warning">'.e(tenant('id')).'</x-filament::badge>')
+                    : ''
+            )
+            ->plugin(FilamentRegexImportPlugin::make());
     }
 }

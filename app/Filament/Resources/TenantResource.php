@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Enums\EnumRole;
 use App\Filament\EnumNavigationGroups;
 use App\Filament\Resources\TenantResource\Pages;
+use App\Jobs\SetTenantCookie;
 use App\Models\Tenant;
 use App\Models\User;
 use Filament\Forms;
@@ -13,6 +14,9 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cookie;
+
+use function cookie;
 
 /**
  * Management of the tenants (= the Solawis sharing this instance).
@@ -109,6 +113,14 @@ class TenantResource extends Resource
                     ->dateTime('d.m.Y'),
             ])
             ->actions([
+                Tables\Actions\Action::make('switch')
+                    ->label(trans('Switch to tenant'))
+                    ->icon('heroicon-o-arrows-right-left')
+                    ->action(function (Tenant $record) {
+                        Cookie::queue(cookie(SetTenantCookie::TENANT_ID, $record->id));
+
+                        return redirect('/admin');
+                    }),
                 Tables\Actions\DeleteAction::make()
                     ->modalDescription(trans('All users, bidder rounds and offers of this tenant will be deleted permanently!')),
             ]);

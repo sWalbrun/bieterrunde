@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tenancy;
 
+use App\Enums\EnumRole;
 use App\Jobs\SetTenantCookie;
 use App\Models\Tenant;
 use App\Models\User;
@@ -78,6 +79,7 @@ class InitializeTenancyByCookie extends InitializeTenancyByRequestData
             /** @var User $user */
             $user = auth()->user();
             if ($response->isSuccessful()
+                && $user?->role !== EnumRole::SUPER_ADMIN
                 && (! isset($user->tenant->id) || $user->tenant->id !== $tenantId)
             ) {
                 Auth::logout();
