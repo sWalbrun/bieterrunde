@@ -743,5 +743,8 @@
     "This user gets created as admin of the new tenant and receives a welcome mail with a login link.": "Dieser Benutzer wird als Admin der neuen Solawi angelegt und erhält eine Willkommens-Mail mit Anmelde-Link.",
     "Created at": "Erstellt am",
     "All users, bidder rounds and offers of this tenant will be deleted permanently!": "Alle Benutzer, Beitragsrunden und Gebote dieser Solawi werden unwiderruflich gelöscht!",
-    "Switch to tenant": "Zu Solawi wechseln"
+    "Switch to tenant": "Zu Solawi wechseln",
+    "Pending": "Offen",
+    "Approved": "Genehmigt",
+    "Rejected": "Abgelehnt"
 }
