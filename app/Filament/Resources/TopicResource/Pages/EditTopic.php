@@ -5,11 +5,14 @@ namespace App\Filament\Resources\TopicResource\Pages;
 use App\BidderRound\TopicService;
 use App\Enums\EnumTargetAmountReachedStatus;
 use App\Exceptions\NoRoundFoundException;
+use App\Exports\FinalAmountsExport;
 use App\Filament\Resources\TopicResource;
 use App\Models\Topic;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 /**
  * @property Topic $record
@@ -36,6 +39,14 @@ class EditTopic extends EditRecord
                 ->action(fn () => $this->calculateReport($this->record))
                 ->icon('heroicon-o-calculator')
                 ->disabled(fn () => $this->record->topicReport()->exists()),
+            Actions\Action::make('exportFinalAmounts')
+                ->label(trans('Export final amounts'))
+                ->icon('heroicon-o-arrow-down-tray')
+                ->visible(fn () => $this->record->topicReport()->exists())
+                ->action(fn () => Excel::download(
+                    new FinalAmountsExport($this->record),
+                    'beitraege-'.Str::slug($this->record->name).'.xlsx'
+                )),
         ];
     }
 

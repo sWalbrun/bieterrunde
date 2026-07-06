@@ -784,5 +784,8 @@
     "Your offers for :round": "Deine Gebote für :round",
     "thanks for your offers! Here is what you submitted:": "danke für deine Gebote! Das hast du abgegeben:",
     "Round :round: :amount € per month": "Runde :round: :amount € monatlich",
-    "You can change your offers until the end of the submission period.": "Bis zum Ende des Abgabezeitraums kannst du deine Gebote noch ändern."
+    "You can change your offers until the end of the submission period.": "Bis zum Ende des Abgabezeitraums kannst du deine Gebote noch ändern.",
+    "Export final amounts": "Beiträge exportieren",
+    "Amount per share": "Betrag pro Anteil",
+    "Monthly amount": "Monatlicher Betrag"
 }
