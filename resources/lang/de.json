@@ -723,5 +723,12 @@
     "per share": "pro Anteil",
     "Submit binding offers": "Gebote verbindlich abgeben",
     "Offer round :number for :topic": "Gebot Runde :number für :topic",
-    "Vielen Dank für deine Gebote. Sobald es Neuigkeiten gibt, melden wir uns!": "Vielen Dank für deine Gebote. Sobald es Neuigkeiten gibt, melden wir uns!"
+    "Vielen Dank für deine Gebote. Sobald es Neuigkeiten gibt, melden wir uns!": "Vielen Dank für deine Gebote. Sobald es Neuigkeiten gibt, melden wir uns!",
+    "Until :date": "Bis :date",
+    ":given of :expected offers submitted": ":given von :expected Geboten abgegeben",
+    "Place your offers now": "Jetzt Gebote abgeben",
+    "Check your offers": "Gebote ansehen & ändern",
+    "Your results": "Deine Ergebnisse",
+    "Fixed in round :number": "Festgelegt in Runde :number",
+    ":amount € / month": ":amount € / Monat"
 }
