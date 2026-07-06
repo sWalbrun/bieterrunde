@@ -5,6 +5,7 @@ namespace App\Models;
 use App\BidderRound\Participant;
 use App\Enums\EnumContributionGroup;
 use App\Enums\EnumPaymentInterval;
+use App\Enums\EnumRole;
 use App\Observers\UserObserver;
 use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
 use Carbon\Carbon;
@@ -39,6 +40,7 @@ use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
  * @property string profile_photo_path
  * @property bool isNewMember
  * @property EnumPaymentInterval paymentInterval
+ * @property EnumRole role
  * @property string offersAsString
  * @property string tenant_id
  * @property Carbon $createdAt
@@ -97,6 +99,8 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Par
 
     public const COL_PAYMENT_INTERVAL = 'paymentInterval';
 
+    public const COL_ROLE = 'role';
+
     public const COL_FK_TENANT = 'tenant_id';
 
     /**
@@ -113,6 +117,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Par
         self::COL_EXIT_DATE,
         self::COL_PAYMENT_INTERVAL,
         self::COL_EMAIL_VERIFIED_AT,
+        self::COL_ROLE,
     ];
 
     /**
@@ -138,6 +143,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Par
         self::COL_EXIT_DATE => 'datetime',
         self::COL_CONTRIBUTION_GROUP => EnumContributionGroup::class,
         self::COL_PAYMENT_INTERVAL => EnumPaymentInterval::class,
+        self::COL_ROLE => EnumRole::class,
     ];
 
     public function name(): string

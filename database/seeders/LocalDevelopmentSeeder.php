@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enums\EnumContributionGroup;
+use App\Enums\EnumRole;
 use App\Models\BidderRound;
 use App\Models\Offer;
 use App\Models\Share;
@@ -64,6 +65,7 @@ class LocalDevelopmentSeeder extends Seeder
         $user->name = 'Admin';
         $user->email_verified_at = Carbon::now();
         $user->contributionGroup = EnumContributionGroup::FULL_MEMBER();
+        $user->role = EnumRole::SUPER_ADMIN;
         $user->save();
         $user->assignRole(Role::findOrCreate(config('filament-shield.super_admin.name')));
         $user->save();

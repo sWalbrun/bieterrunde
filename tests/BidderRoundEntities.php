@@ -17,7 +17,7 @@ trait BidderRoundEntities
     protected function createAndActAsUser(): User
     {
         /** @var User $user */
-        $user = User::factory()->create([
+        $user = User::factory()->superAdmin()->create([
             User::COL_CONTRIBUTION_GROUP => EnumContributionGroup::FULL_MEMBER,
         ]);
         $user->assignRole(Role::findOrCreate(config('filament-shield.super_admin.name')));

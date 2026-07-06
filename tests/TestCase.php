@@ -3,6 +3,7 @@
 namespace Tests;
 
 use App\Enums\EnumContributionGroup;
+use App\Enums\EnumRole;
 use App\Models\BidderRound;
 use App\Models\Offer;
 use App\Models\Topic;
@@ -35,6 +36,7 @@ abstract class TestCase extends BaseTestCase
             'name' => 'Sebastian12',
             'password' => Hash::make('password!'),
             'email' => 'foo@bar.com',
+            'role' => EnumRole::SUPER_ADMIN,
         ]);
         $this->actingAs($user);
     }
@@ -42,7 +44,7 @@ abstract class TestCase extends BaseTestCase
     protected function createAndActAsUser(): User
     {
         /** @var User $user */
-        $user = User::factory()->create([
+        $user = User::factory()->superAdmin()->create([
             User::COL_CONTRIBUTION_GROUP => EnumContributionGroup::FULL_MEMBER,
         ]);
 

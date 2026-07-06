@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Enums\EnumContributionGroup;
 use App\Enums\EnumPaymentInterval;
+use App\Enums\EnumRole;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -49,5 +50,15 @@ class UserFactory extends Factory
                 User::COL_EMAIL_VERIFIED_AT => null,
             ];
         });
+    }
+
+    public function admin(): Factory
+    {
+        return $this->state([User::COL_ROLE => EnumRole::ADMIN]);
+    }
+
+    public function superAdmin(): Factory
+    {
+        return $this->state([User::COL_ROLE => EnumRole::SUPER_ADMIN]);
     }
 }
