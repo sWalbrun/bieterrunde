@@ -9,6 +9,7 @@ use App\Enums\EnumRole;
 use App\Observers\UserObserver;
 use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
 use Carbon\Carbon;
+use Filament\Facades\Filament;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -164,6 +165,17 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Par
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->role?->isAdmin() ?? false;
+    }
+
+    /**
+     * Where this user lands after a successful login: admins go to the
+     * Filament panel, members to the user area.
+     */
+    public function homeUrl(): string
+    {
+        return ($this->role?->isAdmin() ?? false)
+            ? Filament::getUrl()
+            : url('/');
     }
 
     public function topics(): BelongsToMany

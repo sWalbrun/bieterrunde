@@ -3,9 +3,8 @@
 namespace App\Providers\Filament;
 
 use App\Http\Middleware\EnsureUserIsAdmin;
+use App\Http\Middleware\FilamentAuthenticate;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
-use BradyRenting\FilamentPasswordless\Http\Livewire\Auth\Login;
-use Filament\Http\Middleware\Authenticate;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -22,7 +21,6 @@ class AppPanelProvider extends PanelProvider
             ->id('app')
             ->path('main')
             ->brandLogo('/logo-solawi.svg')
-            ->login(Login::class)
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -37,7 +35,7 @@ class AppPanelProvider extends PanelProvider
             ])
             ->middleware(config('filament.middleware.base'))
             ->authMiddleware([
-                Authenticate::class,
+                FilamentAuthenticate::class,
                 EnsureUserIsAdmin::class,
             ])->plugin(FilamentShieldPlugin::make())
             ->plugin(FilamentRegexImportPlugin::make());

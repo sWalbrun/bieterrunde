@@ -33,10 +33,17 @@ class InitializeTenancyByCookie extends InitializeTenancyByRequestData
      */
     public static array $whiteListRoutes = [
         '/login',
-        'filament.core.auth.login',
-        'brady-renting.filament-passwordless.http.livewire.auth.login',
-        '/forgot-password',
         'assets',
+    ];
+
+    /**
+     * Livewire components which must be reachable without an initialized
+     * tenancy (used by the pre-login livewire update requests).
+     *
+     * @var array|string[]
+     */
+    public static array $whiteListedComponents = [
+        'auth.login',
     ];
 
     /**
@@ -53,7 +60,7 @@ class InitializeTenancyByCookie extends InitializeTenancyByRequestData
             if (! isset($tenantId)) {
                 Log::info('No tenant could have been identified for the uri ('.$request->getUri().')');
 
-                return redirect('main/login');
+                return redirect()->route('login');
             }
             if (Tenant::query()->where(Tenant::COL_ID, $tenantId)->doesntExist()) {
                 Log::info("There is no tenant existing for the given id ($tenantId)");
@@ -88,7 +95,7 @@ class InitializeTenancyByCookie extends InitializeTenancyByRequestData
         // TODO whitelist the post route for the login not this way
         return Str::contains($request->getUri(), static::$whiteListRoutes)
             || (Str::contains($request->getUri(), 'livewire/update')
-                && Str::contains(json_encode($request->get('components')), 'main\\\\\/login')
+                && Str::contains(json_encode($request->get('components')), static::$whiteListedComponents)
             );
     }
 }

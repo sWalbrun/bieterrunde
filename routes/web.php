@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\Auth\MagicLinkController;
+use App\Livewire\Auth\Login;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +17,17 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', fn () => redirect('main'));
+
+Route::get('/login', Login::class)->name('login');
+
+// Not /login/magic-link/… — that path is (still) taken by the filament-passwordless package routes.
+Route::get('/login/link/{user}', MagicLinkController::class)
+    ->middleware(['signed', 'throttle:10,1'])
+    ->name('login.magic-link');
+
+Route::post('/logout', LogoutController::class)
+    ->middleware('auth')
+    ->name('logout');
 
 Route::get('/assets/{path?}', 'Stancl\Tenancy\Controllers\TenantAssetsController@asset')
     ->where('path', '(.*)')
