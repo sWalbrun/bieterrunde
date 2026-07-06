@@ -758,5 +758,17 @@
     "New test account request: :solawi": "Neue Testzugang-Anfrage: :solawi",
     ":name (:email) requests a test account for \":solawi\".": ":name (:email) fragt einen Testzugang für \":solawi\" an.",
     "Website: :url": "Webseite: :url",
-    "Review request": "Anfrage prüfen"
+    "Review request": "Anfrage prüfen",
+    "Account requests": "Account-Anfragen",
+    "Account request": "Account-Anfrage",
+    "Website": "Webseite",
+    "Status": "Status",
+    "Approve": "Genehmigen",
+    "Reject": "Ablehnen",
+    "A new tenant gets created and the requester receives a welcome mail with a login link.": "Eine neue Solawi wird angelegt und die anfragende Person erhält eine Willkommens-Mail mit Anmelde-Link.",
+    "A user with this e-mail address already exists — the request cannot be approved.": "Es existiert bereits ein Benutzer mit dieser E-Mail-Adresse — die Anfrage kann nicht genehmigt werden.",
+    "The tenant has been created and the requester received a welcome mail.": "Die Solawi wurde angelegt und die anfragende Person hat eine Willkommens-Mail erhalten.",
+    "Your test account request for :app": "Deine Testzugang-Anfrage für :app",
+    "Thanks for your interest in :app! Unfortunately we cannot offer you a test account at the moment.": "Danke für dein Interesse an :app! Leider können wir dir aktuell keinen Testzugang anbieten.",
+    "Feel free to get in touch if you have any questions.": "Melde dich gerne, falls du Fragen hast."
 }
