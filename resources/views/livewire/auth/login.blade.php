@@ -37,4 +37,11 @@
             {{ trans('If an account exists for this e-mail address, a login link has been sent. Please check your inbox.') }}
         </div>
     @endif
+
+    <p class="mt-6 border-t border-gray-100 pt-4 text-center text-sm text-gray-500">
+        {{ trans('You are part of a Solawi and want to try the tool?') }}
+        <a href="{{ route('request-account') }}" class="font-medium text-primary-700 hover:underline">
+            {{ trans('Request a test account') }}
+        </a>
+    </p>
 </div>

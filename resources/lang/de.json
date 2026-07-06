@@ -746,5 +746,17 @@
     "Switch to tenant": "Zu Solawi wechseln",
     "Pending": "Offen",
     "Approved": "Genehmigt",
-    "Rejected": "Abgelehnt"
+    "Rejected": "Abgelehnt",
+    "Request a test account": "Testzugang anfragen",
+    "You are part of a Solawi and want to try the tool? Leave your details and we will get in touch.": "Ihr seid eine Solawi und wollt das Tool ausprobieren? Hinterlasst eure Daten und wir melden uns.",
+    "You are part of a Solawi and want to try the tool?": "Ihr seid eine Solawi und wollt das Tool ausprobieren?",
+    "Name of your Solawi": "Name eurer Solawi",
+    "Website of your Solawi (optional)": "Webseite eurer Solawi (optional)",
+    "Send request": "Anfrage senden",
+    "Thanks for your interest! We will review your request and get back to you by mail.": "Danke für euer Interesse! Wir prüfen die Anfrage und melden uns per E-Mail.",
+    "Back to login": "Zurück zur Anmeldung",
+    "New test account request: :solawi": "Neue Testzugang-Anfrage: :solawi",
+    ":name (:email) requests a test account for \":solawi\".": ":name (:email) fragt einen Testzugang für \":solawi\" an.",
+    "Website: :url": "Webseite: :url",
+    "Review request": "Anfrage prüfen"
 }

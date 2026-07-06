@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\MagicLinkController;
 use App\Livewire\Auth\Login;
+use App\Livewire\RequestTestAccount;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,6 +22,8 @@ Route::redirect('/main', '/admin', 301);
 Route::get('/main/{any}', fn (string $any) => redirect("/admin/$any", 301))->where('any', '.*');
 
 Route::get('/login', Login::class)->name('login');
+
+Route::get('/request-account', RequestTestAccount::class)->name('request-account');
 
 // Not /login/magic-link/… — that path is (still) taken by the filament-passwordless package routes.
 Route::get('/login/link/{user}', MagicLinkController::class)

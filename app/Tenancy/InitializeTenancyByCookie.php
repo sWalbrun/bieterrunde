@@ -34,6 +34,7 @@ class InitializeTenancyByCookie extends InitializeTenancyByRequestData
      */
     public static array $whiteListRoutes = [
         '/login',
+        '/request-account',
         'assets',
     ];
 
@@ -45,6 +46,7 @@ class InitializeTenancyByCookie extends InitializeTenancyByRequestData
      */
     public static array $whiteListedComponents = [
         'auth.login',
+        'request-test-account',
     ];
 
     /**
