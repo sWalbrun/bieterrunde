@@ -730,5 +730,8 @@
     "Check your offers": "Gebote ansehen & ändern",
     "Your results": "Deine Ergebnisse",
     "Fixed in round :number": "Festgelegt in Runde :number",
-    ":amount € / month": ":amount € / Monat"
+    ":amount € / month": ":amount € / Monat",
+    "Welcome to :app!": "Willkommen bei :app!",
+    "Your Solawi \":tenant\" has been set up and you are registered as its admin.": "Deine Solawi \":tenant\" wurde eingerichtet und du bist als Admin registriert.",
+    "The link is valid for :days days. If it expired, simply request a new one on the login page.": "Der Link ist :days Tage gültig. Falls er abgelaufen ist, fordere einfach auf der Anmeldeseite einen neuen an."
 }
