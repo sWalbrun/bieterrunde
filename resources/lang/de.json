@@ -772,5 +772,13 @@
     "Thanks for your interest in :app! Unfortunately we cannot offer you a test account at the moment.": "Danke für dein Interesse an :app! Leider können wir dir aktuell keinen Testzugang anbieten.",
     "Feel free to get in touch if you have any questions.": "Melde dich gerne, falls du Fragen hast.",
     "Imprint": "Impressum",
-    "Privacy policy": "Datenschutzerklärung"
+    "Privacy policy": "Datenschutzerklärung",
+    "Calculate results": "Ergebnisse ermitteln",
+    "Determines for every topic without a result the round with enough turnover.": "Ermittelt für jedes Thema ohne Ergebnis die Runde mit genügend Umsatz.",
+    "All topics of this round already have a result.": "Alle Themen dieser Runde haben bereits ein Ergebnis.",
+    ":topic: round :round with :amount € covers the costs": ":topic: Runde :round mit :amount € deckt die Kosten",
+    ":topic: offers are still missing": ":topic: es fehlen noch Gebote",
+    ":topic: no round reaches the target amount": ":topic: keine Runde erreicht den Richtwert",
+    ":topic: already calculated": ":topic: bereits ermittelt",
+    ":success of :total topics got a result": ":success von :total Themen haben ein Ergebnis"
 }

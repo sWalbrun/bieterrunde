@@ -2,6 +2,9 @@
 
 namespace App\Filament\Resources;
 
+use App\BidderRound\TargetAmountReachedReport;
+use App\BidderRound\TopicService;
+use App\Enums\EnumTargetAmountReachedStatus;
 use App\Filament\EnumNavigationGroups;
 use App\Filament\Resources\BidderRoundResource\Pages;
 use App\Filament\Resources\BidderRoundResource\RelationManagers\TopicsRelationManager;
@@ -14,6 +17,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -87,22 +91,64 @@ class BidderRoundResource extends Resource
                 Tables\Columns\TextColumn::make(BidderRound::COL_NOTE)
                     ->translateLabel(),
             ])
-            ->actions([Tables\Actions\Action::make('RemindParticipants')
-                ->label(trans('Remind participants'))
-                ->icon('iconpark-remind-o')
-                ->action(
-                    fn (BidderRound $record) => $record->usersWithMissingOffers()->each(
-                        function (User $participant) use ($record) {
-                            Log::info("Remind user ({$participant->email()}) about bidder round");
-                            $participant->notify(new ReminderOfBidderRound($record, $participant));
-                            Log::info('User has been reminded');
-                        }
+            ->actions([
+                Tables\Actions\Action::make('RemindParticipants')
+                    ->label(trans('Remind participants'))
+                    ->icon('iconpark-remind-o')
+                    ->action(
+                        fn (BidderRound $record) => $record->usersWithMissingOffers()->each(
+                            function (User $participant) use ($record) {
+                                Log::info("Remind user ({$participant->email()}) about bidder round");
+                                $participant->notify(new ReminderOfBidderRound($record, $participant));
+                                Log::info('User has been reminded');
+                            }
+                        )
                     )
-                )
-                ->requiresConfirmation()
-                ->modalSubheading(fn () => trans('Remind all participants with missing offers')),
+                    ->requiresConfirmation()
+                    ->modalSubheading(fn () => trans('Remind all participants with missing offers')),
+                Tables\Actions\Action::make('CalculateResults')
+                    ->label(trans('Calculate results'))
+                    ->icon('heroicon-o-calculator')
+                    ->requiresConfirmation()
+                    ->modalSubheading(fn () => trans('Determines for every topic without a result the round with enough turnover.'))
+                    ->action(fn (BidderRound $record) => self::calculateResults($record)),
             ])
             ->filters([]);
+    }
+
+    public static function calculateResults(BidderRound $bidderRound): void
+    {
+        $reports = resolve(TopicService::class)->calculateReportsForRound($bidderRound);
+
+        if ($reports->isEmpty()) {
+            Notification::make()
+                ->title(trans('All topics of this round already have a result.'))
+                ->info()
+                ->send();
+
+            return;
+        }
+
+        $successCount = $reports
+            ->filter(fn (TargetAmountReachedReport $report) => $report->status->is(EnumTargetAmountReachedStatus::SUCCESS()))
+            ->count();
+        $body = $reports
+            ->map(fn (TargetAmountReachedReport $report, string $topicName) => match ($report->status->value) {
+                EnumTargetAmountReachedStatus::SUCCESS => trans(
+                    ':topic: round :round with :amount € covers the costs',
+                    ['topic' => $topicName, 'round' => $report->roundWon(), 'amount' => $report->sumAmountFormatted()]
+                ),
+                EnumTargetAmountReachedStatus::NOT_ALL_OFFERS_GIVEN => trans(':topic: offers are still missing', ['topic' => $topicName]),
+                EnumTargetAmountReachedStatus::NOT_ENOUGH_MONEY => trans(':topic: no round reaches the target amount', ['topic' => $topicName]),
+                default => trans(':topic: already calculated', ['topic' => $topicName]),
+            })
+            ->implode("\n");
+
+        $notification = Notification::make()
+            ->title(trans(':success of :total topics got a result', ['success' => $successCount, 'total' => $reports->count()]))
+            ->body($body);
+        $successCount === $reports->count() ? $notification->success() : $notification->warning();
+        $notification->send();
     }
 
     public static function getRelations(): array

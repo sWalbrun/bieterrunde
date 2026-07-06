@@ -40,6 +40,21 @@ class TopicService
         return $offers->sortKeys();
     }
 
+    /**
+     * Calculates the report for every topic of the round which does not have
+     * one yet.
+     *
+     * @return Collection<string, TargetAmountReachedReport> keyed by the topic name
+     */
+    public function calculateReportsForRound(BidderRound $bidderRound): Collection
+    {
+        return $bidderRound
+            ->topics()
+            ->whereDoesntHave('topicReport')
+            ->get()
+            ->mapWithKeys(fn (Topic $topic) => [$topic->name => $this->calculateReportForTopic($topic)]);
+    }
+
     public function calculateReportForTopic(Topic $topic): TargetAmountReachedReport
     {
         if (isset($topic->topicReport)) {
