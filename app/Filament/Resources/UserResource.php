@@ -16,12 +16,62 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+use Illuminate\Validation\Rule;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
+
+    /**
+     * Only super admins may hand out the super_admin role — otherwise an admin
+     * could escalate their own (or someone else's) privileges.
+     *
+     * @return Collection<string, string> value => label
+     */
+    private static function assignableRoleOptions(): Collection
+    {
+        return collect(EnumRole::cases())
+            ->reject(fn (EnumRole $role) => $role === EnumRole::SUPER_ADMIN && ! static::actingAsSuperAdmin())
+            ->mapWithKeys(fn (EnumRole $role) => [$role->value => $role->getLabel()]);
+    }
+
+    private static function actingAsSuperAdmin(): bool
+    {
+        return auth()->user()?->role === EnumRole::SUPER_ADMIN;
+    }
+
+    /**
+     * The role values the current user is allowed to assign.
+     *
+     * @return string[]
+     */
+    public static function getAssignableRoleValues(): array
+    {
+        return static::assignableRoleOptions()->keys()->all();
+    }
+
+    /**
+     * Non super admins must not touch super admin accounts (neither to edit
+     * their role down nor to delete them).
+     */
+    private static function canManage(Model $record): bool
+    {
+        return static::actingAsSuperAdmin() || $record->role !== EnumRole::SUPER_ADMIN;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return static::canManage($record);
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return static::canManage($record);
+    }
 
     public static function getPluralModelLabel(): string
     {
@@ -64,9 +114,11 @@ class UserResource extends Resource
                     ->label(trans('Exit date')),
                 Forms\Components\Select::make(User::COL_ROLE)
                     ->label(trans('Role'))
-                    ->options(EnumRole::class)
+                    ->options(fn () => static::assignableRoleOptions())
                     ->default(EnumRole::MEMBER->value)
-                    ->required(),
+                    ->required()
+                    // Server side guard against a tampered request assigning super_admin
+                    ->rule(fn () => Rule::in(static::assignableRoleOptions()->keys())),
             ]);
     }
 
