@@ -14,7 +14,15 @@
                 <img src="{{ asset('logo-solawi.svg') }}" alt="{{ config('app.name') }}" class="h-8">
             </a>
             <div class="flex items-center gap-4">
-                <span class="max-w-40 truncate text-sm text-gray-600">{{ auth()->user()?->name }}</span>
+                @if (auth()->user()?->role?->isAdmin() ?? false)
+                    <a
+                        href="{{ url('/admin') }}"
+                        title="{{ trans('To the admin panel') }}"
+                        class="max-w-40 truncate text-sm font-medium text-primary-700 hover:underline"
+                    >{{ auth()->user()?->name }}</a>
+                @else
+                    <span class="max-w-40 truncate text-sm text-gray-600">{{ auth()->user()?->name }}</span>
+                @endif
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="text-sm font-medium text-gray-500 transition hover:text-gray-900">

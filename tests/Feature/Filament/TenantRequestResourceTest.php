@@ -36,7 +36,10 @@ it('approves a request, provisions the tenant and welcomes the admin', function 
     ]);
 
     livewire(ListTenantRequests::class)
-        ->callTableAction('approve', $request);
+        // The identifier is proposed from the solawi name and stays editable
+        ->mountTableAction('approve', $request)
+        ->assertTableActionDataSet(['tenantId' => 'solawi-sonnenacker'])
+        ->callMountedTableAction();
 
     $request->refresh();
     expect($request->status)->toBe(EnumTenantRequestStatus::APPROVED)
@@ -51,7 +54,7 @@ it('approves a request, provisions the tenant and welcomes the admin', function 
     Notification::assertSentTo($newAdmin, WelcomeTenantAdmin::class);
 });
 
-it('resolves tenant id collisions with a suffix', function () {
+it('rejects an already taken tenant identifier but accepts a custom one', function () {
     Notification::fake();
     Tenant::query()->create([Tenant::COL_ID => 'solawi-sonnenacker']);
 
@@ -61,9 +64,16 @@ it('resolves tenant id collisions with a suffix', function () {
     ]);
 
     livewire(ListTenantRequests::class)
-        ->callTableAction('approve', $request);
+        ->callTableAction('approve', $request, data: ['tenantId' => 'solawi-sonnenacker'])
+        ->assertHasTableActionErrors(['tenantId']);
 
-    expect($request->refresh()->tenant_id)->toBe('solawi-sonnenacker-2');
+    expect($request->refresh()->status)->toBe(EnumTenantRequestStatus::PENDING);
+
+    livewire(ListTenantRequests::class)
+        ->callTableAction('approve', $request, data: ['tenantId' => 'sonnenacker-neu'])
+        ->assertHasNoTableActionErrors();
+
+    expect($request->refresh()->tenant_id)->toBe('sonnenacker-neu');
 });
 
 it('refuses to approve when the email already belongs to a user', function () {
@@ -76,7 +86,7 @@ it('refuses to approve when the email already belongs to a user', function () {
     ]);
 
     livewire(ListTenantRequests::class)
-        ->callTableAction('approve', $request);
+        ->callTableAction('approve', $request, data: ['tenantId' => 'irgendeine-solawi']);
 
     expect($request->refresh()->status)->toBe(EnumTenantRequestStatus::PENDING)
         ->and($request->tenant_id)->toBeNull();

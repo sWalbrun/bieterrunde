@@ -11,6 +11,7 @@ use App\Models\TenantRequest;
 use App\Models\User;
 use App\Notifications\TenantRequestRejected;
 use App\Tenancy\TenantProvisioner;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -89,9 +90,17 @@ class TenantRequestResource extends Resource
                     ->icon('heroicon-o-check')
                     ->color('success')
                     ->visible(fn (TenantRequest $record) => $record->isPending())
-                    ->requiresConfirmation()
+                    ->form(fn (TenantRequest $record) => [
+                        TextInput::make('tenantId')
+                            ->label(trans('Identifier'))
+                            ->helperText(trans('Lowercase letters, digits and dashes only — cannot be changed later.'))
+                            ->default(Str::slug($record->solawiName))
+                            ->regex('/^[a-z0-9-]+$/')
+                            ->unique(table: Tenant::TABLE, column: Tenant::COL_ID)
+                            ->required(),
+                    ])
                     ->modalDescription(trans('A new tenant gets created and the requester receives a welcome mail with a login link.'))
-                    ->action(fn (TenantRequest $record) => self::approve($record)),
+                    ->action(fn (TenantRequest $record, array $data) => self::approve($record, $data['tenantId'])),
                 Tables\Actions\Action::make('reject')
                     ->label(trans('Reject'))
                     ->icon('heroicon-o-x-mark')
@@ -102,7 +111,7 @@ class TenantRequestResource extends Resource
             ]);
     }
 
-    public static function approve(TenantRequest $record): void
+    public static function approve(TenantRequest $record, string $tenantId): void
     {
         $emailExists = User::query()
             ->withoutGlobalScopes()
@@ -117,7 +126,7 @@ class TenantRequestResource extends Resource
             return;
         }
 
-        DB::transaction(function () use ($record) {
+        DB::transaction(function () use ($record, $tenantId) {
             // Re-check inside the transaction to prevent a double approve
             $record->refresh();
             if (! $record->isPending()) {
@@ -125,7 +134,7 @@ class TenantRequestResource extends Resource
             }
 
             $tenant = app(TenantProvisioner::class)->provision(
-                self::uniqueTenantId($record->solawiName),
+                $tenantId,
                 $record->name,
                 $record->email,
             );
@@ -148,17 +157,6 @@ class TenantRequestResource extends Resource
 
         \Illuminate\Support\Facades\Notification::route('mail', $record->email)
             ->notify(new TenantRequestRejected($record));
-    }
-
-    private static function uniqueTenantId(string $solawiName): string
-    {
-        $base = Str::slug($solawiName);
-        $candidate = $base;
-        for ($suffix = 2; Tenant::query()->where(Tenant::COL_ID, '=', $candidate)->exists(); $suffix++) {
-            $candidate = "$base-$suffix";
-        }
-
-        return $candidate;
     }
 
     public static function getPages(): array

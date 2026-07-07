@@ -794,5 +794,7 @@
     "Informs all participants by mail that the bidder round has started.": "Informiert alle Teilnehmenden per E-Mail, dass die Beitragsrunde begonnen hat.",
     ":count participants have been informed.": ":count Teilnehmende wurden informiert.",
     "Solawi - The bidder round has started!": "Solawi - Die Beitragsrunde hat begonnen!",
-    "The bidder round is open — you can submit your offers from now until :endOfSubmission.": "Die Beitragsrunde ist eröffnet — du kannst deine Gebote ab sofort bis zum :endOfSubmission abgeben."
+    "The bidder round is open — you can submit your offers from now until :endOfSubmission.": "Die Beitragsrunde ist eröffnet — du kannst deine Gebote ab sofort bis zum :endOfSubmission abgeben.",
+    "To the admin panel": "Zum Adminbereich",
+    "Member area": "Mitgliederbereich"
 }

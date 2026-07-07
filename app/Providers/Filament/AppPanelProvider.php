@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Http\Middleware\EnsureUserIsAdmin;
 use App\Http\Middleware\FilamentAuthenticate;
+use Filament\Navigation\MenuItem;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -33,6 +34,12 @@ class AppPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
+            ])
+            ->userMenuItems([
+                MenuItem::make()
+                    ->label(trans('Member area'))
+                    ->url('/')
+                    ->icon('heroicon-o-home'),
             ])
             ->middleware(config('filament.middleware.base'))
             ->authMiddleware([
