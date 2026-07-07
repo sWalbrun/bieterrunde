@@ -69,7 +69,8 @@ return [
 
     'providers' => [
         'users' => [
-            'driver' => 'eloquent',
+            // Custom provider so super admins can be resolved across tenants (see TenantAwareUserProvider)
+            'driver' => 'tenant-aware',
             'model' => User::class,
         ],
 

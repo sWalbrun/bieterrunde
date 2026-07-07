@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\MagicLinkController;
+use App\Http\Controllers\SwitchTenantController;
 use App\Livewire\Auth\Login;
 use App\Livewire\RequestTestAccount;
 use Illuminate\Support\Facades\Route;
@@ -36,6 +37,11 @@ Route::get('/login/link/{user}', MagicLinkController::class)
 Route::post('/logout', LogoutController::class)
     ->middleware('auth')
     ->name('logout');
+
+// Super admin tenant switch — a real redirect reliably sets the tenant cookie
+Route::get('/tenant-switch/{tenant}', SwitchTenantController::class)
+    ->middleware('auth')
+    ->name('tenant.switch');
 
 Route::get('/assets/{path?}', 'Stancl\Tenancy\Controllers\TenantAssetsController@asset')
     ->where('path', '(.*)')

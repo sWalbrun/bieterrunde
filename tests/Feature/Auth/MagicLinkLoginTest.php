@@ -92,6 +92,22 @@ it('authenticates a member via signed link and redirects to the user area', func
         ->and($user->refresh()->hasVerifiedEmail())->toBeTrue();
 });
 
+it('establishes a fresh tenant cookie on login even with a stale one present', function () {
+    /** @var Tenant $tenant */
+    $tenant = Tenant::query()->create([Tenant::COL_ID => 'foo']);
+    /** @var User $user */
+    $user = User::factory()->create([User::COL_FK_TENANT => $tenant->id]);
+
+    $url = URL::temporarySignedRoute('login.magic-link', now()->addMinutes(30), ['user' => $user->id]);
+
+    // A cookie pointing at a since-deleted tenant must not lock the user out
+    $this->call('GET', $url, cookies: [\App\Jobs\SetTenantCookie::TENANT_ID => 'deleted-tenant'])
+        ->assertRedirect(url('/'))
+        ->assertCookie(\App\Jobs\SetTenantCookie::TENANT_ID, 'foo', encrypted: false);
+
+    expect(auth()->id())->toBe($user->id);
+});
+
 it('authenticates an admin via signed link and redirects to the panel', function () {
     /** @var Tenant $tenant */
     $tenant = Tenant::query()->create([Tenant::COL_ID => 'foo']);

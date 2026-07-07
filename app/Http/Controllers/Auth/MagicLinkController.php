@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SetTenantCookie;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
+use function cookie;
 
 /**
  * Logs the user in via a temporary signed url (see {@link \App\Mail\LoginLinkMail}).
@@ -24,6 +27,15 @@ class MagicLinkController extends Controller
             $user->markEmailAsVerified();
         }
 
-        return redirect()->intended($user->homeUrl());
+        $response = redirect()->intended($user->homeUrl());
+
+        // Always establish the tenant cookie on login. Relying on the
+        // SetTenantCookie listener (which only sets it when absent) would let a
+        // stale cookie pointing at a deleted tenant lock the user out.
+        if (isset($user->tenant)) {
+            $response->withCookie(cookie(SetTenantCookie::TENANT_ID, $user->tenant->id));
+        }
+
+        return $response;
     }
 }
