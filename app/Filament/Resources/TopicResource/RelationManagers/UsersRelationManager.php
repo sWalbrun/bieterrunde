@@ -67,7 +67,7 @@ class UsersRelationManager extends RelationManager
                             fn (ShareValue $value) => [$value->key => isset($value->value) ? trans($value->value) : null]
                         )
                     ),
-                Forms\Components\Select::make(User::COL_CONTRIBUTION_GROUP)
+                Select::make(User::COL_CONTRIBUTION_GROUP)
                     ->label(trans('Contribution group'))
                     ->options(
                         collect(EnumContributionGroup::getInstances())
@@ -76,7 +76,7 @@ class UsersRelationManager extends RelationManager
                             )
                     )
                     ->disabled(),
-                Forms\Components\Select::make(User::COL_PAYMENT_INTERVAL)
+                Select::make(User::COL_PAYMENT_INTERVAL)
                     ->translateLabel()
                     ->options(
                         collect(EnumPaymentInterval::getInstances())

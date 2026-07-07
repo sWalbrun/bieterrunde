@@ -10,6 +10,7 @@ use App\Models\TopicReport;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Livewire\Component;
 
 /**
@@ -55,7 +56,7 @@ class Dashboard extends Component
         ];
     }
 
-    private function results(User $user): \Illuminate\Support\Collection
+    private function results(User $user): Collection
     {
         return TopicReport::query()
             ->whereHas(

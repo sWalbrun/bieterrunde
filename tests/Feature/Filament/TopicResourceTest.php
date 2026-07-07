@@ -167,7 +167,7 @@ it('warns about error', function () {
 });
 
 it('informs the participants about the found round', function () {
-    \Illuminate\Support\Facades\Notification::fake();
+    Illuminate\Support\Facades\Notification::fake();
 
     /** @var Topic $topic */
     $topic = Topic::factory()
@@ -188,5 +188,5 @@ it('informs the participants about the found round', function () {
     )
         ->callTableAction(TopicReportRelationManager::INFORM_PARTICIPANTS, $topic->topicReport)
         ->assertHasNoErrors();
-    $topic->users->each(fn (User $user) => \Illuminate\Support\Facades\Notification::assertSentTo($topic->users->first(), BidderRoundFound::class));
+    $topic->users->each(fn (User $user) => Illuminate\Support\Facades\Notification::assertSentTo($topic->users->first(), BidderRoundFound::class));
 });

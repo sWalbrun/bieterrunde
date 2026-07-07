@@ -9,7 +9,9 @@ use App\Models\Share;
 use App\Models\Topic;
 use App\Models\TopicReport;
 use App\Models\User;
+use App\Notifications\OfferReceipt;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Notification;
 
 use function Pest\Livewire\livewire;
 
@@ -154,7 +156,7 @@ it('highlights the winning round', function () {
 });
 
 it('sends a receipt mail when offers changed', function () {
-    \Illuminate\Support\Facades\Notification::fake();
+    Notification::fake();
     $user = $this->createAndActAsUser();
     $topic = createTopicWithShare($user, ShareValue::ONE());
 
@@ -164,7 +166,7 @@ it('sends a receipt mail when offers changed', function () {
         ->call('save')
         ->assertHasNoErrors();
 
-    \Illuminate\Support\Facades\Notification::assertSentTo($user, \App\Notifications\OfferReceipt::class);
+    Notification::assertSentTo($user, OfferReceipt::class);
 });
 
 it('sends no receipt mail when nothing changed', function () {
@@ -176,7 +178,7 @@ it('sends no receipt mail when nothing changed', function () {
         ->set('paymentInterval', EnumPaymentInterval::ANNUAL)
         ->call('save');
 
-    \Illuminate\Support\Facades\Notification::fake();
+    Notification::fake();
 
     livewire(OfferForm::class)
         ->set("amounts.$topic->id.1", '52')
@@ -184,7 +186,7 @@ it('sends no receipt mail when nothing changed', function () {
         ->call('save')
         ->assertHasNoErrors();
 
-    \Illuminate\Support\Facades\Notification::assertNothingSent();
+    Notification::assertNothingSent();
 });
 
 it('shows an empty state without a running bidder round', function () {

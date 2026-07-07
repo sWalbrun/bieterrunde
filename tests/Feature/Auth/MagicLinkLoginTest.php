@@ -1,9 +1,11 @@
 <?php
 
+use App\Jobs\SetTenantCookie;
 use App\Livewire\Auth\Login;
 use App\Mail\LoginLinkMail;
 use App\Models\Tenant;
 use App\Models\User;
+use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
@@ -98,7 +100,7 @@ it('authenticates an admin via signed link and redirects to the panel', function
 
     $url = URL::temporarySignedRoute('login.magic-link', now()->addMinutes(30), ['user' => $user->id]);
 
-    $this->get($url)->assertRedirect(\Filament\Facades\Filament::getUrl());
+    $this->get($url)->assertRedirect(Filament::getUrl());
 
     expect(auth()->id())->toBe($user->id);
 });
@@ -135,12 +137,12 @@ it('logs the user out and clears the tenant cookie', function () {
     $user = User::factory()->create([User::COL_FK_TENANT => $tenant->id]);
     $this->actingAs($user);
 
-    $response = $this->call('POST', '/logout', cookies: [\App\Jobs\SetTenantCookie::TENANT_ID => $tenant->id]);
+    $response = $this->call('POST', '/logout', cookies: [SetTenantCookie::TENANT_ID => $tenant->id]);
     $response->assertRedirect(route('login'));
 
     // The tenant cookie is unencrypted, so we inspect the header directly
     $cookie = collect($response->headers->getCookies())
-        ->first(fn ($cookie) => $cookie->getName() === \App\Jobs\SetTenantCookie::TENANT_ID);
+        ->first(fn ($cookie) => $cookie->getName() === SetTenantCookie::TENANT_ID);
     expect($cookie)->not->toBeNull()
         ->and($cookie->getExpiresTime())->toBeLessThan(now()->timestamp)
         ->and(auth()->check())->toBeFalse();
