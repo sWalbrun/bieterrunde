@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\BidderRound\OfferService;
 use App\Filament\Resources\TopicResource\Pages;
 use App\Filament\Resources\TopicResource\RelationManagers\TopicReportRelationManager;
 use App\Filament\Resources\TopicResource\RelationManagers\UsersRelationManager;
@@ -52,20 +53,33 @@ class TopicResource extends Resource
         ];
     }
 
-    public static function formSchema(): array
+    /**
+     * The fields needed to create a topic (also used by the bidder round wizard).
+     */
+    public static function createSchema(): array
     {
         return [
             TextInput::make(Topic::COL_NAME)->translateLabel(),
             TextInput::make(Topic::COL_ROUNDS)->numeric()->required()->minValue(1)->translateLabel(),
             TextInput::make(Topic::COL_TARGET_AMOUNT)
-                ->numeric()
                 ->required()
                 ->mask(RawJs::make(
                     <<<'JS'
                     $money($input, ',', '.', 2);
                     JS
                 ))
+                // German notation with optional thousand separators, or a plain number
+                ->regex('/^(\d{1,3}(\.\d{3})*|\d+)(,\d{1,2})?$|^\d+\.\d{1,2}$/')
+                // The money mask emits the formatted german string ("68.000,00") — persist the float
+                ->dehydrateStateUsing(fn ($state) => OfferService::parseGermanAmount((string) $state))
                 ->label(trans('Target amount')),
+        ];
+    }
+
+    public static function formSchema(): array
+    {
+        return [
+            ...static::createSchema(),
             TextInput::make('offersGiven')
                 ->label(trans('Offers given'))
                 ->disabled()

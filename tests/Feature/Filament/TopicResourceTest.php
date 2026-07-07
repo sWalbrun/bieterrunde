@@ -47,6 +47,18 @@ it('does not show former members', function () {
     ])->assertCanNotSeeTableRecords($veterans);
 });
 
+it('persists german formatted target amounts correctly', function () {
+    /** @var Topic $topic */
+    $topic = Topic::factory()->for(BidderRound::factory())->create();
+
+    Livewire::test(EditTopic::class, ['record' => $topic->id])
+        ->fillForm([Topic::COL_TARGET_AMOUNT => '68.000,00'])
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    expect($topic->refresh()->targetAmount)->toBe(68000.0);
+});
+
 it('successfully calculates a report', function () {
     $reportMock = Mockery::mock(TargetAmountReachedReport::class)->makePartial();
     $reportMock->status = EnumTargetAmountReachedStatus::SUCCESS();
