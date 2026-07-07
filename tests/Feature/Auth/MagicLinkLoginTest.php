@@ -101,9 +101,9 @@ it('establishes a fresh tenant cookie on login even with a stale one present', f
     $url = URL::temporarySignedRoute('login.magic-link', now()->addMinutes(30), ['user' => $user->id]);
 
     // A cookie pointing at a since-deleted tenant must not lock the user out
-    $this->call('GET', $url, cookies: [\App\Jobs\SetTenantCookie::TENANT_ID => 'deleted-tenant'])
+    $this->call('GET', $url, cookies: [SetTenantCookie::TENANT_ID => 'deleted-tenant'])
         ->assertRedirect(url('/'))
-        ->assertCookie(\App\Jobs\SetTenantCookie::TENANT_ID, 'foo', encrypted: false);
+        ->assertCookie(SetTenantCookie::TENANT_ID, 'foo', encrypted: false);
 
     expect(auth()->id())->toBe($user->id);
 });
