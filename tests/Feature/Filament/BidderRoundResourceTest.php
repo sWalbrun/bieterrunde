@@ -50,13 +50,8 @@ it('shows a validation error for start overlap while creating', function () {
             BidderRound::COL_END_OF_SUBMISSION => Carbon::parse('2023-10-01'),
         ])
         ->call('create')
-        ->assertNotified(
-            Notification::make()
-                ->title(trans('Overlapping Bidder Round'))
-                ->body(trans('This bidder round overlaps with an existing one.'))
-                ->danger()
-                ->persistent()
-        );
+        // The wizard validates the overlap already on the form
+        ->assertHasFormErrors([BidderRound::COL_END_OF_SUBMISSION]);
     expect(BidderRound::query()->count())->toBe(1);
 });
 
@@ -71,13 +66,7 @@ it('shows a validation error for end overlap while creating', function () {
             BidderRound::COL_END_OF_SUBMISSION => Carbon::parse('2023-11-30'),
         ])
         ->call('create')
-        ->assertNotified(
-            Notification::make()
-                ->title(trans('Overlapping Bidder Round'))
-                ->body(trans('This bidder round overlaps with an existing one.'))
-                ->danger()
-                ->persistent()
-        );
+        ->assertHasFormErrors([BidderRound::COL_END_OF_SUBMISSION]);
     expect(BidderRound::query()->count())->toBe(1);
 });
 
