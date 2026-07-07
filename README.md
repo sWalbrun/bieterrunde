@@ -1,84 +1,149 @@
-# SolaWi|Beitragsrunde
+# SolaWi | Beitragsrunde
 
-## Übersicht
+[![run-tests](https://github.com/sWalbrun/bieterrunde/actions/workflows/run-tests.yml/badge.svg)](https://github.com/sWalbrun/bieterrunde/actions/workflows/run-tests.yml)
+[![codecov](https://codecov.io/gh/sWalbrun/bieterrunde/branch/main/graph/badge.svg)](https://codecov.io/gh/sWalbrun/bieterrunde)
+![PHP](https://img.shields.io/badge/PHP-%E2%89%A5%208.2-777BB4?logo=php&logoColor=white)
+![Laravel](https://img.shields.io/badge/Laravel-11-FF2D20?logo=laravel&logoColor=white)
+![License](https://img.shields.io/badge/Lizenz-MIT-green)
 
-SolaWi|Beitragsrunde ist ein eigenständiger Webserver, der speziell für die effiziente Verwaltung einer Beitragsrunde in
-der Solidarischen Landwirtschaft (Solawi) entwickelt wurde.
+**Die Beitragsrunde deiner Solawi — digital, einfach, ohne Passwort.**
 
-Die Anwendung ist in zwei Bereiche geteilt:
+Solidarische Landwirtschaften (Solawis) finanzieren sich über jährliche Beitragsrunden: Jedes Mitglied bietet,
+welchen monatlichen Beitrag es leisten kann, bis die Zielsumme des Betriebs erreicht ist. Diese App bildet genau
+diesen Prozess ab — vom Start der Runde über die Gebotsabgabe bis zum Export der festgelegten Beiträge.
 
-- **Mitgliederbereich** (`/`): Eine schlanke, mobilfreundliche Livewire-Oberfläche, in der Mitglieder den Stand der
-  aktuellen Beitragsrunde sehen und ihre Gebote abgeben.
-- **Adminbereich** (`/admin`): Ein Filament-Panel für die Verwaltung von Beitragsrunden, Produkten und Benutzern.
-  Zugriff haben nur Benutzer mit der Rolle `admin` oder `super_admin`.
+---
 
-Die Anmeldung erfolgt passwortlos: Benutzer erhalten einen Anmelde-Link per E-Mail (Magic Link).
+## Zwei Bereiche, klare Rollen
 
-## Erste Schritte
+| Bereich | Für wen | Was passiert dort |
+| --- | --- | --- |
+| **Mitgliederbereich** (`/`) | Mitglieder | Mobilfreundliche Oberfläche: Stand der aktuellen Runde sehen, Gebote abgeben, eigene Ergebnisse einsehen. Mehr nicht — bewusst simpel. |
+| **Adminbereich** (`/admin`) | Solawi-Orga | [Filament](https://filamentphp.com)-Panel: Beitragsrunden, Produkte, Mitglieder und Importe verwalten, Ergebnisse ermitteln, Beiträge exportieren. |
 
-### Installation
+Jeder Benutzer hat genau eine Rolle:
 
-Um zu beginnen, führe den folgenden Befehl aus. Du wirst nach dem Passwort für den Sudo-Benutzer gefragt, um die
-Dateiberechtigungen zu ändern.
+| Rolle | Rechte |
+| --- | --- |
+| `member` | Mitgliederbereich: Gebote abgeben, eigene Ergebnisse sehen |
+| `admin` | Zusätzlich das Admin-Panel der eigenen Solawi |
+| `super_admin` | Zusätzlich Solawi-(Mandanten-)Verwaltung, Account-Anfragen, Wechsel zwischen Solawis |
+
+**Anmeldung ohne Passwort:** Alle melden sich per Magic Link an — E-Mail-Adresse eingeben, Link aus der Mail
+klicken, fertig. Es gibt keine Passwörter, die Mitglieder vergessen könnten.
+
+## ✅ Das kann die App
+
+**Für Mitglieder**
+- Gebote pro Produkt und Runde abgeben — mit Live-Umrechnung auf den Betrag pro Anteil bei mehreren Anteilen
+- Bestätigungs-Mail mit den abgegebenen Geboten als Beleg
+- Dashboard mit laufender Runde, Abgabefrist, Gebotsfortschritt und festgelegten Beiträgen vergangener Runden
+
+**Für die Solawi-Orga**
+- Beitragsrunden mit mehreren Produkten („Themen“), Runden-Anzahl und Zielsumme anlegen
+- Mitglieder verwalten oder per Excel/CSV importieren (Anteile, Beitragsgruppen, Zahlungsintervalle)
+- Rundenstart per Mail ankündigen — optional mit persönlicher Nachricht
+- Säumige Mitglieder per Knopfdruck erinnern
+- Ergebnis ermitteln: Die App findet automatisch die erste Runde, deren Gebotssumme die Zielsumme deckt,
+  und informiert alle Mitglieder über ihren festgelegten Beitrag
+- Festgelegte Beiträge als Excel exportieren (für Buchhaltung/Lastschrift-Vorbereitung)
+
+**Für Betreiber (Multi-Mandanten)**
+- Mehrere Solawis auf einer Instanz — jede sieht ausschließlich ihre eigenen Daten
+- Solawis im Web-UI anlegen (inklusive erstem Admin mit Willkommens-Mail) und löschen
+- Interessierte Solawis können über die Anmeldeseite einen **Testzugang anfragen**;
+  Super-Admins genehmigen mit einem Klick, der Mandant wird automatisch eingerichtet
+
+## ❌ Das kann die App (bewusst) nicht
+
+- **Kein Zahlungsverkehr.** Es werden keine Lastschriften eingezogen und keine Zahlungen verarbeitet —
+  die App ermittelt die Beiträge, der Einzug läuft über eure Buchhaltung (dafür gibt es den Excel-Export).
+- **Keine zeitgesteuerte Automatik.** Ankündigung, Erinnerung und Ergebnisermittlung werden von Admins per
+  Knopfdruck ausgelöst. Dadurch läuft die App auch auf Hosting ohne Cron/Scheduler.
+- **Keine Selbstregistrierung von Mitgliedern.** Mitglieder werden von der Solawi angelegt oder importiert.
+  Nur *neue Solawis* können sich über die Testzugang-Anfrage selbst melden.
+- **Keine getrennten Datenbanken.** Alle Mandanten teilen sich eine Datenbank (logische Trennung per
+  `tenant_id`). Eine E-Mail-Adresse gehört genau einer Solawi.
+- **Nur Deutsch.** Die Oberfläche ist auf deutschsprachige Solawis ausgelegt.
+- **Kein Passwort-Login.** Ohne funktionierenden Mailversand kann sich niemand anmelden — ein
+  konfigurierter SMTP-Server ist Pflicht.
+
+## So läuft eine Beitragsrunde ab
+
+1. **Anlegen** — Admin erstellt die Beitragsrunde mit Abgabezeitraum und Produkten samt Zielsumme.
+2. **Ankündigen** — Admin informiert alle Teilnehmenden per Mail über den Start (optional mit persönlicher Nachricht).
+3. **Bieten** — Mitglieder geben im Mitgliederbereich für jede Runde ihr monatliches Gebot ab und erhalten eine Bestätigung.
+4. **Erinnern** — Admin erinnert säumige Mitglieder per Knopfdruck.
+5. **Ermitteln** — Admin lässt das Ergebnis berechnen: Die günstigste Runde, deren Summe die Zielsumme deckt, gewinnt.
+   Alle Mitglieder erhalten ihren festgelegten Beitrag per Mail.
+6. **Exportieren** — Admin lädt die festgelegten Beiträge als Excel für die Buchhaltung herunter.
+
+## Schnellstart (lokal)
+
+Voraussetzungen: Docker inklusive Docker Compose.
 
 ```shell
+cp .env.example .env   # Mailtrap-Zugangsdaten (MAIL_USERNAME/MAIL_PASSWORD) eintragen
 ./serve.sh --fresh
 ```
 
-Dieser Vorgang kann bei der ersten Ausführung mehrere Minuten dauern. Er beinhaltet das Herunterladen aller
-Abhängigkeiten sowie das Erstellen und die initiale Befüllung der Datenbank mit Testdaten. Nach Abschluss des Vorgangs
-ist der Webserver unter https://localhost bzw. http://localhost verfügbar. Standardmäßig sind die Benutzerkonten
-`adminfoo@solawi.de` und `adminbar@solawi.de` als Super-Admins eingerichtet.
+Der erste Start dauert einige Minuten (Abhängigkeiten, Assets, Datenbank mit Testdaten). Danach:
 
-### Rollen
+- **App:** https://localhost (http://localhost:8000 leitet dorthin weiter)
+- **Login:** `adminfoo@solawi.de` oder `adminbar@solawi.de` (Super-Admins der Test-Solawis `foo` und `bar`) —
+  der Magic Link landet in deinem [Mailtrap](https://mailtrap.io)-Postfach
+- Zusätzlich sind je Solawi 120 Testmitglieder mit Anteilen und Geboten angelegt
 
-Jeder Benutzer hat genau eine Rolle (Spalte `role` auf dem Benutzer):
+> [!IMPORTANT]
+> `APP_URL` muss exakt der URL entsprechen, unter der die App aufgerufen wird (lokal: `https://localhost`).
+> Die Anmelde-Links sind signiert — stimmt die URL nicht, laufen alle Links ins Leere (HTTP 403).
 
-| Rolle         | Rechte                                                                 |
-| ------------- | ---------------------------------------------------------------------- |
-| `member`      | Mitgliederbereich: Gebote abgeben und eigene Ergebnisse einsehen        |
-| `admin`       | Zusätzlich Zugriff auf das Admin-Panel der eigenen Solawi               |
-| `super_admin` | Zusätzlich Mandantenverwaltung, Account-Anfragen und Mandanten-Wechsel  |
+## Betrieb (Produktion)
 
-Rollen werden im Admin-Panel unter *Benutzer* vergeben.
+```shell
+# Einmalig bzw. je Deployment
+composer install --no-dev
+npm ci && npm run build
+php artisan migrate
+php artisan tenants:run migrate
 
-## Hauptfunktionen
+# Erste Solawi samt Admin anlegen (Admin erhält eine Willkommens-Mail mit Anmelde-Link)
+php artisan tenants:create meine-solawi --admin-name="Maria" --admin-email=maria@example.org
+```
 
-### Verwaltung einer Beitragsrunde
+Checkliste:
 
-- **Organisation einer Beitragsrunde**: Der Admin kann eine neue Beitragsrunde für ein Gartenjahr anlegen und verwalten.
-- **Gebotsabgabe durch Mitglieder**: Mitglieder geben ihre Gebote über den Mitgliederbereich ab und sehen nur ihre
-  eigenen Gebote und Ergebnisse.
-- **Ermittlung der passenden Runde und E-Mail-Versand**: Nachdem alle Gebote abgegeben wurden, wird die passende Runde
-  ermittelt (`php artisan topic:targetAmountReached`) und E-Mails werden an alle Mitglieder versandt.
-- **Erinnerungsmails**: Versand von Erinnerungsmails an Mitglieder, die noch kein Gebot abgegeben haben.
+- [ ] `APP_URL` auf die öffentliche URL gesetzt (siehe Hinweis oben)
+- [ ] SMTP-Zugangsdaten (`MAIL_*`) konfiguriert — ohne Mail kein Login
+- [ ] Impressum & Datenschutzerklärung ausgefüllt
+      ([imprint.blade.php](resources/views/legal/imprint.blade.php), [privacy.blade.php](resources/views/legal/privacy.blade.php))
+- [ ] Kein Cron nötig — die App kommt ohne Scheduler und Queue-Worker aus (`QUEUE_CONNECTION=sync`)
 
-### Benutzermanagement
+### CLI-Befehle
 
-- **CRUD-Funktionalitäten**: Vollständige Verwaltung von Benutzerkonten inklusive Rollenvergabe.
-- **Benutzerimport**: Möglichkeit zum Importieren von Benutzern via Excel oder CSV.
+| Befehl | Zweck |
+| --- | --- |
+| `php artisan tenants:create <id> [--admin-name= --admin-email=]` | Solawi anlegen, optional mit erstem Admin |
+| `php artisan tenants:delete <id>` | Solawi **samt aller Daten** löschen |
+| `php artisan topic:targetAmountReached [topicId]` | Ergebnisermittlung per CLI (alternativ zum Panel-Button) |
 
-### Multimandantenfähigkeit
+## Tech-Stack
 
-- **Mehrere Mandanten auf einer Instanz**: Jede Solawi kann ihre eigene Instanz hosten oder mehrere Solawis können
-  dieselbe Instanz nutzen, wobei jede nur ihre eigenen Informationen sieht (gemeinsame Datenbank, Trennung über
-  `tenant_id`).
-- **Mandantenverwaltung im Web-UI**: Super-Admins legen Mandanten im Admin-Panel an (inklusive erstem Admin-Benutzer,
-  der eine Willkommens-Mail mit Anmelde-Link erhält), löschen sie samt aller Daten und können per Aktion in einen
-  anderen Mandanten wechseln.
-- **Testzugang anfragen**: Interessierte Solawis können über die Anmeldeseite einen Testzugang anfragen. Super-Admins
-  prüfen die Anfrage im Admin-Panel und genehmigen sie mit einem Klick — der Mandant wird automatisch angelegt.
+[Laravel 11](https://laravel.com) · [Livewire 3](https://livewire.laravel.com) (Mitgliederbereich) ·
+[Filament 3](https://filamentphp.com) (Adminbereich) · [stancl/tenancy](https://tenancyforlaravel.com)
+(Multi-Mandanten, Single-DB) · [Tailwind CSS 4](https://tailwindcss.com) + Vite · MySQL 8 ·
+[FrankenPHP](https://frankenphp.dev) im Docker-Setup
 
-#### CLI-Befehle für Mandantenverwaltung
+## Entwicklung
 
-- **Anlegen eines Mandanten** (optional mit erstem Admin):
+```shell
+vendor/bin/pest          # Testsuite (Pest, In-Memory-SQLite)
+vendor/bin/pint          # Code-Style (Laravel Pint)
+npm run dev              # Vite Dev-Server mit Hot Reload
+```
 
-  ```shell
-  php artisan tenants:create <tenantId> --admin-name="Maria" --admin-email=maria@example.org
-  ```
+Pull Requests sind willkommen — bitte mit Tests und grünem `vendor/bin/pint --test`.
 
-- **Löschen eines Mandanten** (löscht alle Daten des Mandanten):
+## Lizenz
 
-  ```shell
-  php artisan tenants:delete <tenantId>
-  ```
+[MIT](https://opensource.org/licenses/MIT)
