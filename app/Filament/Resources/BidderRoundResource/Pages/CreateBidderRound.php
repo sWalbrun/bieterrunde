@@ -119,7 +119,13 @@ class CreateBidderRound extends CreateRecord
                         fn () => User::currentlyActive()
                             ->orderBy(User::COL_NAME)
                             ->get()
-                            ->mapWithKeys(fn (User $user) => [$user->id => "$user->name ($user->email)"])
+                            ->mapWithKeys(fn (User $user) => [
+                                $user->id => trans(':name (:email) — created :created', [
+                                    'name' => $user->name,
+                                    'email' => $user->email,
+                                    'created' => $user->createdAt?->format('d.m.Y') ?? '–',
+                                ]),
+                            ])
                     )
                     ->default(fn () => User::currentlyActive()->pluck(User::COL_ID)->all())
                     ->searchable()
