@@ -15,6 +15,7 @@ use App\Notifications\BidderRoundStarted;
 use App\Notifications\ReminderOfBidderRound;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -52,6 +53,17 @@ class BidderRoundResource extends Resource
                 DatePicker::make(BidderRound::COL_START_OF_SUBMISSION)->required()->label(trans('Start of submission')),
                 DatePicker::make(BidderRound::COL_END_OF_SUBMISSION)->required()->label(trans('End of submission')),
                 Textarea::make(BidderRound::COL_NOTE)->translateLabel()->columnSpan(2),
+                Placeholder::make('offerSources')
+                    ->label(trans('Offers member / admin'))
+                    ->helperText(trans('Submitted by members / entered by admins'))
+                    ->columnSpan(2)
+                    // Only meaningful for an existing round (not while creating)
+                    ->visible(fn (?BidderRound $record) => $record !== null)
+                    ->content(function (?BidderRound $record) {
+                        $counts = $record->offerSourceCounts();
+
+                        return $counts['member'].' / '.$counts['admin'];
+                    }),
                 Card::make()->schema([
                     TextInput::make('Current status ')
                         ->translateLabel()

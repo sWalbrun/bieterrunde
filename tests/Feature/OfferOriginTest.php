@@ -78,6 +78,19 @@ it('records offers entered via the admin participant editor as admin entered', f
         ->and($offer->enteredByAdmin)->toBeTrue();
 });
 
+it('shows the aggregated offer origins on the edit bidder round page', function () {
+    $this->createAndActAsUser();
+    $topic = openTopicForOrigin();
+    $round = $topic->bidderRound;
+
+    Offer::factory()->count(2)->for($topic)->for(User::factory())->create();
+    Offer::factory()->enteredByAdmin()->for($topic)->for(User::factory())->create();
+
+    livewire(\App\Filament\Resources\BidderRoundResource\Pages\EditBidderRound::class, ['record' => $round->id])
+        ->assertSee(trans('Offers member / admin'))
+        ->assertSee('2 / 1');
+});
+
 it('aggregates offer origins across the whole bidder round', function () {
     $topicA = openTopicForOrigin();
     /** @var BidderRound $round */
