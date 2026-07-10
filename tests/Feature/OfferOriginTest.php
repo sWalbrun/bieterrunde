@@ -2,6 +2,7 @@
 
 use App\BidderRound\OfferService;
 use App\Enums\ShareValue;
+use App\Filament\Resources\BidderRoundResource\Pages\EditBidderRound;
 use App\Filament\Resources\TopicResource\RelationManagers\UsersRelationManager;
 use App\Models\BidderRound;
 use App\Models\Offer;
@@ -86,7 +87,7 @@ it('shows the aggregated offer origins on the edit bidder round page', function 
     Offer::factory()->count(2)->for($topic)->for(User::factory())->create();
     Offer::factory()->enteredByAdmin()->for($topic)->for(User::factory())->create();
 
-    livewire(\App\Filament\Resources\BidderRoundResource\Pages\EditBidderRound::class, ['record' => $round->id])
+    livewire(EditBidderRound::class, ['record' => $round->id])
         ->assertSee(trans('Offers member / admin'))
         ->assertSee('2 / 1');
 });
