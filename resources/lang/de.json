@@ -814,5 +814,10 @@
     ":name (:email) — created :created": ":name (:email) — angelegt am :created",
     "Offers member / admin": "Gebote Mitglied / Admin",
     "Submitted by members / entered by admins": "Von Mitgliedern abgegeben / von Admins erfasst",
-    "Entered by": "Erfasst von"
+    "Entered by": "Erfasst von",
+    "Comment (optional)": "Kommentar (optional)",
+    "Anything you would like to let your Solawi know?": "Möchtest du deiner Solawi etwas mitteilen?",
+    "Comment": "Kommentar",
+    "Comments": "Kommentare",
+    "Updated at": "Aktualisiert am"
 }

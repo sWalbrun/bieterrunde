@@ -56,6 +56,11 @@ class BidderRound extends BaseModel
         return $this->hasMany(Topic::class, Topic::COL_FK_BIDDER_ROUND);
     }
 
+    public function comments(): HasMany
+    {
+        return $this->hasMany(BidderRoundComment::class, BidderRoundComment::COL_FK_BIDDER_ROUND);
+    }
+
     /**
      * Returns true in case the user still has the possibility to change/create her/his offer.
      */

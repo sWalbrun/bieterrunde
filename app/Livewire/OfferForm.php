@@ -6,6 +6,7 @@ use App\BidderRound\OfferService;
 use App\BidderRound\TopicService;
 use App\Enums\EnumPaymentInterval;
 use App\Models\BidderRound;
+use App\Models\BidderRoundComment;
 use App\Models\Offer;
 use App\Models\Share;
 use App\Models\Topic;
@@ -49,6 +50,9 @@ class OfferForm extends Component
 
     public ?string $paymentInterval = null;
 
+    /** Free-text feedback for the round (github issue #12). */
+    public ?string $comment = null;
+
     public bool $saved = false;
 
     public function mount(): void
@@ -68,6 +72,9 @@ class OfferForm extends Component
         $this->roundId = $round->id;
         $this->roundName = (string) $round;
         $this->roundEnd = $round->endOfSubmission->format('d.m.Y');
+        $this->comment = $round->comments()
+            ->where(BidderRoundComment::COL_FK_USER, '=', $user->id)
+            ->value(BidderRoundComment::COL_COMMENT);
 
         $round
             ->topics()
@@ -117,7 +124,13 @@ class OfferForm extends Component
             }
         }
 
-        $changed = app(OfferService::class)->saveOffers($user, $perShareAmountsByTopic, $this->paymentInterval);
+        $offerService = app(OfferService::class);
+        $changed = $offerService->saveOffers($user, $perShareAmountsByTopic, $this->paymentInterval);
+
+        /** @var BidderRound $round */
+        $round = BidderRound::query()->findOrFail($this->roundId);
+        $offerService->saveComment($user, $round, $this->comment);
+
         if ($changed) {
             $user->notify(new OfferReceipt($this->offerSummary(), $this->roundName ?? trans('Bidder round')));
         }
@@ -165,6 +178,7 @@ class OfferForm extends Component
     {
         $rules = [
             'paymentInterval' => ['required', Rule::in(EnumPaymentInterval::getValues())],
+            'comment' => ['nullable', 'string', 'max:1000'],
         ];
         foreach ($this->topics as $topicId => $topic) {
             if (! $topic['editable']) {

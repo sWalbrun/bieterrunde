@@ -3,6 +3,8 @@
 namespace App\BidderRound;
 
 use App\Enums\EnumPaymentInterval;
+use App\Models\BidderRound;
+use App\Models\BidderRoundComment;
 use App\Models\Offer;
 use App\Models\Topic;
 use App\Models\User;
@@ -66,6 +68,32 @@ class OfferService
         }
 
         return $atLeastOneChange;
+    }
+
+    /**
+     * Stores (or clears) a member's free-text feedback for a bidder round
+     * (github issue #12). A blank comment removes any existing one.
+     */
+    public function saveComment(User $user, BidderRound $round, ?string $comment): void
+    {
+        $comment = trim((string) $comment);
+
+        if ($comment === '') {
+            BidderRoundComment::query()
+                ->where(BidderRoundComment::COL_FK_USER, '=', $user->id)
+                ->where(BidderRoundComment::COL_FK_BIDDER_ROUND, '=', $round->id)
+                ->delete();
+
+            return;
+        }
+
+        BidderRoundComment::query()->updateOrCreate(
+            [
+                BidderRoundComment::COL_FK_USER => $user->id,
+                BidderRoundComment::COL_FK_BIDDER_ROUND => $round->id,
+            ],
+            [BidderRoundComment::COL_COMMENT => $comment],
+        );
     }
 
     /**

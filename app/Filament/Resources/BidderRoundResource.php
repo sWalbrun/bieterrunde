@@ -7,6 +7,7 @@ use App\BidderRound\TopicService;
 use App\Enums\EnumTargetAmountReachedStatus;
 use App\Filament\EnumNavigationGroups;
 use App\Filament\Resources\BidderRoundResource\Pages;
+use App\Filament\Resources\BidderRoundResource\RelationManagers\CommentsRelationManager;
 use App\Filament\Resources\BidderRoundResource\RelationManagers\TopicsRelationManager;
 use App\Models\BidderRound;
 use App\Models\Topic;
@@ -202,6 +203,7 @@ class BidderRoundResource extends Resource
     {
         return [
             TopicsRelationManager::class,
+            CommentsRelationManager::class,
         ];
     }
 

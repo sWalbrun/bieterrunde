@@ -117,6 +117,25 @@
             </x-card>
         @endforeach
 
+        {{-- Feedback for the Solawi (github issue #12) --}}
+        <x-card class="space-y-2">
+            <label for="comment" class="block font-medium text-gray-700">
+                {{ trans('Comment (optional)') }}
+            </label>
+            <p class="text-sm text-gray-500">{{ trans('Anything you would like to let your Solawi know?') }}</p>
+            <textarea
+                id="comment"
+                wire:model="comment"
+                rows="3"
+                maxlength="1000"
+                @disabled(! $anyEditable)
+                class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 disabled:bg-gray-50 disabled:text-gray-500"
+            ></textarea>
+            @error('comment')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+            @enderror
+        </x-card>
+
         {{-- Sticky save bar --}}
         @if ($anyEditable)
             <div class="fixed inset-x-0 bottom-0 border-t border-gray-950/5 bg-white/95 p-4 backdrop-blur">
