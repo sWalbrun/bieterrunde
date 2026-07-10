@@ -136,6 +136,20 @@ class UsersRelationManager extends RelationManager
                         fn (User $record, self $livewire) => $record->offersAsStringFor($livewire->ownerRecord)
                     )
                     ->label(trans('Round=Amount')),
+                Tables\Columns\TextColumn::make('offerSource')
+                    ->label(trans('Entered by'))
+                    ->badge()
+                    ->getStateUsing(function (User $record, self $livewire) {
+                        $offers = $record->offersForTopic($livewire->ownerRecord)->get();
+                        if ($offers->isEmpty()) {
+                            return null;
+                        }
+
+                        return $offers->contains(fn (Offer $offer) => $offer->enteredByAdmin)
+                            ? trans('Admin')
+                            : trans('Member');
+                    })
+                    ->color(fn (?string $state) => $state === trans('Admin') ? 'warning' : 'success'),
             ])
             ->filters([
                 Filter::make('Offers given')
@@ -213,6 +227,8 @@ class UsersRelationManager extends RelationManager
                         Offer::COL_ROUND => $round,
                         Offer::COL_FK_TOPIC => $livewire->ownerRecord->id,
                         Offer::COL_FK_USER => $record->id,
+                        // Entered by an admin on the member's behalf (github issue #13)
+                        Offer::COL_ENTERED_BY_ADMIN => true,
                     ]
                 );
             });

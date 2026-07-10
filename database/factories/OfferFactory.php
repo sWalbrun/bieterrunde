@@ -43,4 +43,12 @@ class OfferFactory extends Factory
 
         return $definition;
     }
+
+    /**
+     * An offer an admin entered on the member's behalf (github issue #13).
+     */
+    public function enteredByAdmin(): Factory
+    {
+        return $this->state([Offer::COL_ENTERED_BY_ADMIN => true]);
+    }
 }

@@ -18,12 +18,14 @@ class OfferService
      * Topics for which offers are no longer possible are skipped.
      *
      * @param  array<int|string, array<int|string, float|null>>  $perShareAmountsByTopic  [topicId => [round => amountPerShare]]
+     * @param  bool  $enteredByAdmin  whether an admin enters this on the member's behalf (github issue #13)
      * @return bool true if at least one offer or the payment interval changed
      */
     public function saveOffers(
         User $user,
         array $perShareAmountsByTopic,
-        EnumPaymentInterval|string|null $paymentInterval = null
+        EnumPaymentInterval|string|null $paymentInterval = null,
+        bool $enteredByAdmin = false,
     ): bool {
         $atLeastOneChange = false;
 
@@ -47,6 +49,7 @@ class OfferService
                     ->first() ?? new Offer;
                 $offer->round = (int) $round;
                 $offer->amount = (float) $amount;
+                $offer->enteredByAdmin = $enteredByAdmin;
                 $offer->topic()->associate($topic);
                 $offer->user()->associate($user);
                 $atLeastOneChange = $offer->isDirty() || $atLeastOneChange;

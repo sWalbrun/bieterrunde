@@ -811,5 +811,8 @@
     "Creating the round does not send any mails. Use \"Announce start\" on the rounds list once the bidding should begin.": "Beim Erstellen werden keine E-Mails verschickt. Nutze „Start ankündigen“ in der Rundenübersicht, sobald es losgehen soll.",
     "Bidder round created": "Beitragsrunde erstellt",
     "No mails have been sent yet — use \"Announce start\" on the rounds list once the bidding should begin.": "Es wurden noch keine E-Mails verschickt — nutze „Start ankündigen“ in der Rundenübersicht, sobald es losgehen soll.",
-    ":name (:email) — created :created": ":name (:email) — angelegt am :created"
+    ":name (:email) — created :created": ":name (:email) — angelegt am :created",
+    "Offers member / admin": "Gebote Mitglied / Admin",
+    "Submitted by members / entered by admins": "Von Mitgliedern abgegeben / von Admins erfasst",
+    "Entered by": "Erfasst von"
 }

@@ -91,6 +91,15 @@ class BidderRoundResource extends Resource
                     ->translateLabel(),
                 Tables\Columns\TextColumn::make(BidderRound::COL_NOTE)
                     ->translateLabel(),
+                Tables\Columns\TextColumn::make('offerSources')
+                    ->label(trans('Offers member / admin'))
+                    ->badge()
+                    ->tooltip(trans('Submitted by members / entered by admins'))
+                    ->getStateUsing(function (BidderRound $record) {
+                        $counts = $record->offerSourceCounts();
+
+                        return $counts['member'].' / '.$counts['admin'];
+                    }),
             ])
             ->actions([
                 Tables\Actions\Action::make('AnnounceStart')

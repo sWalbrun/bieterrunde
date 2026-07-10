@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property float amount
  * @property string amountFormatted
  * @property int round
+ * @property bool enteredByAdmin
  * @property User user
  * @property Topic topic
  */
@@ -31,12 +32,20 @@ class Offer extends BaseModel
 
     public const COL_FK_USER = 'fkUser';
 
+    /** Whether an admin entered this offer on behalf of the member (github issue #13). */
+    public const COL_ENTERED_BY_ADMIN = 'enteredByAdmin';
+
     protected $fillable = [
         self::COL_ID,
         self::COL_AMOUNT,
         self::COL_ROUND,
         self::COL_FK_USER,
         self::COL_FK_TOPIC,
+        self::COL_ENTERED_BY_ADMIN,
+    ];
+
+    protected $casts = [
+        self::COL_ENTERED_BY_ADMIN => 'boolean',
     ];
 
     public function user(): BelongsTo

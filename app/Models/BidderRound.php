@@ -104,6 +104,26 @@ class BidderRound extends BaseModel
         return User::query()->whereIn(BaseModel::COL_ID, $participantIds)->get();
     }
 
+    /**
+     * How many offers of this round were submitted by members themselves
+     * versus entered by an admin on their behalf (github issue #13).
+     *
+     * @return array{member: int, admin: int}
+     */
+    public function offerSourceCounts(): array
+    {
+        $counts = Offer::query()
+            ->whereIn(Offer::COL_FK_TOPIC, $this->topics()->select(BaseModel::COL_ID))
+            ->selectRaw(Offer::COL_ENTERED_BY_ADMIN.', COUNT(*) as aggregate')
+            ->groupBy(Offer::COL_ENTERED_BY_ADMIN)
+            ->pluck('aggregate', Offer::COL_ENTERED_BY_ADMIN);
+
+        return [
+            'member' => (int) ($counts->get(0) ?? 0),
+            'admin' => (int) ($counts->get(1) ?? 0),
+        ];
+    }
+
     public function usersWithMissingOffers(): Collection
     {
         $missingUserIds = $this->topics->map(function (Topic $topic) {
