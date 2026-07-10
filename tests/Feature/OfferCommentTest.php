@@ -2,6 +2,7 @@
 
 use App\Enums\EnumPaymentInterval;
 use App\Enums\ShareValue;
+use App\Filament\Resources\BidderRoundResource\Pages\EditBidderRound;
 use App\Filament\Resources\BidderRoundResource\RelationManagers\CommentsRelationManager;
 use App\Livewire\OfferForm;
 use App\Models\BidderRound;
@@ -95,7 +96,7 @@ it('shows the comments in the admin relation manager', function () {
 
     livewire(CommentsRelationManager::class, [
         'ownerRecord' => $topic->bidderRound,
-        'pageClass' => \App\Filament\Resources\BidderRoundResource\Pages\EditBidderRound::class,
+        'pageClass' => EditBidderRound::class,
     ])
         ->assertCanSeeTableRecords([$comment])
         ->assertSee('Maria Muster')
