@@ -28,6 +28,9 @@ abstract class TestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        // The frontend assets are not built during tests/CI, so stub @vite to
+        // avoid "Vite manifest not found" when views render the app layout.
+        $this->withoutVite();
         /** @var User $user */
         $user = User::query()->create([
             'name' => 'Sebastian12',
