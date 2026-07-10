@@ -92,6 +92,28 @@ it('shows the aggregated offer origins on the edit bidder round page', function 
         ->assertSee('2 / 1');
 });
 
+it('parses german formatted amounts entered via the admin participant editor', function () {
+    /** @var User $user */
+    $user = User::factory()->create();
+    $topic = openTopicForOrigin();
+    $topic->users()->attach($user);
+    Share::factory()->create([
+        Share::COL_FK_USER => $user->id,
+        Share::COL_FK_TOPIC => $topic->id,
+        Share::COL_VALUE => ShareValue::ONE,
+    ]);
+
+    livewire(UsersRelationManager::class, ['ownerRecord' => $topic])
+        ->callTableAction('edit', $user, data: [
+            User::COL_EMAIL => $user->email,
+            User::COL_NAME => $user->name,
+            // floatval would have truncated this to 1.234
+            'offers' => [1 => '1.234,56'],
+        ]);
+
+    expect($user->offersForTopic($topic)->where(Offer::COL_ROUND, 1)->first()->amount)->toBe(1234.56);
+});
+
 it('aggregates offer origins across the whole bidder round', function () {
     $topicA = openTopicForOrigin();
     /** @var BidderRound $round */

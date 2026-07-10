@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\TopicResource\RelationManagers;
 
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
+use App\BidderRound\OfferService;
 use App\BidderRound\TopicService;
 use App\Enums\EnumContributionGroup;
 use App\Enums\EnumPaymentInterval;
@@ -198,8 +199,9 @@ class UsersRelationManager extends RelationManager
     private function updateOffers(Collection $state, UsersRelationManager $livewire, User $record): void
     {
         $state
-            ->filter(fn (mixed $state) => isset($state))
-            ->map(fn (string $amount) => floatval($amount))
+            // Parse german notation ("1.234,56" → 1234.56); floatval would truncate it
+            ->map(fn (mixed $amount) => OfferService::parseGermanAmount($amount))
+            ->filter(fn (?float $amount) => $amount !== null)
             // Re-adjust potentially wrong order of offers
             ->sort()
             // Make sure the index will further match with the round
