@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\EnumRole;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
@@ -10,7 +11,7 @@ use function Pest\Livewire\livewire;
 
 beforeEach(fn () => Storage::fake('tmp-for-tests'));
 
-it('can create an user by import', function () {
+it('imports new users as members regardless of the file', function () {
     $fileToImport = getDefaultXlsx('UserImport.xlsx');
 
     livewire(ImportPage::class)
@@ -22,8 +23,28 @@ it('can create an user by import', function () {
 
     /** @var User $importedUser */
     $importedUser = User::query()->where(User::COL_NAME, '=', 'Sebastian')->first();
-    // The 'Rolle' column of the xlsx is deliberately ignored since roles are managed in the admin panel
-    expect($importedUser)->not->toBeNull();
+    // Any 'Rolle' column in the xlsx is ignored — new users are always members (issue #7)
+    expect($importedUser)->not->toBeNull()
+        ->and($importedUser->role)->toBe(EnumRole::MEMBER);
+});
+
+it('does not demote an existing user when re-imported', function () {
+    /** @var User $existing */
+    $existing = User::query()->create([
+        'name' => 'Sebastian12',
+        'password' => Hash::make('password!'),
+        'email' => 'ws-1993@gmx.de',
+        'role' => EnumRole::ADMIN,
+    ]);
+
+    livewire(ImportPage::class)
+        ->fillForm([
+            ImportPage::IMPORT => getDefaultXlsx('UserImport.xlsx'),
+        ])
+        ->callAction('save')
+        ->send();
+
+    expect($existing->refresh()->role)->toBe(EnumRole::ADMIN);
 });
 
 it('can update an user by import', function () {
