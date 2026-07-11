@@ -12,7 +12,6 @@ use Filament\Support\Colors\Color;
 use Filament\View\PanelsRenderHook;
 use Filament\Widgets;
 use Illuminate\Support\Facades\Blade;
-use SWalbrun\FilamentModelImport\FilamentRegexImportPlugin;
 
 class AppPanelProvider extends PanelProvider
 {
@@ -52,7 +51,6 @@ class AppPanelProvider extends PanelProvider
                 fn (): string => tenant() !== null
                     ? Blade::render('<x-filament::badge color="warning">'.e(tenant('id')).'</x-filament::badge>')
                     : ''
-            )
-            ->plugin(FilamentRegexImportPlugin::make());
+            );
     }
 }

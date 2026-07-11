@@ -826,5 +826,16 @@
     "This e-mail appears more than once in the pasted data": "Diese E-Mail kommt in den eingefügten Daten mehrfach vor",
     "This e-mail already belongs to a member of another Solawi": "Diese E-Mail gehört bereits zu einem Mitglied einer anderen Solawi",
     "Invalid date, expected DD.MM.YYYY": "Ungültiges Datum, erwartet TT.MM.JJJJ",
-    "Unknown contribution group": "Unbekannte Beitragsgruppe"
+    "Unknown contribution group": "Unbekannte Beitragsgruppe",
+    "Import members": "Mitglieder importieren",
+    "Paste from Excel": "Aus Excel einfügen",
+    "Copy the columns Name, E-Mail, Beitrittsdatum, Beitragsgruppe from your spreadsheet and paste them here.": "Kopiere die Spalten Name, E-Mail, Beitrittsdatum, Beitragsgruppe aus deiner Tabelle und füge sie hier ein.",
+    "Read into table": "In Tabelle einlesen",
+    ":count rows": ":count Zeilen",
+    ":count of :total rows have errors": ":count von :total Zeilen enthalten Fehler",
+    "All rows are valid.": "Alle Zeilen sind gültig.",
+    "Remove row": "Zeile entfernen",
+    "Discard": "Verwerfen",
+    "Please fix the highlighted rows first.": "Bitte korrigiere zuerst die markierten Zeilen.",
+    ":created created, :updated updated": ":created angelegt, :updated aktualisiert"
 }

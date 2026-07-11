@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2e6684518ec41861d4aaf625ec779a0d",
+    "content-hash": "8916360db90c0ee8b81b2e561b9f0003",
     "packages": [
         {
             "name": "alperenersoy/filament-export",
@@ -6545,87 +6545,6 @@
                 "source": "https://github.com/archtechx/virtualcolumn/tree/v1.4.1"
             },
             "time": "2024-04-07T18:26:29+00:00"
-        },
-        {
-            "name": "swalbrun/filament-regex-import",
-            "version": "2.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/sWalbrun/filament-regex-import.git",
-                "reference": "8410623aa763297f9076cbf9df0aa18bb26f8053"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/sWalbrun/filament-regex-import/zipball/8410623aa763297f9076cbf9df0aa18bb26f8053",
-                "reference": "8410623aa763297f9076cbf9df0aa18bb26f8053",
-                "shasum": ""
-            },
-            "require": {
-                "filament/filament": "^3.2",
-                "illuminate/contracts": "^11.0",
-                "maatwebsite/excel": "^3.1",
-                "php": "^8.2",
-                "spatie/laravel-package-tools": "^1.13.5"
-            },
-            "require-dev": {
-                "captainhook/captainhook": "^5.16",
-                "laravel/pint": "^1.0",
-                "nunomaduro/collision": "^8",
-                "nunomaduro/larastan": "^2.0.1",
-                "orchestra/testbench": "9.*",
-                "pestphp/pest": "^3",
-                "pestphp/pest-plugin-laravel": "^3",
-                "pestphp/pest-plugin-livewire": "^3",
-                "phpstan/extension-installer": "^1.1",
-                "phpstan/phpstan-deprecation-rules": "^1.0",
-                "phpstan/phpstan-phpunit": "^1.0",
-                "phpunit/phpunit": "^11",
-                "ramsey/conventional-commits": "^1.5",
-                "spatie/laravel-permission": "^6.10",
-                "spatie/laravel-ray": "^1.26"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "SWalbrun\\FilamentModelImport\\FilamentRegexImportServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "SWalbrun\\FilamentModelImport\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Sebastian Walbrun",
-                    "email": "sebastian@walbrun-consulting.de",
-                    "role": "Developer"
-                }
-            ],
-            "description": "This Filament Plugin will enable you to import files to upsert models by matching columns via regex.",
-            "homepage": "https://github.com/swalbrun/filament-regex-import",
-            "keywords": [
-                "filament-regex-import",
-                "laravel",
-                "sWalbrun"
-            ],
-            "support": {
-                "issues": "https://github.com/sWalbrun/filament-regex-import/issues",
-                "source": "https://github.com/sWalbrun/filament-regex-import/tree/2.0.1"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/sWalbrun",
-                    "type": "github"
-                }
-            ],
-            "time": "2025-04-14T16:16:15+00:00"
         },
         {
             "name": "symfony/clock",

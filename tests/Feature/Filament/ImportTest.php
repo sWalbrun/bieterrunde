@@ -1,86 +1,64 @@
 <?php
 
+use App\Enums\EnumContributionGroup;
 use App\Enums\EnumRole;
+use App\Filament\Pages\ImportMembers;
 use App\Models\User;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
-use SWalbrun\FilamentModelImport\Filament\Pages\ImportPage;
 
 use function Pest\Livewire\livewire;
 
-beforeEach(fn () => Storage::fake('tmp-for-tests'));
-
-it('imports new users as members regardless of the file', function () {
-    $fileToImport = getDefaultXlsx('UserImport.xlsx');
-
-    livewire(ImportPage::class)
-        ->fillForm([
-            ImportPage::IMPORT => $fileToImport,
-        ])
-        ->callAction('save')
-        ->send();
-
-    /** @var User $importedUser */
-    $importedUser = User::query()->where(User::COL_NAME, '=', 'Sebastian')->first();
-    // Any 'Rolle' column in the xlsx is ignored — new users are always members (issue #7)
-    expect($importedUser)->not->toBeNull()
-        ->and($importedUser->role)->toBe(EnumRole::MEMBER);
+it('parses pasted rows into an editable table', function () {
+    livewire(ImportMembers::class)
+        ->set('pasted', "Name\tE-Mail\tBeitrittsdatum\tBeitragsgruppe\nMaria Muster\tmaria@solawi.test\t01.03.2024\tFördermitglied")
+        ->call('parse')
+        // header row skipped, one data row remains
+        ->assertCount('rows', 1)
+        ->assertSet('rows.0.name', 'Maria Muster')
+        ->assertSet('rows.0.email', 'maria@solawi.test')
+        ->assertSet('rows.0.contributionGroup', EnumContributionGroup::SUSTAINING_MEMBER);
 });
 
-it('does not demote an existing user when re-imported', function () {
-    /** @var User $existing */
-    $existing = User::query()->create([
-        'name' => 'Sebastian12',
-        'password' => Hash::make('password!'),
-        'email' => 'ws-1993@gmx.de',
+it('flags invalid rows and blocks the import', function () {
+    livewire(ImportMembers::class)
+        ->set('pasted', "Ohne Adresse\t\nHans\tnope")
+        ->call('parse')
+        ->call('import')
+        ->assertSet('rowErrors.0.email', trans('E-Mail is required'))
+        ->assertSet('rowErrors.1.email', trans('Invalid e-mail address'));
+
+    expect(User::query()->where(User::COL_NAME, '=', 'Hans')->exists())->toBeFalse();
+});
+
+it('imports valid members as members', function () {
+    livewire(ImportMembers::class)
+        ->set('pasted', "Maria Muster\tmaria@solawi.test\t01.03.2024\tFördermitglied\nHans Wurst\thans@solawi.test\t\t")
+        ->call('parse')
+        ->call('import')
+        ->assertSet('rows', []);
+
+    /** @var User $maria */
+    $maria = User::query()->where(User::COL_EMAIL, '=', 'maria@solawi.test')->firstOrFail();
+    expect($maria->name)->toBe('Maria Muster')
+        ->and($maria->role)->toBe(EnumRole::MEMBER)
+        ->and($maria->contributionGroup->is(EnumContributionGroup::SUSTAINING_MEMBER()))->toBeTrue()
+        ->and($maria->joinDate->format('Y-m-d'))->toBe('2024-03-01')
+        ->and(User::query()->where(User::COL_EMAIL, '=', 'hans@solawi.test')->exists())->toBeTrue();
+});
+
+it('does not demote an existing admin when re-imported', function () {
+    User::query()->create([
+        'name' => 'Alt',
+        'email' => 'boss@solawi.test',
         'role' => EnumRole::ADMIN,
     ]);
 
-    livewire(ImportPage::class)
-        ->fillForm([
-            ImportPage::IMPORT => getDefaultXlsx('UserImport.xlsx'),
-        ])
-        ->callAction('save')
-        ->send();
+    livewire(ImportMembers::class)
+        ->set('pasted', "Boss Neu\tboss@solawi.test\t\t")
+        ->call('parse')
+        ->call('import');
 
-    expect($existing->refresh()->role)->toBe(EnumRole::ADMIN);
+    /** @var User $boss */
+    $boss = User::query()->where(User::COL_EMAIL, '=', 'boss@solawi.test')->firstOrFail();
+    expect($boss->name)->toBe('Boss Neu')
+        ->and($boss->role)->toBe(EnumRole::ADMIN);
 });
-
-it('can update an user by import', function () {
-    User::query()->create([
-        'name' => 'Sebastian12',
-        'password' => Hash::make('password!'),
-        'email' => 'ws-1993@gmx.de',
-    ]);
-
-    $fileToImport = getDefaultXlsx('UserImport.xlsx');
-    livewire(ImportPage::class)
-        ->fillForm([
-            ImportPage::IMPORT => $fileToImport,
-        ])
-        ->callAction('save')
-        ->send();
-
-    /** @var User $importedUser */
-    $importedUser = User::query()->where(User::COL_NAME, '=', 'Sebastian')->first();
-    expect($importedUser->name)
-        ->toBe('Sebastian', 'Value has not been updated according to xlsx file')
-        ->and(User::query()->count())->toBe(2, 'Only the logged in user and the updated one must exist');
-});
-
-function getDefaultXlsx(string $fileName): UploadedFile
-{
-    $uploaded = new UploadedFile(
-        base_path('tests/assets/'.$fileName),
-        $fileName,
-        null,
-        null,
-        true
-    );
-
-    // Livewire’s Testable expects a public->name
-    $uploaded->name = $fileName;
-
-    return $uploaded;
-}

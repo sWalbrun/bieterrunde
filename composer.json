@@ -20,8 +20,7 @@
         "laravel/framework": "^11.0",
         "laravel/tinker": "^2.8",
         "maatwebsite/excel": "^3.1",
-        "stancl/tenancy": "^3.5",
-        "swalbrun/filament-regex-import": "^2.0"
+        "stancl/tenancy": "^3.5"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.0",
@@ -43,10 +42,7 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        },
-        "classmap": [
-            "app/Support/Compat/HasPageShield.php"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {
