@@ -28,6 +28,12 @@ class ImportMembers extends Page
     /** @var array<int, array<string, string>> Server-side validation errors keyed by row index. */
     public array $rowErrors = [];
 
+    /** @var array<int, string> Per-row 'create'|'update' status keyed by row index. */
+    public array $rowStatus = [];
+
+    /** Whether currently active members missing from the paste get retired on import. */
+    public bool $deprecateMissing = false;
+
     public static function getNavigationLabel(): string
     {
         return trans('Import members');
@@ -93,7 +99,9 @@ class ImportMembers extends Page
 
     public function revalidate(): void
     {
-        $this->rowErrors = app(MemberImporter::class)->validate($this->rows);
+        $importer = app(MemberImporter::class);
+        $this->rowErrors = $importer->validate($this->rows);
+        $this->rowStatus = $importer->statuses($this->rows);
     }
 
     public function removeRow(int $index): void
@@ -105,7 +113,7 @@ class ImportMembers extends Page
 
     public function discard(): void
     {
-        $this->reset(['pasted', 'rows', 'rowErrors']);
+        $this->reset(['pasted', 'rows', 'rowErrors', 'rowStatus', 'deprecateMissing']);
     }
 
     public function import(): void
@@ -120,10 +128,13 @@ class ImportMembers extends Page
             return;
         }
 
-        $result = app(MemberImporter::class)->import($this->rows);
+        $result = app(MemberImporter::class)->import($this->rows, $this->deprecateMissing);
 
         Notification::make()
             ->title(trans(':created created, :updated updated', $result))
+            ->body($result['deprecated'] > 0
+                ? trans(':deprecated members retired', $result)
+                : null)
             ->success()
             ->send();
 

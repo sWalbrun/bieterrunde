@@ -41,6 +41,7 @@
                     <table class="w-full text-sm">
                         <thead>
                             <tr class="text-left text-gray-500">
+                                <th class="p-2 w-8"></th>
                                 <th class="p-2">{{ trans('Name') }}</th>
                                 <th class="p-2">{{ trans('E-Mail') }}</th>
                                 <th class="p-2">{{ trans('Join date') }}</th>
@@ -51,6 +52,18 @@
                         <tbody>
                             @foreach ($rows as $i => $row)
                                 <tr wire:key="row-{{ $i }}" class="align-top">
+                                    {{-- Create / update indicator --}}
+                                    <td class="p-1 pt-3 text-center">
+                                        @if (($rowStatus[$i] ?? null) === 'update')
+                                            <span title="{{ trans('Will update an existing member') }}">
+                                                @svg('heroicon-m-arrow-path', 'mx-auto h-5 w-5 text-warning-500')
+                                            </span>
+                                        @elseif (($rowStatus[$i] ?? null) === 'create')
+                                            <span title="{{ trans('Will create a new member') }}">
+                                                @svg('heroicon-m-user-plus', 'mx-auto h-5 w-5 text-success-500')
+                                            </span>
+                                        @endif
+                                    </td>
                                     {{-- Name --}}
                                     <td class="p-1">
                                         <input type="text" wire:model.blur="rows.{{ $i }}.name"
@@ -98,6 +111,28 @@
                         </tbody>
                     </table>
                 </div>
+
+                {{-- Legend --}}
+                <div class="mt-3 flex flex-wrap gap-4 text-xs text-gray-500">
+                    <span class="inline-flex items-center gap-1">
+                        @svg('heroicon-m-user-plus', 'h-4 w-4 text-success-500') {{ trans('Will create a new member') }}
+                    </span>
+                    <span class="inline-flex items-center gap-1">
+                        @svg('heroicon-m-arrow-path', 'h-4 w-4 text-warning-500') {{ trans('Will update an existing member') }}
+                    </span>
+                </div>
+
+                {{-- Retire members not in the paste --}}
+                <label class="mt-4 flex items-start gap-2 text-sm">
+                    <input type="checkbox" wire:model="deprecateMissing"
+                        class="mt-0.5 rounded border-gray-300 text-primary-600 shadow-sm focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-800">
+                    <span>
+                        <span class="font-medium">{{ trans('Retire members not in this list') }}</span>
+                        <span class="block text-gray-500">
+                            {{ trans('Currently active members who are not listed above get an exit date of today, so they are not added to new bidder rounds. Admins are never affected.') }}
+                        </span>
+                    </span>
+                </label>
 
                 <div class="mt-4 flex gap-2">
                     <x-filament::button wire:click="import" icon="heroicon-o-check" :disabled="$this->hasErrors()">

@@ -45,6 +45,47 @@ it('imports valid members as members', function () {
         ->and(User::query()->where(User::COL_EMAIL, '=', 'hans@solawi.test')->exists())->toBeTrue();
 });
 
+it('marks each row as create or update', function () {
+    User::query()->create([
+        'name' => 'Bestand',
+        'email' => 'bestand@solawi.test',
+        'role' => EnumRole::MEMBER,
+    ]);
+
+    livewire(ImportMembers::class)
+        ->set('pasted', "Bestand\tbestand@solawi.test\t\t\nNeu\tneu@solawi.test\t\t")
+        ->call('parse')
+        ->assertSet('rowStatus.0', 'update')
+        ->assertSet('rowStatus.1', 'create');
+});
+
+it('retires active members missing from the paste when asked', function () {
+    $keep = User::query()->create(['name' => 'Bleibt', 'email' => 'keep@solawi.test', 'role' => EnumRole::MEMBER]);
+    $gone = User::query()->create(['name' => 'Weg', 'email' => 'gone@solawi.test', 'role' => EnumRole::MEMBER]);
+    $admin = User::query()->create(['name' => 'Chef', 'email' => 'chef@solawi.test', 'role' => EnumRole::ADMIN]);
+
+    livewire(ImportMembers::class)
+        ->set('pasted', "Bleibt\tkeep@solawi.test\t\t")
+        ->call('parse')
+        ->set('deprecateMissing', true)
+        ->call('import');
+
+    expect($keep->refresh()->exitDate)->toBeNull()
+        ->and($gone->refresh()->exitDate)->not->toBeNull()
+        ->and($admin->refresh()->exitDate)->toBeNull();
+});
+
+it('leaves missing members untouched when not asked to retire them', function () {
+    $gone = User::query()->create(['name' => 'Weg', 'email' => 'gone@solawi.test', 'role' => EnumRole::MEMBER]);
+
+    livewire(ImportMembers::class)
+        ->set('pasted', "Neu\tneu@solawi.test\t\t")
+        ->call('parse')
+        ->call('import');
+
+    expect($gone->refresh()->exitDate)->toBeNull();
+});
+
 it('does not demote an existing admin when re-imported', function () {
     User::query()->create([
         'name' => 'Alt',

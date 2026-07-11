@@ -22,7 +22,7 @@ it('creates new users as members', function () {
     $user = User::query()->where(User::COL_EMAIL, '=', 'maria@solawi.test')->firstOrFail();
     expect($user->name)->toBe('Maria Muster')
         ->and($user->role)->toBe(EnumRole::MEMBER)
-        ->and($result)->toBe(['created' => 1, 'updated' => 0]);
+        ->and($result)->toBe(['created' => 1, 'updated' => 0, 'deprecated' => 0]);
 });
 
 it('updates an existing user without demoting them', function () {
@@ -38,7 +38,7 @@ it('updates an existing user without demoting them', function () {
     $user = User::query()->where(User::COL_EMAIL, '=', 'maria@solawi.test')->firstOrFail();
     expect($user->name)->toBe('New Name')
         ->and($user->role)->toBe(EnumRole::ADMIN)
-        ->and($result)->toBe(['created' => 0, 'updated' => 1]);
+        ->and($result)->toBe(['created' => 0, 'updated' => 1, 'deprecated' => 0]);
 });
 
 it('parses german join dates', function () {
@@ -78,6 +78,6 @@ it('flags invalid rows and imports only the valid ones', function () {
 
     $result = $importer->import($rows);
     // rows 2 and 6 are valid
-    expect($result)->toBe(['created' => 2, 'updated' => 0])
+    expect($result)->toBe(['created' => 2, 'updated' => 0, 'deprecated' => 0])
         ->and(User::query()->whereIn(User::COL_EMAIL, ['dup@solawi.test', 'good@solawi.test'])->count())->toBe(2);
 });

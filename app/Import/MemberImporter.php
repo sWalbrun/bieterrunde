@@ -71,17 +71,54 @@ class MemberImporter
     }
 
     /**
+     * Tells, per row, whether importing it would create a new user or update an
+     * existing one (matched by email within the current tenant). Rows without an
+     * email are omitted.
+     *
+     * @param  array<int, array<string, string|null>>  $rows
+     * @return array<int, 'create'|'update'>
+     */
+    public function statuses(array $rows): array
+    {
+        $emails = collect($rows)
+            ->map(fn (array $row) => mb_strtolower(trim((string) ($row['email'] ?? ''))))
+            ->filter();
+
+        $existing = User::query()
+            ->whereIn(User::COL_EMAIL, $emails->values()->all())
+            ->pluck(User::COL_EMAIL)
+            ->map(fn (string $email) => mb_strtolower($email))
+            ->flip();
+
+        $statuses = [];
+        foreach ($rows as $index => $row) {
+            $email = mb_strtolower(trim((string) ($row['email'] ?? '')));
+            if ($email === '') {
+                continue;
+            }
+            $statuses[$index] = $existing->has($email) ? 'update' : 'create';
+        }
+
+        return $statuses;
+    }
+
+    /**
      * Upserts the valid rows. New users are created as members; existing users
      * keep their role (no demotion). Invalid rows are skipped.
      *
+     * When $deprecateMissing is set, every currently active member that is not
+     * part of the imported rows gets an exit date of today, so passed-out
+     * members are no longer pulled into new bidder rounds.
+     *
      * @param  array<int, array<string, string|null>>  $rows
-     * @return array{created: int, updated: int}
+     * @return array{created: int, updated: int, deprecated: int}
      */
-    public function import(array $rows): array
+    public function import(array $rows, bool $deprecateMissing = false): array
     {
         $errors = $this->validate($rows);
         $created = 0;
         $updated = 0;
+        $importedEmails = [];
 
         foreach ($rows as $index => $row) {
             if (isset($errors[$index])) {
@@ -89,6 +126,7 @@ class MemberImporter
             }
 
             $email = trim((string) $row['email']);
+            $importedEmails[mb_strtolower($email)] = true;
             /** @var User|null $user */
             $user = User::query()->where(User::COL_EMAIL, '=', $email)->first();
             $isNew = ! $user instanceof User;
@@ -116,7 +154,37 @@ class MemberImporter
             $isNew ? $created++ : $updated++;
         }
 
-        return ['created' => $created, 'updated' => $updated];
+        $deprecated = $deprecateMissing
+            ? $this->deprecateMembersNotIn(array_keys($importedEmails))
+            : 0;
+
+        return ['created' => $created, 'updated' => $updated, 'deprecated' => $deprecated];
+    }
+
+    /**
+     * Retires every currently active member whose (lowercased) email is not in
+     * $keepEmails by giving them an exit date of today. Admins and super admins
+     * are never touched. Returns the number of retired members.
+     *
+     * @param  array<int, string>  $keepEmails  lowercased emails to keep active
+     */
+    private function deprecateMembersNotIn(array $keepEmails): int
+    {
+        $keep = collect($keepEmails)->flip();
+        $deprecated = 0;
+
+        User::currentlyActive()
+            ->where(User::COL_ROLE, '=', EnumRole::MEMBER)
+            ->each(function (User $member) use ($keep, &$deprecated): void {
+                if ($keep->has(mb_strtolower($member->email))) {
+                    return;
+                }
+                $member->exitDate = now();
+                $member->save();
+                $deprecated++;
+            });
+
+        return $deprecated;
     }
 
     /**
