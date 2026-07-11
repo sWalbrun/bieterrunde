@@ -30,7 +30,7 @@ class EnumPaymentIntervalTest extends TestCase
         ));
     }
 
-    public function validAndInvalidIntervals(): array
+    public static function validAndInvalidIntervals(): array
     {
         return [
             'all matching' => [
