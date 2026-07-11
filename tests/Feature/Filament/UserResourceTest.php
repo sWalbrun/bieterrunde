@@ -2,6 +2,7 @@
 
 use App\Enums\EnumContributionGroup;
 use App\Enums\EnumPaymentInterval;
+use App\Enums\EnumRole;
 use App\Filament\Resources\UserResource\Pages\CreateUser;
 use App\Filament\Resources\UserResource\Pages\EditUser;
 use App\Filament\Resources\UserResource\Pages\ListUsers;
@@ -79,17 +80,18 @@ it('updates one user', function () {
 });
 
 it('deletes one user', function () {
-    /** @var User $userToLogin */
-    $userToLogin = $this->createAndActAsUser();
-    livewire(EditUser::class, ['record' => $userToLogin->id])
+    $this->createAndActAsUser();
+    // Not the acting user — deleting your own account is guarded against
+    $victim = User::factory()->create([User::COL_ROLE => EnumRole::MEMBER]);
+    livewire(EditUser::class, ['record' => $victim->id])
         ->callAction('delete')
         ->assertSuccessful();
-    expect(fn () => $userToLogin->refresh())->toThrow(ModelNotFoundException::class);
+    expect(fn () => $victim->refresh())->toThrow(ModelNotFoundException::class);
 });
 
 it('deletes one user and shares and offers cascading', function () {
-    /** @var User $userToLogin */
-    $userToLogin = $this->createAndActAsUser();
+    $this->createAndActAsUser();
+    $victim = User::factory()->create([User::COL_ROLE => EnumRole::MEMBER]);
 
     /** @var BidderRound $bidderRound */
     $bidderRound = BidderRound::factory()->create();
@@ -98,18 +100,18 @@ it('deletes one user and shares and offers cascading', function () {
         Topic::COL_FK_BIDDER_ROUND => $bidderRound->id,
     ]);
     $offer = Offer::factory()->create([
-        Offer::COL_FK_USER => $userToLogin->id,
+        Offer::COL_FK_USER => $victim->id,
         Offer::COL_FK_TOPIC => $topic->id,
     ]);
     /** @var Share $share */
     $share = Share::factory()->create([
-        Share::COL_FK_USER => $userToLogin->id,
+        Share::COL_FK_USER => $victim->id,
         Share::COL_FK_TOPIC => $topic->id,
     ]);
-    livewire(EditUser::class, ['record' => $userToLogin->id])
+    livewire(EditUser::class, ['record' => $victim->id])
         ->callAction('delete')
         ->assertSuccessful();
-    expect(fn () => $userToLogin->refresh())->toThrow(ModelNotFoundException::class)
+    expect(fn () => $victim->refresh())->toThrow(ModelNotFoundException::class)
         ->and(fn () => $share->refresh())->toThrow(ModelNotFoundException::class)
         ->and(fn () => $offer->refresh())->toThrow(ModelNotFoundException::class);
 });

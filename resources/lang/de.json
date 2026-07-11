@@ -851,5 +851,9 @@
     "Last reminder sent on :date by :by.": "Letzte Erinnerung am :date von :by gesendet.",
     "the system": "das System",
     "Not announced yet": "Noch nicht angekündigt",
-    "No reminder sent yet": "Noch keine Erinnerung gesendet"
+    "No reminder sent yet": "Noch keine Erinnerung gesendet",
+    "You cannot delete your own account.": "Du kannst dein eigenes Konto nicht löschen.",
+    "This is the last admin of the Solawi and cannot be deleted.": "Das ist der letzte Admin der Solawi und kann nicht gelöscht werden.",
+    ":count deleted.": ":count gelöscht.",
+    ":deleted deleted, :skipped protected accounts skipped.": ":deleted gelöscht, :skipped geschützte Konten übersprungen."
 }

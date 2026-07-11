@@ -13,6 +13,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -157,8 +158,51 @@ class UserResource extends Resource
             ])
             ->bulkActions([
                 FilamentExportBulkAction::make('Export'),
-                Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\DeleteBulkAction::make()
+                    ->action(function (Collection $records) {
+                        [$blocked, $deletable] = $records->partition(
+                            fn (User $user) => self::deletionBlockReason($user) !== null
+                        );
+                        $deletable->each(fn (User $user) => $user->delete());
+
+                        $blocked->isEmpty()
+                            ? Notification::make()->title(trans(':count deleted.', ['count' => $deletable->count()]))->success()->send()
+                            : Notification::make()
+                                ->title(trans(':deleted deleted, :skipped protected accounts skipped.', [
+                                    'deleted' => $deletable->count(),
+                                    'skipped' => $blocked->count(),
+                                ]))
+                                ->warning()
+                                ->send();
+                    }),
             ]);
+    }
+
+    /**
+     * The reason a user must not be deleted (own account, or the last admin of
+     * a Solawi), or null when deletion is allowed. Guards against locking a
+     * Solawi out of its own admin panel.
+     */
+    public static function deletionBlockReason(User $user): ?string
+    {
+        if (auth()->id() === $user->id) {
+            return trans('You cannot delete your own account.');
+        }
+
+        if (($user->role?->isAdmin() ?? false) && self::isLastAdminOfTenant($user)) {
+            return trans('This is the last admin of the Solawi and cannot be deleted.');
+        }
+
+        return null;
+    }
+
+    private static function isLastAdminOfTenant(User $user): bool
+    {
+        return User::query()
+            ->withoutGlobalScopes()
+            ->where(User::COL_FK_TENANT, '=', $user->getAttribute(User::COL_FK_TENANT))
+            ->whereIn(User::COL_ROLE, [EnumRole::ADMIN->value, EnumRole::SUPER_ADMIN->value])
+            ->count() <= 1;
     }
 
     public static function getRelations(): array
