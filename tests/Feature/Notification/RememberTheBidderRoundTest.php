@@ -47,10 +47,11 @@ it('Notifies the users with missing offers', function () {
         $userWithoutOffer,
         ReminderOfBidderRound::class,
         function (ReminderOfBidderRound $reminder) use ($userWithoutOffer) {
-            $mailMessage = $reminder->toMail();
+            $mailMessage = $reminder->toMail($userWithoutOffer);
             $this->assertEquals("Servus $userWithoutOffer->name", $mailMessage->greeting);
 
-            return $reminder;
+            return str_contains($mailMessage->actionUrl, "/login/link/{$userWithoutOffer->id}")
+                && str_contains($mailMessage->actionUrl, 'intended=offers');
         });
     Notification::assertNotSentTo($userWithOffer, ReminderOfBidderRound::class);
 });

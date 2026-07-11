@@ -27,7 +27,15 @@ class MagicLinkController extends Controller
             $user->markEmailAsVerified();
         }
 
-        $response = redirect()->intended($user->homeUrl());
+        // Links may carry a signed intent (e.g. the round-start mail points at the
+        // offer form). Only known targets are honoured; anything else falls back home.
+        $target = match ($request->query('intended')) {
+            'offers' => route('offers'),
+            default => null,
+        };
+        $response = $target !== null
+            ? redirect()->to($target)
+            : redirect()->intended($user->homeUrl());
 
         // Always establish the tenant cookie on login. Relying on the
         // SetTenantCookie listener (which only sets it when absent) would let a

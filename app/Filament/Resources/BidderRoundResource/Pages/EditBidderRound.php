@@ -4,6 +4,8 @@ namespace App\Filament\Resources\BidderRoundResource\Pages;
 
 use App\Exceptions\OverlappingBidderRoundException;
 use App\Filament\Resources\BidderRoundResource;
+use App\Models\BidderRound;
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
@@ -18,7 +20,18 @@ class EditBidderRound extends EditRecord
 
     protected function getHeaderActions(): array
     {
+        /** @var BidderRound $record */
+        $record = $this->record;
+
         return [
+            Action::make('AnnounceStart')
+                ->label(trans('Announce start'))
+                ->icon('heroicon-o-megaphone')
+                ->hidden(fn () => ! BidderRoundResource::canAnnounceStart($record))
+                ->form(BidderRoundResource::announceStartForm())
+                ->requiresConfirmation()
+                ->modalSubheading(fn () => trans('Informs all participants by mail that the bidder round has started.'))
+                ->action(fn (array $data) => BidderRoundResource::announceStart($record, $data['message'] ?? null)),
             DeleteAction::make(),
         ];
     }

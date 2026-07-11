@@ -15,6 +15,7 @@ use App\Models\User;
 use App\Notifications\BidderRoundStarted;
 use App\Notifications\ReminderOfBidderRound;
 use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Component;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Textarea;
@@ -118,28 +119,11 @@ class BidderRoundResource extends Resource
                 Tables\Actions\Action::make('AnnounceStart')
                     ->label(trans('Announce start'))
                     ->icon('heroicon-o-megaphone')
-                    // Announcing an already ended round makes no sense
-                    ->hidden(fn (BidderRound $record) => $record->endOfSubmission->endOfDay()->isPast())
-                    ->form([
-                        Textarea::make('message')
-                            ->label(trans('Personal message (optional)'))
-                            ->helperText(trans('Gets included in the mail to all participants.')),
-                    ])
+                    ->hidden(fn (BidderRound $record) => ! self::canAnnounceStart($record))
+                    ->form(self::announceStartForm())
                     ->requiresConfirmation()
                     ->modalSubheading(fn () => trans('Informs all participants by mail that the bidder round has started.'))
-                    ->action(function (BidderRound $record, array $data) {
-                        $participants = $record->participants();
-                        $participants->each(
-                            fn (User $participant) => $participant->notify(
-                                new BidderRoundStarted($record, $participant, $data['message'] ?? null)
-                            )
-                        );
-
-                        Notification::make()
-                            ->title(trans(':count participants have been informed.', ['count' => $participants->count()]))
-                            ->success()
-                            ->send();
-                    }),
+                    ->action(fn (BidderRound $record, array $data) => self::announceStart($record, $data['message'] ?? null)),
                 Tables\Actions\Action::make('RemindParticipants')
                     ->label(trans('Remind participants'))
                     ->icon('iconpark-remind-o')
@@ -197,6 +181,46 @@ class BidderRoundResource extends Resource
             ->body($body);
         $successCount === $reports->count() ? $notification->success() : $notification->warning();
         $notification->send();
+    }
+
+    /**
+     * The optional personal-message form shown before announcing a round start.
+     * Shared by the table action and the edit page header action.
+     *
+     * @return array<int, Component>
+     */
+    public static function announceStartForm(): array
+    {
+        return [
+            Textarea::make('message')
+                ->label(trans('Personal message (optional)'))
+                ->helperText(trans('Gets included in the mail to all participants.')),
+        ];
+    }
+
+    /** Announcing an already ended round makes no sense. */
+    public static function canAnnounceStart(BidderRound $record): bool
+    {
+        return ! $record->endOfSubmission->endOfDay()->isPast();
+    }
+
+    /**
+     * Notifies every participant that the round has started, each with a
+     * personal magic login link (github issue #16).
+     */
+    public static function announceStart(BidderRound $record, ?string $message): void
+    {
+        $participants = $record->participants();
+        $participants->each(
+            fn (User $participant) => $participant->notify(
+                new BidderRoundStarted($record, $participant, $message)
+            )
+        );
+
+        Notification::make()
+            ->title(trans(':count participants have been informed.', ['count' => $participants->count()]))
+            ->success()
+            ->send();
     }
 
     public static function getRelations(): array

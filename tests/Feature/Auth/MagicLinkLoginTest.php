@@ -108,6 +108,23 @@ it('establishes a fresh tenant cookie on login even with a stale one present', f
     expect(auth()->id())->toBe($user->id);
 });
 
+it('redirects to the offer form when the link carries an offers intent', function () {
+    /** @var Tenant $tenant */
+    $tenant = Tenant::query()->create([Tenant::COL_ID => 'foo']);
+    /** @var User $user */
+    $user = User::factory()->create([User::COL_FK_TENANT => $tenant->id]);
+
+    $url = URL::temporarySignedRoute(
+        'login.magic-link',
+        now()->addDays(7),
+        ['user' => $user->id, 'intended' => 'offers']
+    );
+
+    $this->get($url)->assertRedirect(route('offers'));
+
+    expect(auth()->id())->toBe($user->id);
+});
+
 it('authenticates an admin via signed link and redirects to the panel', function () {
     /** @var Tenant $tenant */
     $tenant = Tenant::query()->create([Tenant::COL_ID => 'foo']);
