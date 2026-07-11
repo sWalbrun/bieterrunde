@@ -2,8 +2,8 @@
 
 [![run-tests](https://github.com/sWalbrun/bieterrunde/actions/workflows/run-tests.yml/badge.svg)](https://github.com/sWalbrun/bieterrunde/actions/workflows/run-tests.yml)
 [![codecov](https://codecov.io/gh/sWalbrun/bieterrunde/branch/main/graph/badge.svg)](https://codecov.io/gh/sWalbrun/bieterrunde)
-![PHP](https://img.shields.io/badge/PHP-%E2%89%A5%208.2-777BB4?logo=php&logoColor=white)
-![Laravel](https://img.shields.io/badge/Laravel-11-FF2D20?logo=laravel&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-%E2%89%A5%208.3-777BB4?logo=php&logoColor=white)
+![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20?logo=laravel&logoColor=white)
 ![License](https://img.shields.io/badge/Lizenz-MIT-green)
 
 **Die Beitragsrunde deiner Solawi — digital, einfach, ohne Passwort.**
@@ -129,7 +129,7 @@ Checkliste:
 
 ## Tech-Stack
 
-[Laravel 11](https://laravel.com) · [Livewire 3](https://livewire.laravel.com) (Mitgliederbereich) ·
+[Laravel 13](https://laravel.com) · [Livewire 3](https://livewire.laravel.com) (Mitgliederbereich) ·
 [Filament 3](https://filamentphp.com) (Adminbereich) · [stancl/tenancy](https://tenancyforlaravel.com)
 (Multi-Mandanten, Single-DB) · [Tailwind CSS 4](https://tailwindcss.com) + Vite · MySQL 8 ·
 [FrankenPHP](https://frankenphp.dev) im Docker-Setup
