@@ -819,5 +819,12 @@
     "Anything you would like to let your Solawi know?": "Möchtest du deiner Solawi etwas mitteilen?",
     "Comment": "Kommentar",
     "Comments": "Kommentare",
-    "Updated at": "Aktualisiert am"
+    "Updated at": "Aktualisiert am",
+    "Name is required": "Name ist erforderlich",
+    "E-Mail is required": "E-Mail ist erforderlich",
+    "Invalid e-mail address": "Ungültige E-Mail-Adresse",
+    "This e-mail appears more than once in the pasted data": "Diese E-Mail kommt in den eingefügten Daten mehrfach vor",
+    "This e-mail already belongs to a member of another Solawi": "Diese E-Mail gehört bereits zu einem Mitglied einer anderen Solawi",
+    "Invalid date, expected DD.MM.YYYY": "Ungültiges Datum, erwartet TT.MM.JJJJ",
+    "Unknown contribution group": "Unbekannte Beitragsgruppe"
 }
