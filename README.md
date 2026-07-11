@@ -32,6 +32,22 @@ Jeder Benutzer hat genau eine Rolle:
 **Anmeldung ohne Passwort:** Alle melden sich per Magic Link an — E-Mail-Adresse eingeben, Link aus der Mail
 klicken, fertig. Es gibt keine Passwörter, die Mitglieder vergessen könnten.
 
+## Einblicke
+
+**Mitgliederbereich – monatliche Gebote pro Runde abgeben**
+
+![Mitgliederbereich](docs/screenshots/member-area.png)
+
+**Adminbereich – Beitragsrunden verwalten**
+
+![Beitragsrunden verwalten](docs/screenshots/bidder-rounds.png)
+
+**Mitglieder per Copy & Paste importieren**
+
+Aus der Tabelle kopieren, einfügen, live prüfen: Pro Zeile zeigt ein Icon, ob ein Mitglied neu angelegt (👤➕) oder aktualisiert (🔄) wird. Optional lassen sich nicht gelistete Mitglieder in einem Schritt austragen.
+
+![Mitglieder importieren](docs/screenshots/import-members.png)
+
 ## ✅ Das kann die App
 
 **Für Mitglieder**
@@ -41,7 +57,8 @@ klicken, fertig. Es gibt keine Passwörter, die Mitglieder vergessen könnten.
 
 **Für die Solawi-Orga**
 - Beitragsrunden mit mehreren Produkten („Themen“), Runden-Anzahl und Zielsumme anlegen
-- Mitglieder verwalten oder per Excel/CSV importieren (Anteile, Beitragsgruppen, Zahlungsintervalle)
+- Mitglieder verwalten oder per Copy & Paste aus einer Tabelle importieren — mit Live-Prüfung,
+  Anlegen/Aktualisieren-Anzeige pro Zeile und optionalem Austragen nicht gelisteter Mitglieder
 - Rundenstart per Mail ankündigen — optional mit persönlicher Nachricht
 - Säumige Mitglieder per Knopfdruck erinnern
 - Ergebnis ermitteln: Die App findet automatisch die erste Runde, deren Gebotssumme die Zielsumme deckt,
