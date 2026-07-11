@@ -4,12 +4,14 @@ namespace App\Filament\Resources;
 
 use App\BidderRound\TargetAmountReachedReport;
 use App\BidderRound\TopicService;
+use App\Enums\EnumBidderRoundAction;
 use App\Enums\EnumTargetAmountReachedStatus;
 use App\Filament\EnumNavigationGroups;
 use App\Filament\Resources\BidderRoundResource\Pages;
 use App\Filament\Resources\BidderRoundResource\RelationManagers\CommentsRelationManager;
 use App\Filament\Resources\BidderRoundResource\RelationManagers\TopicsRelationManager;
 use App\Models\BidderRound;
+use App\Models\BidderRoundActionLog;
 use App\Models\Topic;
 use App\Models\User;
 use App\Notifications\BidderRoundStarted;
@@ -66,6 +68,18 @@ class BidderRoundResource extends Resource
 
                         return $counts['member'].' / '.$counts['admin'];
                     }),
+                Placeholder::make('lastAnnouncement')
+                    ->label(trans('Start announced'))
+                    ->columnSpan(2)
+                    ->visible(fn (?BidderRound $record) => $record !== null)
+                    ->content(fn (?BidderRound $record) => self::describeLastAction($record, EnumBidderRoundAction::ANNOUNCED)
+                        ?: trans('Not announced yet')),
+                Placeholder::make('lastReminder')
+                    ->label(trans('Reminder sent'))
+                    ->columnSpan(2)
+                    ->visible(fn (?BidderRound $record) => $record !== null)
+                    ->content(fn (?BidderRound $record) => self::describeLastAction($record, EnumBidderRoundAction::REMINDED)
+                        ?: trans('No reminder sent yet')),
                 Card::make()->schema([
                     TextInput::make('Current status ')
                         ->translateLabel()
@@ -114,6 +128,16 @@ class BidderRoundResource extends Resource
 
                         return $counts['member'].' / '.$counts['admin'];
                     }),
+                Tables\Columns\IconColumn::make('announced')
+                    ->label(trans('Start announced'))
+                    ->boolean()
+                    ->getStateUsing(fn (BidderRound $record) => $record->lastAction(EnumBidderRoundAction::ANNOUNCED) !== null)
+                    ->tooltip(fn (BidderRound $record) => self::describeLastAction($record, EnumBidderRoundAction::ANNOUNCED) ?: null),
+                Tables\Columns\IconColumn::make('reminded')
+                    ->label(trans('Reminder sent'))
+                    ->boolean()
+                    ->getStateUsing(fn (BidderRound $record) => $record->lastAction(EnumBidderRoundAction::REMINDED) !== null)
+                    ->tooltip(fn (BidderRound $record) => self::describeLastAction($record, EnumBidderRoundAction::REMINDED) ?: null),
             ])
             ->actions([
                 Tables\Actions\Action::make('AnnounceStart')
@@ -122,22 +146,15 @@ class BidderRoundResource extends Resource
                     ->hidden(fn (BidderRound $record) => ! self::canAnnounceStart($record))
                     ->form(self::announceStartForm())
                     ->requiresConfirmation()
-                    ->modalSubheading(fn () => trans('Informs all participants by mail that the bidder round has started.'))
+                    ->modalSubheading(fn (BidderRound $record) => self::announceModalSubheading($record))
                     ->action(fn (BidderRound $record, array $data) => self::announceStart($record, $data['message'] ?? null)),
                 Tables\Actions\Action::make('RemindParticipants')
                     ->label(trans('Remind participants'))
                     ->icon('iconpark-remind-o')
-                    ->action(
-                        fn (BidderRound $record) => $record->usersWithMissingOffers()->each(
-                            function (User $participant) use ($record) {
-                                Log::info("Remind user ({$participant->email()}) about bidder round");
-                                $participant->notify(new ReminderOfBidderRound($record, $participant));
-                                Log::info('User has been reminded');
-                            }
-                        )
-                    )
+                    ->hidden(fn (BidderRound $record) => ! self::canRemindParticipants($record))
+                    ->action(fn (BidderRound $record) => self::remindParticipants($record))
                     ->requiresConfirmation()
-                    ->modalSubheading(fn () => trans('Remind all participants with missing offers')),
+                    ->modalSubheading(fn (BidderRound $record) => self::remindModalSubheading($record)),
                 Tables\Actions\Action::make('CalculateResults')
                     ->label(trans('Calculate results'))
                     ->icon('heroicon-o-calculator')
@@ -198,15 +215,20 @@ class BidderRoundResource extends Resource
         ];
     }
 
-    /** Announcing an already ended round makes no sense. */
+    /** Announcing (or reminding about) an already ended round makes no sense. */
     public static function canAnnounceStart(BidderRound $record): bool
     {
         return ! $record->endOfSubmission->endOfDay()->isPast();
     }
 
+    public static function canRemindParticipants(BidderRound $record): bool
+    {
+        return self::canAnnounceStart($record);
+    }
+
     /**
      * Notifies every participant that the round has started, each with a
-     * personal magic login link (github issue #16).
+     * personal magic login link (github issue #16), and remembers who did it.
      */
     public static function announceStart(BidderRound $record, ?string $message): void
     {
@@ -217,10 +239,68 @@ class BidderRoundResource extends Resource
             )
         );
 
+        $record->recordAction(EnumBidderRoundAction::ANNOUNCED, auth()->id(), $participants->count());
+
         Notification::make()
             ->title(trans(':count participants have been informed.', ['count' => $participants->count()]))
             ->success()
             ->send();
+    }
+
+    /**
+     * Reminds every participant with missing offers, each with a personal magic
+     * login link, and remembers who did it.
+     */
+    public static function remindParticipants(BidderRound $record): void
+    {
+        $participants = $record->usersWithMissingOffers();
+        $participants->each(function (User $participant) use ($record) {
+            Log::info("Remind user ({$participant->email()}) about bidder round");
+            $participant->notify(new ReminderOfBidderRound($record, $participant));
+            Log::info('User has been reminded');
+        });
+
+        $record->recordAction(EnumBidderRoundAction::REMINDED, auth()->id(), $participants->count());
+
+        Notification::make()
+            ->title(trans(':count participants have been reminded.', ['count' => $participants->count()]))
+            ->success()
+            ->send();
+    }
+
+    public static function announceModalSubheading(BidderRound $record): string
+    {
+        return trim(
+            trans('Informs all participants by mail that the bidder round has started.')
+            .' '.self::describeLastAction($record, EnumBidderRoundAction::ANNOUNCED)
+        );
+    }
+
+    public static function remindModalSubheading(BidderRound $record): string
+    {
+        return trim(
+            trans('Remind all participants with missing offers')
+            .' '.self::describeLastAction($record, EnumBidderRoundAction::REMINDED)
+        );
+    }
+
+    /**
+     * A human sentence describing when and by whom an action was last taken on
+     * the round, so admins do not accidentally repeat each other. Empty when
+     * the action has not happened yet.
+     */
+    public static function describeLastAction(BidderRound $record, EnumBidderRoundAction $action): string
+    {
+        $log = $record->lastAction($action);
+        if (! $log instanceof BidderRoundActionLog) {
+            return '';
+        }
+
+        $by = $log->user?->name ?? trans('the system');
+
+        return $action === EnumBidderRoundAction::ANNOUNCED
+            ? trans('Already announced on :date by :by.', ['date' => $log->createdAt->format('d.m.Y H:i'), 'by' => $by])
+            : trans('Last reminder sent on :date by :by.', ['date' => $log->createdAt->format('d.m.Y H:i'), 'by' => $by]);
     }
 
     public static function getRelations(): array

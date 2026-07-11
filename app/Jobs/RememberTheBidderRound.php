@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\BidderRound\Participant;
+use App\Enums\EnumBidderRoundAction;
 use App\Models\BidderRound;
 use App\Notifications\ReminderOfBidderRound;
 use Illuminate\Bus\Queueable;
@@ -28,12 +29,16 @@ class RememberTheBidderRound implements ShouldQueue
 
     public function handle()
     {
-        $this->round->usersWithMissingOffers()
-            ->filter(fn (Participant $participant) => method_exists($participant, 'notify'))
-            ->each(function (Participant $participant) {
-                Log::info("Remember user ({$participant->email()}) about bidder round");
-                $participant->notify(new ReminderOfBidderRound($this->round, $participant));
-                Log::info('User has been remembered');
-            });
+        $participants = $this->round->usersWithMissingOffers()
+            ->filter(fn (Participant $participant) => method_exists($participant, 'notify'));
+
+        $participants->each(function (Participant $participant) {
+            Log::info("Remember user ({$participant->email()}) about bidder round");
+            $participant->notify(new ReminderOfBidderRound($this->round, $participant));
+            Log::info('User has been remembered');
+        });
+
+        // No acting admin here — record it as a system-triggered reminder.
+        $this->round->recordAction(EnumBidderRoundAction::REMINDED, null, $participants->count());
     }
 }

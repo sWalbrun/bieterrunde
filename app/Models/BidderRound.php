@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\EnumBidderRoundAction;
 use App\Exceptions\OverlappingBidderRoundException;
 use App\Observers\BidderRoundObserver;
 use Carbon\Carbon;
@@ -59,6 +60,35 @@ class BidderRound extends BaseModel
     public function comments(): HasMany
     {
         return $this->hasMany(BidderRoundComment::class, BidderRoundComment::COL_FK_BIDDER_ROUND);
+    }
+
+    public function actionLogs(): HasMany
+    {
+        return $this->hasMany(BidderRoundActionLog::class, BidderRoundActionLog::COL_FK_BIDDER_ROUND);
+    }
+
+    /**
+     * The most recent log entry of the given action (announce/remind), or null
+     * when that action has not been taken on this round yet.
+     */
+    public function lastAction(EnumBidderRoundAction $action): ?BidderRoundActionLog
+    {
+        return $this->actionLogs()
+            ->where(BidderRoundActionLog::COL_ACTION, '=', $action->value)
+            ->latest(BidderRoundActionLog::COL_CREATED_AT)
+            ->first();
+    }
+
+    /**
+     * Records an admin-triggered action on this round for later reference.
+     */
+    public function recordAction(EnumBidderRoundAction $action, ?int $byUserId, int $recipientCount): BidderRoundActionLog
+    {
+        return $this->actionLogs()->create([
+            BidderRoundActionLog::COL_FK_USER => $byUserId,
+            BidderRoundActionLog::COL_ACTION => $action,
+            BidderRoundActionLog::COL_RECIPIENT_COUNT => $recipientCount,
+        ]);
     }
 
     /**

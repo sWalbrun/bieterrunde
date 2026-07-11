@@ -843,5 +843,13 @@
     "Retire members not in this list": "Nicht gelistete Mitglieder austragen",
     "Currently active members who are not listed above get an exit date of today, so they are not added to new bidder rounds. Admins are never affected.": "Aktuell aktive Mitglieder, die oben nicht aufgeführt sind, erhalten das heutige Austrittsdatum und werden so nicht zu neuen Beitragsrunden hinzugefügt. Admins sind nie betroffen.",
     ":deprecated members retired": ":deprecated Mitglieder ausgetragen",
-    "This is your personal login link — no password needed. It is valid until :date.": "Das ist dein persönlicher Anmelde-Link — kein Passwort nötig. Er ist bis zum :date gültig."
+    "This is your personal login link — no password needed. It is valid until :date.": "Das ist dein persönlicher Anmelde-Link — kein Passwort nötig. Er ist bis zum :date gültig.",
+    ":count participants have been reminded.": ":count Teilnehmende wurden erinnert.",
+    "Start announced": "Start angekündigt",
+    "Reminder sent": "Erinnerung gesendet",
+    "Already announced on :date by :by.": "Bereits am :date von :by angekündigt.",
+    "Last reminder sent on :date by :by.": "Letzte Erinnerung am :date von :by gesendet.",
+    "the system": "das System",
+    "Not announced yet": "Noch nicht angekündigt",
+    "No reminder sent yet": "Noch keine Erinnerung gesendet"
 }

@@ -30,8 +30,15 @@ class EditBidderRound extends EditRecord
                 ->hidden(fn () => ! BidderRoundResource::canAnnounceStart($record))
                 ->form(BidderRoundResource::announceStartForm())
                 ->requiresConfirmation()
-                ->modalSubheading(fn () => trans('Informs all participants by mail that the bidder round has started.'))
+                ->modalSubheading(fn () => BidderRoundResource::announceModalSubheading($record))
                 ->action(fn (array $data) => BidderRoundResource::announceStart($record, $data['message'] ?? null)),
+            Action::make('RemindParticipants')
+                ->label(trans('Remind participants'))
+                ->icon('iconpark-remind-o')
+                ->hidden(fn () => ! BidderRoundResource::canRemindParticipants($record))
+                ->requiresConfirmation()
+                ->modalSubheading(fn () => BidderRoundResource::remindModalSubheading($record))
+                ->action(fn () => BidderRoundResource::remindParticipants($record)),
             DeleteAction::make(),
         ];
     }
