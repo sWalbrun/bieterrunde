@@ -10,13 +10,9 @@ class BidderRoundObserver
 {
     public function deleting(BidderRound $bidderRound): void
     {
-        $bidderRound->topics()->each(
-            function (Topic $topic) {
-                $topic->offers()->delete();
-                $topic->shares()->delete();
-                $topic->delete();
-            }
-        );
+        // Delete each topic as a model so its own deleting cascade runs
+        // (offers, shares and the topic report all restrict deletion).
+        $bidderRound->topics()->each(fn (Topic $topic) => $topic->delete());
     }
 
     /**

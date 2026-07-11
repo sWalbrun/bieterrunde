@@ -51,6 +51,13 @@ class Topic extends BaseModel
             // and the admin can dissociate afterwards the ones, which should not be part of this round
             fn (self $topic) => TopicService::syncTopicParticipants($topic)
         );
+        // The offer/share/topicReport foreign keys restrict deletion at the DB
+        // layer, so a topic must clear its dependents before it can be removed.
+        static::deleting(function (self $topic) {
+            $topic->offers()->delete();
+            $topic->shares()->delete();
+            $topic->topicReport()->delete();
+        });
     }
 
     public function bidderRound(): BelongsTo
