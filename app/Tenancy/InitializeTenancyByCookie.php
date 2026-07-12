@@ -38,6 +38,8 @@ class InitializeTenancyByCookie extends InitializeTenancyByRequestData
         '/impressum',
         '/datenschutz',
         'assets',
+        // Central deploy endpoint (migrations + cache warming); needs no tenant
+        '/__deploy',
     ];
 
     /**

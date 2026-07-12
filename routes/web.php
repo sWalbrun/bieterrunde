@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\MagicLinkController;
+use App\Http\Controllers\DeployController;
 use App\Http\Controllers\SwitchTenantController;
 use App\Livewire\Auth\Login;
 use App\Livewire\RequestTestAccount;
@@ -46,3 +47,9 @@ Route::get('/tenant-switch/{tenant}', SwitchTenantController::class)
 Route::get('/assets/{path?}', 'Stancl\Tenancy\Controllers\TenantAssetsController@asset')
     ->where('path', '(.*)')
     ->name('stancl.tenancy.asset');
+
+// Runs migrations + cache warming from the browser (the host has no CLI/cron,
+// only FTP). Token-gated via DEPLOY_TOKEN; disabled when that is empty.
+Route::get('/__deploy/{token}', DeployController::class)
+    ->middleware('throttle:5,1')
+    ->name('deploy.run');
