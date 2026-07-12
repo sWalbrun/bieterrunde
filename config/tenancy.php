@@ -19,14 +19,15 @@ return [
     'domain_model' => Domain::class,
 
     /**
-     * The list of domains hosting your central app.
-     *
-     * Only relevant if you're using the domain or subdomain identification middleware.
+     * The list of domains hosting your central app. Every web route is bound to
+     * these domains (see RouteServiceProvider), so the production domain MUST be
+     * listed here or the app 404s. Driven by TENANCY_CENTRAL_DOMAINS (comma
+     * separated) so it lives in .env and survives deployments.
      */
-    'central_domains' => [
-        '127.0.0.1',
-        'localhost',
-    ],
+    'central_domains' => array_values(array_filter(array_map(
+        'trim',
+        explode(',', (string) env('TENANCY_CENTRAL_DOMAINS', '127.0.0.1,localhost'))
+    ))),
 
     /**
      * Tenancy bootstrappers are executed when tenancy is initialized.
